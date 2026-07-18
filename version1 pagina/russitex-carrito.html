@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Carrito — Russitex</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --azul: #2F5F8F; --azul-oscuro: #1e3f5f; --azul-claro: #EAF1F8;
+  --terracota: #A0523A; --terracota-cl: #c9694f; --terracota-bg: #fdf0ec;
+  --crema: #FAF7F2; --crema-osc: #F0EBE2;
+  --carbon: #2C2C2C; --gris: #6b7280; --gris-claro: #E4DED6;
+  --verde-wa: #25D366;
+}
+html { scroll-behavior: smooth; }
+body { font-family: 'DM Sans', sans-serif; background: var(--crema); color: var(--carbon); overflow-x: hidden; }
+
+/* ── TOPBAR ── */
+.topbar { background: var(--azul-oscuro); height: 36px; overflow: hidden; position: relative; }
+.topbar-inner { position: relative; width: 100%; height: 100%; }
+.topbar-msg { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; color: rgba(255,255,255,0.85); letter-spacing: 0.02em; white-space: nowrap; opacity: 0; }
+.topbar-msg strong { color: white; font-weight: 600; }
+.topbar-msg:nth-child(1) { animation: slideMsg 10s ease-in-out 0s infinite; }
+.topbar-msg:nth-child(2) { animation: slideMsg 10s ease-in-out 5s infinite; }
+@keyframes slideMsg { 0%{opacity:0;transform:translateX(60px)} 8%{opacity:1;transform:translateX(0)} 42%{opacity:1;transform:translateX(0)} 50%{opacity:0;transform:translateX(-60px)} 100%{opacity:0;transform:translateX(60px)} }
+
+/* ── HEADER ── */
+header { position: sticky; top: 0; z-index: 200; background: rgba(250,247,242,0.97); backdrop-filter: blur(12px); border-bottom: 1px solid var(--gris-claro); }
+.header-inner { display: flex; align-items: center; padding: 0 5%; height: 66px; gap: 2rem; }
+.logo { font-family: 'Playfair Display', serif; font-size: 1.55rem; font-weight: 700; color: var(--azul); text-decoration: none; letter-spacing: -0.02em; white-space: nowrap; }
+.logo span { color: var(--terracota); }
+nav { display: flex; gap: 1.6rem; flex: 1; }
+nav a { text-decoration: none; color: var(--carbon); font-size: 0.86rem; font-weight: 500; white-space: nowrap; transition: color 0.2s; }
+nav a:hover { color: var(--azul); }
+.header-icons { display: flex; align-items: center; gap: 0.3rem; }
+.icon-btn { width: 38px; height: 38px; border-radius: 50%; background: none; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--carbon); transition: background 0.2s; }
+.icon-btn:hover { background: var(--crema-osc); }
+.cart-btn { position: relative; }
+.cart-badge { position: absolute; top: 4px; right: 4px; width: 18px; height: 18px; border-radius: 50%; background: var(--terracota); color: white; font-size: 0.6rem; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+
+/* ── DEMO BAR ── */
+.demo-bar { background: #fffbeb; border-bottom: 1px solid #fde68a; padding: 0.6rem 8%; display: flex; align-items: center; gap: 1.2rem; }
+.demo-bar span { font-size: 0.78rem; color: #92400e; font-weight: 500; }
+.demo-toggle { display: flex; background: #fef3c7; border-radius: 100px; border: 1px solid #fde68a; overflow: hidden; }
+.demo-toggle button { padding: 0.3rem 1.1rem; font-size: 0.76rem; font-weight: 600; border: none; cursor: pointer; font-family: 'DM Sans', sans-serif; background: none; color: #92400e; transition: all 0.2s; white-space: nowrap; }
+.demo-toggle button.active { background: var(--azul); color: white; border-radius: 100px; }
+
+/* ── BREADCRUMB ── */
+.breadcrumb-bar { background: white; border-bottom: 1px solid var(--gris-claro); padding: 0.75rem 8%; }
+.breadcrumb { display: flex; align-items: center; gap: 0.5rem; font-size: 0.78rem; color: var(--gris); }
+.breadcrumb a { color: var(--gris); text-decoration: none; transition: color 0.2s; }
+.breadcrumb a:hover { color: var(--azul); }
+.breadcrumb .sep { color: var(--gris-claro); }
+.breadcrumb .current { color: var(--carbon); font-weight: 500; }
+
+/* ── ESTADO VACÍO ── */
+.cart-empty { display: none; flex-direction: column; align-items: center; justify-content: center; padding: 6rem 8%; text-align: center; min-height: 60vh; }
+.cart-empty.visible { display: flex; animation: fadeUp 0.4s ease both; }
+.empty-icon { font-size: 5rem; opacity: 0.18; margin-bottom: 1.5rem; }
+.cart-empty h1 { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 3vw, 2.6rem); font-weight: 700; color: var(--azul-oscuro); margin-bottom: 0.8rem; }
+.cart-empty h1 em { font-style: italic; color: var(--terracota); }
+.cart-empty p { font-size: 0.95rem; color: var(--gris); line-height: 1.7; max-width: 420px; margin-bottom: 2.5rem; }
+.empty-actions { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+.btn-primary { display: inline-flex; align-items: center; gap: 0.5rem; background: var(--azul); color: white; border: none; cursor: pointer; border-radius: 100px; padding: 0.85rem 2rem; font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 700; transition: all 0.2s; text-decoration: none; }
+.btn-primary:hover { background: var(--azul-oscuro); transform: translateY(-1px); }
+.btn-secondary-ghost { display: inline-flex; align-items: center; gap: 0.5rem; background: none; color: var(--azul); border: 1.5px solid var(--azul); cursor: pointer; border-radius: 100px; padding: 0.85rem 2rem; font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 600; transition: all 0.2s; text-decoration: none; }
+.btn-secondary-ghost:hover { background: var(--azul-claro); }
+
+/* Sugerencias vacío */
+.empty-suggestions { width: 100%; max-width: 900px; margin-top: 4rem; text-align: left; }
+.sugg-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--terracota); margin-bottom: 0.6rem; }
+.sugg-title { font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 700; color: var(--azul-oscuro); margin-bottom: 1.5rem; }
+.sugg-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+.sugg-card { background: white; border-radius: 14px; border: 1px solid var(--gris-claro); overflow: hidden; cursor: pointer; transition: all 0.22s; text-decoration: none; display: block; }
+.sugg-card:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(47,95,143,0.1); border-color: #c8d8e8; }
+.sugg-img { height: 110px; background: var(--crema-osc); display: flex; align-items: center; justify-content: center; font-size: 2.2rem; }
+.sugg-body { padding: 0.8rem; }
+.sugg-name { font-family: 'Playfair Display', serif; font-size: 0.85rem; font-weight: 600; color: var(--carbon); margin-bottom: 0.2rem; }
+.sugg-price { font-size: 0.88rem; font-weight: 700; color: var(--azul); }
+
+/* ── ESTADO CON PRODUCTOS ── */
+.cart-full { display: none; padding: 2.5rem 8% 5rem; }
+.cart-full.visible { display: block; animation: fadeUp 0.4s ease both; }
+.cart-full-inner { display: grid; grid-template-columns: 1fr 360px; gap: 3rem; align-items: start; }
+
+/* Tabla de productos */
+.cart-table-wrap { background: white; border-radius: 20px; border: 1px solid var(--gris-claro); overflow: hidden; }
+.cart-table-header { display: grid; grid-template-columns: 2.5fr 1fr 1fr 1fr 40px; gap: 1rem; padding: 1rem 1.5rem; background: var(--crema-osc); border-bottom: 1px solid var(--gris-claro); }
+.th { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gris); }
+.th.right { text-align: right; }
+.cart-item-row { display: grid; grid-template-columns: 2.5fr 1fr 1fr 1fr 40px; gap: 1rem; padding: 1.4rem 1.5rem; border-bottom: 1px solid var(--gris-claro); align-items: center; transition: background 0.2s; }
+.cart-item-row:last-child { border-bottom: none; }
+.cart-item-row:hover { background: #fafaf8; }
+.ci-product { display: flex; align-items: center; gap: 1rem; }
+.ci-img { width: 64px; height: 64px; border-radius: 10px; background: var(--crema-osc); display: flex; align-items: center; justify-content: center; font-size: 1.6rem; flex-shrink: 0; border: 1px solid var(--gris-claro); }
+.ci-info { }
+.ci-cat { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--gris); margin-bottom: 0.15rem; }
+.ci-name { font-family: 'Playfair Display', serif; font-size: 0.92rem; font-weight: 600; color: var(--carbon); margin-bottom: 0.2rem; line-height: 1.25; }
+.ci-variant { font-size: 0.72rem; color: var(--gris); }
+.ci-price { font-size: 0.88rem; color: var(--carbon); }
+.ci-qty { display: flex; align-items: center; border: 1.5px solid var(--gris-claro); border-radius: 100px; width: fit-content; overflow: hidden; }
+.ci-qty-btn { width: 30px; height: 30px; background: none; border: none; cursor: pointer; font-size: 0.9rem; color: var(--azul); font-weight: 700; display: flex; align-items: center; justify-content: center; transition: background 0.15s; }
+.ci-qty-btn:hover { background: var(--azul-claro); }
+.ci-qty-num { width: 30px; text-align: center; font-size: 0.82rem; font-weight: 600; }
+.ci-subtotal { font-size: 0.92rem; font-weight: 700; color: var(--azul); text-align: right; }
+.ci-remove { background: none; border: none; cursor: pointer; color: var(--gris-claro); display: flex; align-items: center; justify-content: center; border-radius: 50%; width: 32px; height: 32px; transition: all 0.18s; }
+.ci-remove:hover { color: var(--terracota); background: var(--terracota-bg); }
+.cart-footer-row { display: flex; align-items: center; justify-content: space-between; padding: 1.2rem 1.5rem; background: var(--crema-osc); }
+.btn-seguir { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--azul); background: none; border: none; cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 0.84rem; font-weight: 600; transition: gap 0.2s; }
+.btn-seguir:hover { gap: 0.65rem; }
+
+/* Resumen del pedido */
+.order-summary { background: white; border-radius: 20px; border: 1px solid var(--gris-claro); padding: 1.8rem; position: sticky; top: 86px; }
+.os-title { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700; color: var(--azul-oscuro); margin-bottom: 1.4rem; padding-bottom: 1rem; border-bottom: 1px solid var(--gris-claro); }
+.os-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.7rem; }
+.os-label { font-size: 0.85rem; color: var(--gris); }
+.os-value { font-size: 0.85rem; color: var(--carbon); font-weight: 500; }
+.os-divider { height: 1px; background: var(--gris-claro); margin: 1rem 0; }
+.os-total-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 1.6rem; }
+.os-total-label { font-size: 1rem; font-weight: 700; color: var(--carbon); }
+.os-total-value { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; color: var(--azul); }
+.btn-checkout { width: 100%; padding: 1rem; background: var(--azul); color: white; border: none; cursor: pointer; border-radius: 12px; font-family: 'DM Sans', sans-serif; font-size: 0.95rem; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: all 0.2s; margin-bottom: 0.8rem; }
+.btn-checkout:hover { background: var(--azul-oscuro); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(47,95,143,0.2); }
+.os-secure { display: flex; align-items: center; justify-content: center; gap: 0.4rem; font-size: 0.72rem; color: var(--gris); margin-bottom: 1.4rem; }
+.os-methods { border-top: 1px solid var(--gris-claro); padding-top: 1.2rem; }
+.os-methods-label { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gris); margin-bottom: 0.8rem; }
+.os-methods-icons { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; }
+.method-pill { background: var(--crema-osc); border-radius: 6px; padding: 0.28rem 0.7rem; font-size: 0.72rem; font-weight: 700; color: var(--gris); border: 1px solid var(--gris-claro); }
+.method-pill.wompi { background: #fff3cd; color: #856404; border-color: #ffc107; }
+
+/* ── FOOTER ── */
+footer { background: var(--carbon); color: rgba(255,255,255,0.65); padding: 4rem 8% 2rem; }
+.footer-grid { display: grid; grid-template-columns: 2fr 1.4fr 1.6fr; gap: 4rem; padding-bottom: 2.5rem; border-bottom: 1px solid rgba(255,255,255,0.08); }
+.f-logo { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; color: white; display: block; margin-bottom: 0.7rem; }
+.f-logo span { color: var(--terracota-cl); }
+.footer-desc { font-size: 0.875rem; line-height: 1.7; margin-bottom: 0.3rem; }
+.footer-slogan { font-size: 0.82rem; font-style: italic; color: rgba(255,255,255,0.38); }
+.f-col h4 { color: white; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 1.1rem; }
+.f-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+.f-col ul a { color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.875rem; transition: color 0.2s; }
+.f-col ul a:hover { color: white; }
+.f-contact { display: flex; flex-direction: column; gap: 1rem; }
+.f-ci-item { display: flex; gap: 0.7rem; align-items: flex-start; font-size: 0.875rem; }
+.f-ci { font-size: 0.95rem; margin-top: 0.1rem; flex-shrink: 0; }
+.footer-bottom { padding-top: 1.6rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
+.footer-bottom p { font-size: 0.78rem; color: rgba(255,255,255,0.3); }
+
+/* ── FLOATING WA ── */
+.wa-float { position: fixed; bottom: 28px; right: 28px; z-index: 999; width: 60px; height: 60px; background: var(--verde-wa); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 24px rgba(37,211,102,0.45); cursor: pointer; text-decoration: none; transition: transform 0.2s, box-shadow 0.2s; animation: waPop 0.5s 1s cubic-bezier(.34,1.56,.64,1) both; }
+.wa-float:hover { transform: scale(1.1); }
+.wa-float svg { width: 32px; height: 32px; fill: white; }
+.wa-float-badge { position: absolute; top: -2px; right: -2px; width: 20px; height: 20px; border-radius: 50%; background: #e53935; color: white; font-size: 0.65rem; font-weight: 700; display: flex; align-items: center; justify-content: center; border: 2px solid white; animation: pulse-badge 2s 1.5s ease-in-out infinite; }
+.wa-float-tooltip { position: absolute; right: 72px; bottom: 50%; transform: translateY(50%); background: var(--carbon); color: white; font-size: 0.78rem; font-weight: 500; padding: 0.4rem 0.85rem; border-radius: 8px; white-space: nowrap; pointer-events: none; opacity: 0; transition: opacity 0.2s; }
+.wa-float-tooltip::after { content:''; position:absolute; left:100%; top:50%; transform:translateY(-50%); border:5px solid transparent; border-left-color:var(--carbon); }
+.wa-float:hover .wa-float-tooltip { opacity: 1; }
+@keyframes waPop { from{transform:scale(0);opacity:0} to{transform:scale(1);opacity:1} }
+@keyframes pulse-badge { 0%,100%{transform:scale(1)} 50%{transform:scale(1.2)} }
+@keyframes fadeUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="topbar-msg">📦 <strong>Envíos el mismo día en Bogotá</strong> &nbsp;—&nbsp; Haz tu pedido antes de las 12:00 p.m.</div>
+    <div class="topbar-msg">🎁 <strong>Envío gratis</strong> en compras superiores a <strong>$350.000 COP</strong></div>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <a href="#" class="logo">Russi<span>tex</span></a>
+    <nav>
+      <a href="#">Inicio</a><a href="#">Catálogo</a>
+      <a href="#">Asesoría</a><a href="#">Sobre nosotros</a><a href="#">Contacto</a>
+    </nav>
+    <div class="header-icons">
+      <button class="icon-btn"><svg width="17" height="17" fill="none" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M20 20l-3-3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+      <button class="icon-btn"><svg width="17" height="17" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="2"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+      <button class="icon-btn cart-btn">
+        <svg width="17" height="17" fill="none" viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><line x1="3" y1="6" x2="21" y2="6" stroke="currentColor" stroke-width="2"/><path d="M16 10a4 4 0 01-8 0" stroke="currentColor" stroke-width="2"/></svg>
+        <span class="cart-badge" id="cartBadge">3</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- DEMO BAR -->
+<div class="demo-bar">
+  <span>🧪 Vista de maqueta — simular estado:</span>
+  <div class="demo-toggle">
+    <button id="btnEmpty" onclick="showState('empty')">Carrito vacío</button>
+    <button id="btnFull" class="active" onclick="showState('full')">Carrito con productos</button>
+  </div>
+</div>
+
+<!-- BREADCRUMB -->
+<div class="breadcrumb-bar">
+  <div class="breadcrumb">
+    <a href="#">Inicio</a><span class="sep">/</span>
+    <span class="current">Carrito</span>
+  </div>
+</div>
+
+<!-- ① CARRITO VACÍO -->
+<div class="cart-empty" id="cartEmpty">
+  <div class="empty-icon">🛒</div>
+  <h1>Tu carrito está <em>vacío</em></h1>
+  <p>Todavía no has agregado ningún material. Explora el catálogo y encuentra todo lo que necesitas para tu próximo proyecto de confección.</p>
+  <div class="empty-actions">
+    <a href="#" class="btn-primary">
+      <svg width="15" height="15" fill="none" viewBox="0 0 24 24"><path d="M19 12H5M12 5l-7 7 7 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Explorar catálogo
+    </a>
+    <a href="#" class="btn-secondary-ghost">Pedir asesoría</a>
+  </div>
+
+  <div class="empty-suggestions">
+    <div class="sugg-label">Materiales populares</div>
+    <div class="sugg-title">Quizás te interese</div>
+    <div class="sugg-grid">
+      <a href="#" class="sugg-card"><div class="sugg-img">🧥</div><div class="sugg-body"><div class="sugg-name">Forro Brioni</div><div class="sugg-price">$8.000 / metro</div></div></a>
+      <a href="#" class="sugg-card"><div class="sugg-img">🪡</div><div class="sugg-body"><div class="sugg-name">Entretela doble punto</div><div class="sugg-price">$8.000 / metro</div></div></a>
+      <a href="#" class="sugg-card"><div class="sugg-img">🧶</div><div class="sugg-body"><div class="sugg-name">Guata fusionable</div><div class="sugg-price">$17.000 / metro</div></div></a>
+      <a href="#" class="sugg-card"><div class="sugg-img">👗</div><div class="sugg-body"><div class="sugg-name">Hombrera algodón</div><div class="sugg-price">$4.500 / par</div></div></a>
+    </div>
+  </div>
+</div>
+
+<!-- ② CARRITO CON PRODUCTOS -->
+<div class="cart-full visible" id="cartFull">
+  <div class="cart-full-inner">
+
+    <!-- Tabla de productos -->
+    <div>
+      <div style="margin-bottom:1.2rem;">
+        <h1 style="font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:700;color:var(--azul-oscuro);">Mi carrito</h1>
+        <p style="font-size:0.85rem;color:var(--gris);margin-top:0.3rem;">3 productos · Revisa tu pedido antes de continuar</p>
+      </div>
+
+      <div class="cart-table-wrap">
+        <div class="cart-table-header">
+          <span class="th">Producto</span>
+          <span class="th">Precio unit.</span>
+          <span class="th">Cantidad</span>
+          <span class="th right">Subtotal</span>
+          <span></span>
+        </div>
+
+        <!-- Item 1 -->
+        <div class="cart-item-row" id="row1">
+          <div class="ci-product">
+            <div class="ci-img">🧥</div>
+            <div class="ci-info">
+              <div class="ci-cat">Forros</div>
+              <div class="ci-name">Forro Brioni</div>
+              <div class="ci-variant">Por metro</div>
+            </div>
+          </div>
+          <div class="ci-price">$8.000</div>
+          <div class="ci-qty">
+            <button class="ci-qty-btn" onclick="changeQty('row1', -1, 8000)">−</button>
+            <span class="ci-qty-num" id="qty1">3</span>
+            <button class="ci-qty-btn" onclick="changeQty('row1', 1, 8000)">+</button>
+          </div>
+          <div class="ci-subtotal" id="sub1">$24.000</div>
+          <button class="ci-remove" onclick="removeRow('row1')" title="Eliminar">
+            <svg width="14" height="14" fill="none" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          </button>
+        </div>
+
+        <!-- Item 2 -->
+        <div class="cart-item-row" id="row2">
+          <div class="ci-product">
+            <div class="ci-img">🪡</div>
+            <div class="ci-info">
+              <div class="ci-cat">Entretelas</div>
+              <div class="ci-name">Entretela doble punto</div>
+              <div class="ci-variant">Por metro · Color: Negro</div>
+            </div>
+          </div>
+          <div class="ci-price">$8.000</div>
+          <div class="ci-qty">
+            <button class="ci-qty-btn" onclick="changeQty('row2', -1, 8000)">−</button>
+            <span class="ci-qty-num" id="qty2">2</span>
+            <button class="ci-qty-btn" onclick="changeQty('row2', 1, 8000)">+</button>
+          </div>
+          <div class="ci-subtotal" id="sub2">$16.000</div>
+          <button class="ci-remove" onclick="removeRow('row2')" title="Eliminar">
+            <svg width="14" height="14" fill="none" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          </button>
+        </div>
+
+        <!-- Item 3 -->
+        <div class="cart-item-row" id="row3">
+          <div class="ci-product">
+            <div class="ci-img">✏️</div>
+            <div class="ci-info">
+              <div class="ci-cat">Tizas</div>
+              <div class="ci-name">Caja tiza blanca × 50 uds.</div>
+              <div class="ci-variant">Por caja</div>
+            </div>
+          </div>
+          <div class="ci-price">$31.092</div>
+          <div class="ci-qty">
+            <button class="ci-qty-btn" onclick="changeQty('row3', -1, 31092)">−</button>
+            <span class="ci-qty-num" id="qty3">1</span>
+            <button class="ci-qty-btn" onclick="changeQty('row3', 1, 31092)">+</button>
+          </div>
+          <div class="ci-subtotal" id="sub3">$31.092</div>
+          <button class="ci-remove" onclick="removeRow('row3')" title="Eliminar">
+            <svg width="14" height="14" fill="none" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          </button>
+        </div>
+
+        <div class="cart-footer-row">
+          <button class="btn-seguir">
+            ← Seguir comprando
+          </button>
+          <span style="font-size:0.78rem;color:var(--gris);">Los precios incluyen IVA</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Resumen del pedido -->
+    <div class="order-summary">
+      <div class="os-title">Resumen del pedido</div>
+
+      <div class="os-row">
+        <span class="os-label">Subtotal (6 unidades)</span>
+        <span class="os-value" id="osSubtotal">$71.092</span>
+      </div>
+      <div class="os-row">
+        <span class="os-label">Envío</span>
+        <span class="os-value">Se calcula al pagar</span>
+      </div>
+
+      <div class="os-divider"></div>
+
+      <div class="os-total-row">
+        <span class="os-total-label">Total estimado</span>
+        <span class="os-total-value" id="osTotal">$71.092</span>
+      </div>
+
+      <button class="btn-checkout">
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="white" stroke-width="2"/></svg>
+        Ir a pagar
+      </button>
+
+      <div class="os-secure">
+        <svg width="12" height="12" fill="none" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-width="2"/></svg>
+        Compra 100% segura con Wompi
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div><span class="f-logo">Russi<span>tex</span></span><p class="footer-desc">Materiales para confección en Bogotá, Colombia.</p><p class="footer-slogan">39 años siendo tu mano amiga en confección.</p></div>
+    <div class="f-col"><h4>Información</h4><ul><li><a href="#">Preguntas frecuentes</a></li><li><a href="#">Políticas de envío</a></li><li><a href="#">Cambios y devoluciones</a></li><li><a href="#">Términos y condiciones</a></li><li><a href="#">Política de privacidad</a></li></ul></div>
+    <div class="f-col"><h4>Contacto</h4><div class="f-contact"><div class="f-ci-item"><span class="f-ci">💬</span><div>+57 313 249 4118</div></div><div class="f-ci-item"><span class="f-ci">🕐</span><div>Lun–Vie: 10 a.m. – 6 p.m.<br>Sábados: 10 a.m. – 5 p.m.</div></div><div class="f-ci-item"><span class="f-ci">📍</span><div>Calle 66 # 21-50, Bogotá</div></div></div></div>
+  </div>
+  <div class="footer-bottom"><p>© 2026 Russitex. Todos los derechos reservados.</p></div>
+</footer>
+
+<!-- FLOATING WA -->
+<a href="https://wa.me/573132494118" class="wa-float" target="_blank" rel="noopener">
+  <span class="wa-float-tooltip">¿Tienes dudas? Escríbenos</span>
+  <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.122 1.532 5.852L.054 23.25a.75.75 0 00.916.927l5.487-1.493A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.75a9.713 9.713 0 01-4.978-1.365l-.356-.213-3.696 1.006 1.006-3.696-.213-.356A9.713 9.713 0 012.25 12C2.25 6.615 6.615 2.25 12 2.25S21.75 6.615 21.75 12 17.385 21.75 12 21.75z"/></svg>
+  <span class="wa-float-badge">1</span>
+</a>
+
+<script>
+// ── STATE TOGGLE ──
+function showState(state) {
+  document.getElementById('cartEmpty').classList.toggle('visible', state === 'empty');
+  document.getElementById('cartFull').classList.toggle('visible', state === 'full');
+  document.getElementById('cartBadge').textContent = state === 'empty' ? '0' : '3';
+  document.getElementById('btnEmpty').classList.toggle('active', state === 'empty');
+  document.getElementById('btnFull').classList.toggle('active', state === 'full');
+}
+
+// ── QTY & SUBTOTAL ──
+const prices = { row1: 8000, row2: 8000, row3: 31092 };
+const qtys   = { row1: 3,    row2: 2,    row3: 1 };
+
+function fmt(n) { return '$' + n.toLocaleString('es-CO'); }
+
+function changeQty(rowId, delta, price) {
+  const num = rowId.replace('row', '');
+  qtys[rowId] = Math.max(1, (qtys[rowId] || 1) + delta);
+  document.getElementById('qty' + num).textContent = qtys[rowId];
+  document.getElementById('sub' + num).textContent = fmt(qtys[rowId] * price);
+  updateSummary();
+}
+
+function removeRow(rowId) {
+  const el = document.getElementById(rowId);
+  el.style.opacity = '0';
+  el.style.transform = 'translateX(20px)';
+  el.style.transition = 'all 0.3s ease';
+  setTimeout(() => { el.style.display = 'none'; delete qtys[rowId]; delete prices[rowId]; updateSummary(); }, 300);
+}
+
+function updateSummary() {
+  let total = 0;
+  let units = 0;
+  Object.keys(qtys).forEach(k => {
+    const num = k.replace('row', '');
+    const p = { row1: 8000, row2: 8000, row3: 31092 };
+    total += (qtys[k] || 0) * (p[k] || 0);
+    units += qtys[k] || 0;
+  });
+  document.getElementById('osSubtotal').textContent = fmt(total);
+  document.getElementById('osTotal').textContent = fmt(total);
+}
+</script>
+</body>
+</html>
