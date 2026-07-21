@@ -203,7 +203,7 @@ nav a.active::after {
 /* ── BANNER ── */
 .page-banner {
   background: linear-gradient(135deg, var(--azul-oscuro) 0%, var(--azul) 65%, #3a6fa0 100%);
-  padding: 5.5rem 8% 5rem; text-align: center;
+  padding: 4.6rem 8% 4.2rem; text-align: center;
   position: relative; overflow: hidden;
 }
 .page-banner::before {
@@ -218,13 +218,13 @@ nav a.active::after {
 }
 @keyframes float-blob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-18px)} }
 .banner-eyebrow { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-bottom: 0.9rem; position: relative; z-index: 1; }
-.banner-title { font-family: 'Fraunces', serif; font-size: clamp(2.2rem, 3.5vw, 3.4rem); font-weight: 700; color: white; line-height: 1.12; margin-bottom: 1.1rem; animation: fadeUp 0.6s ease both; max-width: 680px; margin-left: auto; margin-right: auto; position: relative; z-index: 1; }
+.banner-title { font-family: 'Fraunces', serif; font-size: clamp(2.2rem, 3.5vw, 3.4rem); font-weight: 700; color: white; line-height: 1.12; margin-bottom: 1.1rem; animation: fadeUp 0.6s ease both; position: relative; z-index: 1; }
 .banner-title em { font-style: italic; color: #f0d5c8; }
-.banner-sub { font-size: 1.05rem; color: rgba(255,255,255,0.75); line-height: 1.7; margin-bottom: 0.8rem; animation: fadeUp 0.6s 0.1s ease both; max-width: 560px; margin-left: auto; margin-right: auto; position: relative; z-index: 1; }
+.banner-sub { font-size: 1.05rem; color: rgba(255,255,255,0.75); line-height: 1.7; margin-bottom: 0.8rem; animation: fadeUp 0.6s 0.1s ease both; margin-left: auto; margin-right: auto; position: relative; z-index: 1; }
 .banner-support { font-size: 0.88rem; color: rgba(255,255,255,0.5); line-height: 1.65; font-style: italic; animation: fadeUp 0.6s 0.18s ease both; position: relative; z-index: 1; }
 
 /* ── INTRODUCCIÓN ── */
-.intro-section { background: white; padding: 5rem 8%; border-bottom: 1px solid var(--gris-claro); }
+.intro-section { background: white; padding: 4.2rem 8%; border-bottom: 1px solid var(--gris-claro); }
 .intro-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
 .intro-left .s-label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--terracota); margin-bottom: 0.7rem; }
 .intro-left h2 { font-family: 'Fraunces', serif; font-size: clamp(1.6rem, 2.5vw, 2.2rem); font-weight: 700; color: var(--azul-oscuro); line-height: 1.2; margin-bottom: 1rem; }
@@ -490,7 +490,7 @@ footer { background: var(--tinta); color: rgba(255,255,255,0.68); padding: 4rem 
 
 /* ════════ RESPONSIVE GLOBAL APROBADO ════════ */
 @media (max-width: 1199px) {
-  .page-banner { padding: 2.6rem 6%; }
+  .page-banner { padding: 2.2rem 6%; }
   .catalog-layout { grid-template-columns: 230px 1fr; }
   .catalog-main { padding: 1.8rem 1.8rem 4rem; }
   .products-grid { grid-template-columns: repeat(3, 1fr); }
@@ -560,7 +560,7 @@ footer { background: var(--tinta); color: rgba(255,255,255,0.68); padding: 4rem 
   /* Header móvil: padding lateral seguro, iconos agrupados a la derecha */
   .header-inner { padding: 0 6%; gap: 1rem; }
 
-  .page-banner { padding: 2.2rem 6%; }
+  .page-banner { padding: 1.9rem 6%; }
   .products-grid { grid-template-columns: repeat(2, 1fr); gap: 0.9rem; }
   .prod-body { padding: 0.85rem 0.9rem 1rem; }
   .prod-actions { flex-direction: column; }
@@ -596,6 +596,7 @@ footer { background: var(--tinta); color: rgba(255,255,255,0.68); padding: 4rem 
   .intro-grid { grid-template-columns: 1fr; gap: 2rem; }
   .intro-left h2 { font-size: clamp(1.8rem, 6.5vw, 2.15rem); line-height: 1.15; }
   .opciones-grid { grid-template-columns: 1fr; }
+  .btn-opcion { display: flex; width: 100%; justify-content: center; text-align: center; padding: 0.8rem 1rem; }
   .form-row { grid-template-columns: 1fr; }
   .chat-info { flex-direction: column; }
   .chat-container { height: auto; min-height: 480px; max-height: 72vh; }
@@ -758,7 +759,7 @@ footer { background: var(--tinta); color: rgba(255,255,255,0.68); padding: 4rem 
 
 <!-- BANNER -->
 <div class="page-banner">
-  <h1 class="banner-title">Asesoría para tus proyectos<br>de <em>confección</em></h1>
+  <h1 class="banner-title">Asesoría para tus proyectos de <em>confección</em></h1>
   <p class="banner-sub">Te ayudamos a encontrar los materiales adecuados para tu prenda, arreglo o proyecto creativo.</p>
   <p class="banner-support">No necesitas saber el nombre exacto del material. Cuéntanos qué quieres hacer y te orientamos.</p>
 </div>
@@ -809,14 +810,14 @@ footer { background: var(--tinta); color: rgba(255,255,255,0.68); padding: 4rem 
       <h3>Asesoría rápida</h3>
       <p>Responde unas preguntas básicas y recibe una orientación inicial sobre las categorías o materiales que podrían servirte.</p>
       <span class="opcion-hint">Ideal si no sabes por dónde empezar.</span>
-      <button class="btn-opcion rapida">Iniciar asesoría rápida →</button>
+      <button class="btn-opcion rapida">Iniciar asesoría rápida&nbsp;→</button>
     </div>
     <div class="opcion-card personalizada" id="cardPersonalizada" onclick="selectOpcion('personalizada')">
       <span class="card-icon-big"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M23,15h-.667c-.25,0-.498,.019-.745,.057l-7.046-5.284,1.688-1.616c.399-.382,.413-1.016,.031-1.414-.383-.399-1.017-.412-1.414-.031l-4.173,3.995c-.208,.208-.491,.315-.788,.29-.298-.024-.56-.175-.739-.425-.274-.38-.19-.975,.168-1.334l4.703-4.429c.891-.837,2.284-1.042,3.374-.495l2.316,1.158c.69,.345,1.464,.527,2.235,.527h1.056c.553,0,1-.447,1-1s-.447-1-1-1h-1.056c-.463,0-.928-.109-1.342-.316l-2.314-1.158c-1.824-.913-4.153-.574-5.641,.828l-.618,.582-.7-.638c-.919-.837-2.109-1.298-3.39-1.298-.771,0-1.54,.182-2.227,.525l-2.314,1.158c-.415,.207-.88,.316-1.343,.316H1c-.553,0-1,.447-1,1s.447,1,1,1h1.056c.771,0,1.545-.183,2.236-.527l2.316-1.158c1.022-.514,2.458-.375,3.374,.462l.587,.535-2.646,2.492c-1.073,1.072-1.244,2.767-.398,3.938,.52,.723,1.553,1.259,2.444,1.259,.793,0,1.554-.312,2.104-.863l1.006-.963,6.346,4.759c-.031,.022-6.198,4.646-6.198,4.646-.723,.562-1.732,.562-2.47-.011l-6.091-4.568c-.859-.645-1.925-1-3-1h-.667c-.553,0-1,.447-1,1s.447,1,1,1h.667c.645,0,1.284,.213,1.8,.6l6.077,4.558c.725,.564,1.594,.846,2.461,.846,.862,0,1.723-.279,2.437-.835l6.093-4.568c.515-.387,1.154-.6,1.799-.6h.667c.553,0,1-.447,1-1s-.447-1-1-1Z"/></svg></span>
       <h3>Asesoría personalizada</h3>
       <p>Cuéntanos con más detalle qué estás confeccionando y te contactaremos por WhatsApp para ayudarte a elegir mejor.</p>
       <span class="opcion-hint">Ideal para proyectos más específicos.</span>
-      <button class="btn-opcion personalizada">Solicitar asesoría personalizada →</button>
+      <button class="btn-opcion personalizada">Solicitar asesoría personalizada&nbsp;→</button>
     </div>
   </div>
 </section>
