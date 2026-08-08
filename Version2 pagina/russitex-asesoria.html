@@ -242,98 +242,14 @@ nav a.active::after {
 .benefit-text strong { font-size: 0.88rem; font-weight: 700; color: var(--azul); display: block; margin-bottom: 0.2rem; }
 .benefit-text span { font-size: 0.82rem; color: var(--gris); line-height: 1.5; }
 
-/* ── SECCIÓN DE OPCIONES ── */
-.opciones-section { background: var(--crema); padding: 5rem 8%; }
-.opciones-header { text-align: center; margin-bottom: 3rem; }
-.opciones-header .s-label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--terracota); margin-bottom: 0.7rem; }
-.opciones-header h2 { font-family: 'Fraunces', serif; font-size: clamp(1.7rem, 2.8vw, 2.4rem); font-weight: 700; color: var(--azul-oscuro); }
-.opciones-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
-.opcion-card {
-  background: white; border-radius: 22px;
-  border: 1.5px solid var(--gris-claro);
-  padding: 2.5rem; cursor: pointer;
-  transition: all 0.28s; position: relative; overflow: hidden;
-}
-.opcion-card::before {
-  content: ''; position: absolute;
-  top: 0; left: 0; right: 0; height: 4px;
-  transform: scaleX(0); transform-origin: left;
-  transition: transform 0.3s ease;
-}
-.opcion-card.rapida::before { background: var(--azul); }
-.opcion-card.personalizada::before { background: var(--terracota); }
-.opcion-card:hover { transform: translateY(-5px); box-shadow: 0 16px 48px rgba(47,95,143,0.1); border-color: transparent; }
-.opcion-card:hover::before { transform: scaleX(1); }
-.opcion-card.active { border-color: var(--azul); box-shadow: 0 16px 48px rgba(47,95,143,0.12); }
-.opcion-card.active::before { transform: scaleX(1); }
-.opcion-card.personalizada.active { border-color: var(--terracota); }
-.card-icon-big { font-size: 2.5rem; margin-bottom: 1.2rem; display: block; }
-.opcion-card h3 { font-family: 'Fraunces', serif; font-size: 1.3rem; font-weight: 700; margin-bottom: 0.7rem; }
-.opcion-card.rapida h3 { color: var(--azul); }
-.opcion-card.personalizada h3 { color: var(--terracota); }
-.opcion-card p { font-size: 0.9rem; color: var(--gris); line-height: 1.7; margin-bottom: 0.6rem; }
-.opcion-hint { font-size: 0.78rem; color: var(--gris); font-style: italic; margin-bottom: 1.5rem; display: block; }
-.btn-opcion {
-  display: inline-flex; align-items: center; gap: 0.5rem;
-  padding: 0.75rem 1.6rem; border-radius: 100px;
-  font-family: 'Mulish', sans-serif; font-size: 0.85rem; font-weight: 700;
-  border: none; cursor: pointer; transition: all 0.2s;
-}
-.btn-opcion.rapida { background: var(--azul); color: white; }
-.btn-opcion.rapida:hover { background: var(--azul-oscuro); transform: translateY(-1px); }
-.btn-opcion.personalizada { background: var(--terracota); color: white; }
-.btn-opcion.personalizada:hover { background: var(--terracota-cl); transform: translateY(-1px); }
-
 /* ── CONTENIDO DE OPCIONES ── */
-.content-section { padding: 0 8% 5rem; background: var(--crema); }
-.content-pane { display: none; animation: fadeUp 0.35s ease both; }
-.content-pane.active { display: block; }
-
-/* CHATBOT */
-.chat-layout { display: grid; grid-template-columns: 1fr 320px; gap: 2rem; align-items: start; }
-.chat-container { background: white; border-radius: 22px; border: 1px solid var(--gris-claro); overflow: hidden; display: flex; flex-direction: column; height: 560px; box-shadow: 0 8px 32px rgba(47,95,143,0.08); }
-.chat-header { background: linear-gradient(135deg, var(--azul-oscuro), var(--azul)); padding: 1.1rem 1.4rem; display: flex; align-items: center; gap: 0.9rem; flex-shrink: 0; }
-.chat-avatar { width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0; }
-.chat-header-info h3 { font-size: 0.92rem; font-weight: 700; color: white; }
-.chat-header-info p { font-size: 0.72rem; color: rgba(255,255,255,0.65); }
-.online-dot { width: 9px; height: 9px; border-radius: 50%; background: #7ecba0; margin-left: auto; flex-shrink: 0; animation: pulse-dot 2s ease-in-out infinite; box-shadow: 0 0 0 2px rgba(126,203,160,0.3); }
-@keyframes pulse-dot { 0%,100%{box-shadow:0 0 0 2px rgba(126,203,160,0.3)} 50%{box-shadow:0 0 0 6px rgba(126,203,160,0.1)} }
-.chat-messages { flex: 1; overflow-y: auto; padding: 1.2rem; display: flex; flex-direction: column; gap: 0.8rem; scroll-behavior: smooth; scrollbar-width: thin; scrollbar-color: var(--gris-claro) transparent; }
-.msg { display: flex; gap: 0.6rem; max-width: 86%; animation: fadeUp 0.25s ease both; }
-.msg.user { align-self: flex-end; flex-direction: row-reverse; }
-.msg-avatar { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.78rem; flex-shrink: 0; margin-top: 2px; }
-.msg.bot .msg-avatar { background: var(--azul-claro); }
-.msg.user .msg-avatar { background: var(--crema-osc); }
-.msg-bubble { padding: 0.72rem 1rem; border-radius: 16px; font-size: 0.855rem; line-height: 1.62; }
-.msg-bubble strong { font-weight: 700; color: var(--azul-profundo); }
-.msg.bot .msg-bubble { background: var(--crema); color: var(--carbon); border-radius: 4px 16px 16px 16px; }
-.msg.user .msg-bubble { background: var(--azul); color: white; border-radius: 16px 4px 16px 16px; }
-.msg-time { font-size: 0.62rem; color: var(--gris); margin-top: 0.2rem; }
-.msg.user .msg-time { text-align: right; }
-.typing-indicator { display: none; align-self: flex-start; }
-.typing-indicator.visible { display: flex; gap: 0.6rem; }
-.typing-bubble { background: var(--crema); padding: 0.72rem 1rem; border-radius: 4px 16px 16px 16px; display: flex; gap: 4px; align-items: center; }
-.typing-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gris); animation: typing 1.4s ease-in-out infinite; }
-.typing-dot:nth-child(2) { animation-delay: 0.2s; }
-.typing-dot:nth-child(3) { animation-delay: 0.4s; }
-@keyframes typing { 0%,60%,100%{transform:translateY(0);opacity:0.4} 30%{transform:translateY(-4px);opacity:1} }
-.quick-suggestions { padding: 0.6rem 1rem; display: flex; gap: 0.4rem; flex-wrap: wrap; border-top: 1px solid var(--gris-claro); background: white; flex-shrink: 0; }
-.suggestion-chip { background: var(--crema); border: 1px solid var(--gris-claro); color: var(--azul); font-size: 0.74rem; font-weight: 500; padding: 0.28rem 0.72rem; border-radius: 100px; cursor: pointer; transition: all 0.18s; white-space: nowrap; font-family: 'Mulish', sans-serif; }
-.suggestion-chip:hover { background: var(--azul-claro); border-color: var(--azul); }
-.chat-input-row { padding: 0.85rem 1rem; display: flex; gap: 0.6rem; border-top: 1px solid var(--gris-claro); background: white; flex-shrink: 0; }
-.chat-input { flex: 1; padding: 0.65rem 1rem; border: 1.5px solid var(--gris-claro); border-radius: 100px; font-family: 'Mulish', sans-serif; font-size: 0.85rem; color: var(--carbon); outline: none; transition: border-color 0.2s; background: var(--crema); }
-.chat-input:focus { border-color: var(--azul); background: white; }
-.chat-input::placeholder { color: var(--gris); }
-.chat-send { width: 38px; height: 38px; border-radius: 50%; background: var(--azul); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.2s; }
-.chat-send:hover { background: var(--azul-oscuro); transform: scale(1.06); }
+.content-section { padding: 3.5rem 8% 5rem; background: var(--crema); }
 .chat-info { display: flex; flex-direction: column; gap: 1rem; }
 .chat-info-card { background: white; border-radius: 16px; padding: 1.2rem 1.4rem; border: 1px solid var(--gris-claro); }
 .chat-info-card h4 { font-family: 'Fraunces', serif; font-size: 0.95rem; font-weight: 700; color: var(--azul); margin-bottom: 0.8rem; }
 .chat-info-card ul { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
 .chat-info-card ul li { font-size: 0.82rem; color: var(--gris); display: flex; align-items: flex-start; gap: 0.5rem; line-height: 1.45; }
 .chat-info-card ul li::before { content: '✓'; color: var(--azul); font-weight: 700; flex-shrink: 0; font-size: 0.72rem; margin-top: 0.1rem; }
-
-/* FORMULARIO */
 .form-layout { display: grid; grid-template-columns: 1fr 340px; gap: 2rem; align-items: start; }
 .form-card { background: white; border-radius: 22px; border: 1px solid var(--gris-claro); padding: 2.5rem; box-shadow: 0 8px 32px rgba(47,95,143,0.06); }
 .form-card h2 { font-family: 'Fraunces', serif; font-size: 1.4rem; font-weight: 700; color: var(--ladrillo); margin-bottom: 0.85rem; }
@@ -461,79 +377,6 @@ footer { background: var(--tinta); color: rgba(255,255,255,0.68); padding: 4rem 
 .footer-bottom { padding-top: 1.6rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
 .footer-bottom p { font-size: 0.8rem; color: rgba(255,255,255,0.4); }
 
-/* ── FLOATING WA ── */
-.wa-float {
-  position: fixed; bottom: 26px; right: 26px; z-index: 999;
-  width: 58px; height: 58px; background: var(--verde-wa); border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 6px 22px rgba(37,211,102,0.40);
-  cursor: pointer; text-decoration: none; transition: transform 0.2s, box-shadow 0.2s;
-  animation: waPop 0.5s 0.8s ease both;
-}
-.wa-float:hover { transform: scale(1.08); box-shadow: 0 10px 30px rgba(37,211,102,0.50); }
-.wa-float svg { width: 31px; height: 31px; fill: #fff; }
-.wa-float-badge {
-  position: absolute; top: -2px; right: -2px; width: 20px; height: 20px; border-radius: 50%;
-  background: var(--rojo); color: #fff; font-size: 0.65rem; font-weight: 700;
-  display: flex; align-items: center; justify-content: center; border: 2px solid var(--crema);
-}
-.wa-float-tooltip {
-  position: absolute; right: 70px; bottom: 50%; transform: translateY(50%);
-  background: var(--tinta); color: #fff; font-size: 0.8rem; font-weight: 500;
-  padding: 0.45rem 0.85rem; border-radius: 8px; white-space: nowrap;
-  pointer-events: none; opacity: 0; transition: opacity 0.2s; box-shadow: var(--sh-md);
-}
-.wa-float-tooltip::after { content:''; position:absolute; left:100%; top:50%; transform:translateY(-50%); border:5px solid transparent; border-left-color:var(--tinta); }
-.wa-float:hover .wa-float-tooltip { opacity: 1; }
-@keyframes waPop { from{transform:scale(0.5);opacity:0} to{transform:scale(1);opacity:1} }
-
-
-/* ════════ RESPONSIVE GLOBAL APROBADO ════════ */
-@media (max-width: 1199px) {
-  .page-banner { padding: 2.2rem 6%; }
-  .catalog-layout { grid-template-columns: 230px 1fr; }
-  .catalog-main { padding: 1.8rem 1.8rem 4rem; }
-  .products-grid { grid-template-columns: repeat(3, 1fr); }
-  /* Header tablet: logo izquierda · iconos agrupados a la derecha con hamburguesa */
-  .header-inner { padding: 0 6%; gap: 1rem; }
-  .header-icons { margin-left: auto; gap: 0.35rem; }
-  .nav-toggle { display: flex; }
-  .mega-menu { display: none; }
-  nav#mainNav {
-    position: absolute; top: 100%; left: 0; right: 0;
-    flex-direction: column; gap: 0; flex: none;
-    background: var(--crema); border-bottom: 1px solid var(--linea);
-    box-shadow: var(--sh-md); max-height: 0; overflow: hidden;
-    transition: max-height 0.3s ease; padding: 0 6%;
-  }
-  nav#mainNav.open { max-height: 640px; padding: 0.4rem 6% 1rem; }
-  nav#mainNav > a, nav#mainNav .nav-catalog-wrap > a {
-    padding: 0.9rem 0; border-bottom: 1px solid var(--linea); font-size: 1rem;
-  }
-  nav#mainNav .nav-catalog-wrap { width: 100%; }
-  nav#mainNav a::after, nav#mainNav a.active::after { display: none; }
-
-  /* Catálogo como acordeón en tablet/móvil */
-  nav#mainNav .nav-catalog-wrap > a { position: relative; }
-  nav#mainNav .nav-catalog-wrap > a .mega-cat-arrow {
-    position: absolute; right: 0; top: 50%; transform: translateY(-50%) rotate(0deg);
-    transition: transform 0.25s ease; width: 16px; height: 16px; color: var(--gris-calido);
-  }
-  nav#mainNav .nav-catalog-wrap.open > a .mega-cat-arrow { transform: translateY(-50%) rotate(180deg); }
-  .mega-mobile {
-    display: block; max-height: 0; overflow: hidden;
-    transition: max-height 0.3s ease;
-  }
-  .nav-catalog-wrap.open .mega-mobile { max-height: 520px; }
-  .mega-mobile-cat {
-    display: block; padding: 0.7rem 0 0.7rem 1rem;
-    font-size: 0.95rem; color: var(--gris-calido);
-    border-bottom: 1px solid var(--linea);
-  }
-  .mega-mobile-cat:last-child { border-bottom: none; }
-  .mega-mobile-cat:hover { color: var(--azul-oficio); }
-}
-
 /* ── Sidebar colapsable (≤991px) ── */
 @media (max-width: 991px) {
   .catalog-layout { grid-template-columns: 1fr; }
@@ -568,9 +411,10 @@ footer { background: var(--tinta); color: rgba(255,255,255,0.68); padding: 4rem 
   .catalog-topbar { gap: 0.75rem; }
   .footer-grid { grid-template-columns: 1fr; gap: 2.2rem; }
   .footer-bottom { justify-content: center; }
-  .wa-float { width: 54px; height: 54px; bottom: 18px; right: 18px; }
-  .wa-float svg { width: 28px; height: 28px; }
-  .wa-float-tooltip { display: none; }
+  .fab-stack { bottom: 16px; right: 16px; gap: .7rem; }
+  .fab-tip { display: none; }
+  .chat-panel { top:0; left:0; right:0; bottom:0; width:100%; height:100%; max-height:100%; border-radius:0; transform:translateY(100%); }
+  .chat-panel.open { transform:translateY(0); }
 }
 
 /* ── Móvil pequeño (≤479px) ── */
@@ -587,17 +431,15 @@ footer { background: var(--tinta); color: rgba(255,255,255,0.68); padding: 4rem 
   .chat-layout { grid-template-columns: 1fr; }
   .form-layout { grid-template-columns: 1fr; }
   .chat-info { flex-direction: row; flex-wrap: wrap; }
-  .chat-info-card { flex: 1 1 240px; }
+  .form-info .chat-info-card { flex: 0 0 auto; }
 }
 @media (max-width: 767px) {
   /* Padding lateral al 6% (estándar aprobado) para aprovechar el ancho en móvil */
-  .breadcrumb-bar, .intro-section, .opciones-section, .content-section,
+  .breadcrumb-bar, .intro-section, .content-section,
   .faq-section, .wa-section { padding-left: 6%; padding-right: 6%; }
   .faq-a.open { max-height: 520px; }  /* evita recorte de respuestas largas en celular */
   .intro-grid { grid-template-columns: 1fr; gap: 2rem; }
   .intro-left h2 { font-size: clamp(1.8rem, 6.5vw, 2.15rem); line-height: 1.15; }
-  .opciones-grid { grid-template-columns: 1fr; }
-  .btn-opcion { display: flex; width: 100%; justify-content: center; text-align: center; padding: 0.8rem 1rem; }
   .form-row { grid-template-columns: 1fr; }
   .chat-info { flex-direction: column; }
   .chat-container { height: auto; min-height: 480px; max-height: 72vh; }
@@ -609,14 +451,114 @@ footer { background: var(--tinta); color: rgba(255,255,255,0.68); padding: 4rem 
 /* ── Iconos SVG (reemplazo de emojis) ── */
 .benefit-icon { display: flex; align-items: center; }
 .benefit-icon svg { width: 30px; height: 30px; fill: var(--azul-oficio); display: block; }
-.card-icon-big svg { width: 48px; height: 48px; fill: var(--azul-oficio); display: block; }
-.opcion-card.personalizada .card-icon-big svg { fill: var(--ladrillo); }
 .msg-avatar svg { width: 15px; height: 15px; fill: var(--azul-oficio); display: block; }
 .chat-avatar svg { width: 22px; height: 22px; fill: #fff; }
 .chat-send svg { width: 17px; height: 17px; fill: #fff; }
 .chat-info-card h4 { display: flex; align-items: center; gap: 8px; }
 .chat-info-card h4 svg { width: 18px; height: 18px; fill: var(--azul); flex-shrink: 0; }
 .btn-wa-submit svg { width: 19px; height: 19px; fill: #fff; }
+.chat-panel { position:fixed; bottom:104px; right:24px; width:370px; height:540px; max-height:calc(100vh - 130px);
+  background:#fff; border-radius:var(--r-xl); box-shadow:var(--sh-lg); display:flex; flex-direction:column; overflow:hidden;
+  z-index:1000; opacity:0; visibility:hidden; transform:translateY(16px) scale(.98); transform-origin:bottom right;
+  transition:opacity .28s ease, transform .28s ease, visibility .28s; }
+.chat-panel.open { opacity:1; visibility:visible; transform:translateY(0) scale(1); }
+.chat-header { background:linear-gradient(135deg,var(--azul-oscuro),var(--azul)); padding:1.1rem 1.3rem; display:flex; align-items:center; gap:.8rem; flex-shrink:0; }
+.chat-avatar { width:38px; height:38px; border-radius:50%; background:rgba(255,255,255,.18); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.chat-avatar svg { width:20px; height:20px; fill:#fff; }
+.chat-header-info { flex:1; }
+.chat-header-info h3 { font-size:.92rem; font-weight:700; color:#fff; font-family:'Mulish',sans-serif; }
+.chat-header-info p { font-size:.72rem; color:rgba(255,255,255,.65); display:flex; align-items:center; gap:.35rem; }
+.chat-header-info p::before { content:''; width:7px; height:7px; border-radius:50%; background:#7ed957; display:inline-block; }
+.chat-close { background:rgba(255,255,255,.15); border:none; width:30px; height:30px; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:background .2s; }
+.chat-close:hover { background:rgba(255,255,255,.3); }
+.chat-close svg { width:14px; height:14px; fill:#fff; }
+.chat-messages { flex:1; overflow-y:auto; padding:1.2rem; display:flex; flex-direction:column; gap:.8rem; scroll-behavior:smooth; scrollbar-width:thin; scrollbar-color:var(--gris-claro) transparent; }
+.msg { display:flex; gap:.6rem; max-width:86%; animation:fadeUp .25s ease both; }
+.msg.user { align-self:flex-end; flex-direction:row-reverse; }
+.msg-avatar { width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:2px; }
+.msg.bot .msg-avatar { background:var(--azul-claro); }
+.msg.user .msg-avatar { background:var(--crema-osc); }
+.msg-avatar svg { width:15px; height:15px; fill:var(--azul-oficio); display:block; }
+.msg-bubble { padding:.72rem 1rem; border-radius:16px; font-size:.855rem; line-height:1.62; }
+.msg-bubble strong { font-weight:700; color:var(--azul-profundo); }
+.msg.bot .msg-bubble { background:var(--crema); color:var(--carbon); border-radius:4px 16px 16px 16px; }
+.msg.user .msg-bubble { background:var(--azul); color:#fff; border-radius:16px 4px 16px 16px; }
+.msg-time { font-size:.62rem; color:var(--gris); margin-top:.2rem; }
+.msg.user .msg-time { text-align:right; }
+.typing-indicator { display:none; align-self:flex-start; }
+.typing-indicator.visible { display:flex; gap:.6rem; }
+.typing-bubble { background:var(--crema); padding:.72rem 1rem; border-radius:4px 16px 16px 16px; display:flex; gap:4px; align-items:center; }
+.typing-dot { width:6px; height:6px; border-radius:50%; background:var(--gris); animation:typing 1.4s ease-in-out infinite; }
+.typing-dot:nth-child(2){animation-delay:.2s} .typing-dot:nth-child(3){animation-delay:.4s}
+.quick-suggestions { padding:.6rem 1rem; display:flex; gap:.4rem; flex-wrap:wrap; border-top:1px solid var(--gris-claro); background:#fff; flex-shrink:0; }
+.suggestion-chip { background:var(--crema); border:1px solid var(--gris-claro); color:var(--azul); font-size:.74rem; font-weight:500; padding:.28rem .72rem; border-radius:100px; cursor:pointer; transition:all .18s; white-space:nowrap; font-family:'Mulish',sans-serif; }
+.suggestion-chip:hover { background:var(--azul-claro); border-color:var(--azul); }
+.chat-input-row { padding:.85rem 1rem; display:flex; gap:.6rem; border-top:1px solid var(--gris-claro); background:#fff; flex-shrink:0; }
+.chat-input { flex:1; padding:.65rem 1rem; border:1.5px solid var(--gris-claro); border-radius:100px; font-family:'Mulish',sans-serif; font-size:.85rem; color:var(--carbon); outline:none; transition:border-color .2s; background:var(--crema); }
+.chat-input:focus { border-color:var(--azul); background:#fff; }
+.chat-input::placeholder { color:var(--gris); }
+.chat-send { width:38px; height:38px; border-radius:50%; background:var(--azul); border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:all .2s; }
+.chat-send:hover { background:var(--azul-oscuro); transform:scale(1.06); }
+.chat-send svg { width:17px; height:17px; fill:#fff; }
+.chat-to-form { display:block; text-align:center; padding:.6rem; font-size:.76rem; font-weight:600; color:var(--ladrillo); text-decoration:none; background:var(--crema); border-top:1px solid var(--linea); flex-shrink:0; }
+.chat-to-form:hover { background:var(--crema-osc); }
+
+/* ── ASISTENTE FLOTANTE (dos botones · latido+vaivén) ── */
+.fab-stack { position:fixed; bottom:24px; right:24px; z-index:1000; display:flex; flex-direction:column; gap:.8rem; }
+.fab-enter { display:block; opacity:0; animation:fabIn .5s cubic-bezier(.34,1.56,.64,1) both; }
+@keyframes fabIn { from{opacity:0; transform:translateY(18px) scale(.85)} to{opacity:1; transform:translateY(0) scale(1)} }
+.fab-btn { position:relative; width:56px; height:56px; border-radius:50%; border:none; cursor:pointer; box-shadow:var(--sh-lg); display:flex; align-items:center; justify-content:center; text-decoration:none; transition:box-shadow .25s ease, transform .2s ease; }
+.fab-btn:hover { transform:translateY(-2px); }
+.fab-btn.ic-asist:hover { box-shadow:0 8px 28px rgba(44,92,124,.45); }
+.fab-btn.ic-wa:hover { box-shadow:0 8px 28px rgba(37,211,102,.40); }
+.fab-btn svg { width:26px; height:26px; fill:#fff; }
+.fab-btn.ic-asist { background:var(--azul-oficio); animation:beat 2.4s ease-in-out .6s infinite; }
+.fab-btn.ic-wa { background:var(--verde-wa); animation:wiggle 3.2s ease-in-out .9s infinite; transform-origin:center; box-shadow:0 6px 22px rgba(37,211,102,.40); }
+@keyframes beat { 0%,100%{transform:scale(1)} 10%{transform:scale(1.15)} 22%{transform:scale(1)} 34%{transform:scale(1.08)} 46%{transform:scale(1)} }
+@keyframes wiggle { 0%,84%,100%{transform:rotate(0)} 87%{transform:rotate(-15deg)} 90%{transform:rotate(12deg)} 93%{transform:rotate(-7deg)} 96%{transform:rotate(4deg)} }
+.fab-tip { position:absolute; right:66px; top:50%; transform:translateY(-50%) translateX(6px); background:var(--tinta); color:#fff; font-size:.72rem; font-weight:600; padding:.35rem .7rem; border-radius:var(--r-sm); white-space:nowrap; opacity:0; visibility:hidden; transition:all .2s; pointer-events:none; font-family:'Mulish',sans-serif; }
+.fab-btn:hover .fab-tip { opacity:1; visibility:visible; transform:translateY(-50%) translateX(0); }
+@keyframes typing { 0%,60%,100%{transform:translateY(0);opacity:.4} 30%{transform:translateY(-4px);opacity:1} }
+@media (prefers-reduced-motion:reduce){ .fab-enter{ animation:none; opacity:1 } .fab-btn.ic-asist,.fab-btn.ic-wa{ animation:halo 2.8s ease-in-out infinite } }
+@keyframes halo { 0%,100%{box-shadow:var(--sh-lg)} 50%{box-shadow:0 0 0 5px rgba(59,48,42,.10), var(--sh-lg)} }
+
+.chat-info-card .info-card-text { font-size:.82rem; color:var(--gris); line-height:1.6; margin:0; }
+
+/* ── NAVBAR + HEADER RESPONSIVE (tablet + celular) ── */
+@media (max-width: 991px) {
+  .header-inner { gap: 1rem; }
+  .header-icons { margin-left: auto; }
+  .nav-toggle { display: inline-flex; order: 5; }
+  nav#mainNav {
+    position: absolute; top: 100%; left: 0; right: 0;
+    flex-direction: column; align-items: stretch; gap: 0;
+    background: var(--crema); border-top: 1px solid var(--linea);
+    box-shadow: var(--sh-md);
+    max-height: 0; overflow: hidden; opacity: 0; visibility: hidden;
+    transition: max-height .32s ease, opacity .22s ease, visibility .22s; padding: 0;
+  }
+  nav#mainNav.open { max-height: 80vh; overflow-y: auto; opacity: 1; visibility: visible; padding: .4rem 0 1rem; }
+  nav#mainNav > a,
+  .nav-catalog-wrap > a { width: 100%; padding: .95rem 6%; box-sizing: border-box; font-size: 1rem; }
+  .nav-catalog-wrap { width: 100%; }
+  .mega-menu { display: none; }
+  .mega-mobile { display: none; flex-direction: column; padding: .1rem 6% .5rem; }
+  .nav-catalog-wrap.open .mega-mobile { display: flex; }
+  .nav-catalog-wrap.open > a svg { transform: rotate(180deg); }
+  .mega-mobile-cat { padding: .6rem .3rem; font-size: .92rem; color: var(--tinta); text-decoration: none; border-bottom: 1px solid var(--linea); }
+  .mega-mobile-cat:last-child { border-bottom: none; }
+  .mega-mobile-cat:hover { color: var(--azul-oficio); }
+}
+
+/* ── Tamaño proporcional de los botones flotantes ── */
+@media (max-width: 767px) {
+  .fab-btn { width: 52px; height: 52px; }
+  .fab-btn svg { width: 24px; height: 24px; }
+}
+@media (max-width: 479px) {
+  .fab-btn { width: 48px; height: 48px; }
+  .fab-btn svg { width: 22px; height: 22px; }
+}
 </style>
 </head>
 <body>
@@ -766,96 +708,11 @@ footer { background: var(--tinta); color: rgba(255,255,255,0.68); padding: 4rem 
 </div>
 
 <!-- OPCIONES -->
-<section class="opciones-section" id="opcionesSection">
-  <div class="opciones-header">
-    <div class="s-label">Elige cómo quieres que te ayudemos</div>
-    <h2>Dos formas de recibir asesoría</h2>
-  </div>
-  <div class="opciones-grid">
-    <div class="opcion-card rapida active" id="cardRapida" onclick="selectOpcion('rapida')">
-      <span class="card-icon-big"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m16.713,13.804c.384.393.381,1.02-.009,1.406-.074.073-1.84,1.79-4.704,1.79s-4.63-1.716-4.704-1.79c-.392-.389-.396-1.021-.007-1.414.39-.392,1.021-.396,1.415-.007.046.045,1.28,1.21,3.296,1.21s3.25-1.166,3.302-1.215c.396-.382,1.028-.374,1.411.02Zm-8.213-2.804c.828,0,1.5-.672,1.5-1.5s-.672-1.5-1.5-1.5-1.5.672-1.5,1.5.672,1.5,1.5,1.5Zm7-3c-.828,0-1.5.672-1.5,1.5s.672,1.5,1.5,1.5,1.5-.672,1.5-1.5-.672-1.5-1.5-1.5Zm8.5,4.34v6.66c0,2.757-2.243,5-5,5h-5.917C6.082,24,.471,19.208.029,12.854c-.24-3.476,1.027-6.878,3.479-9.333C5.962,1.065,9.371-.205,12.836.029c6.261.425,11.164,5.833,11.164,12.312Zm-2,0c0-5.431-4.085-9.962-9.299-10.316-.229-.016-.458-.023-.687-.023-2.656,0-5.209,1.048-7.091,2.933-2.043,2.046-3.1,4.883-2.898,7.782.372,5.38,5.023,9.285,11.058,9.285h5.917c1.654,0,3-1.346,3-3v-6.66Z"/></svg></span>
-      <h3>Asesoría rápida</h3>
-      <p>Responde unas preguntas básicas y recibe una orientación inicial sobre las categorías o materiales que podrían servirte.</p>
-      <span class="opcion-hint">Ideal si no sabes por dónde empezar.</span>
-      <button class="btn-opcion rapida">Iniciar asesoría rápida&nbsp;→</button>
-    </div>
-    <div class="opcion-card personalizada" id="cardPersonalizada" onclick="selectOpcion('personalizada')">
-      <span class="card-icon-big"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M23,15h-.667c-.25,0-.498,.019-.745,.057l-7.046-5.284,1.688-1.616c.399-.382,.413-1.016,.031-1.414-.383-.399-1.017-.412-1.414-.031l-4.173,3.995c-.208,.208-.491,.315-.788,.29-.298-.024-.56-.175-.739-.425-.274-.38-.19-.975,.168-1.334l4.703-4.429c.891-.837,2.284-1.042,3.374-.495l2.316,1.158c.69,.345,1.464,.527,2.235,.527h1.056c.553,0,1-.447,1-1s-.447-1-1-1h-1.056c-.463,0-.928-.109-1.342-.316l-2.314-1.158c-1.824-.913-4.153-.574-5.641,.828l-.618,.582-.7-.638c-.919-.837-2.109-1.298-3.39-1.298-.771,0-1.54,.182-2.227,.525l-2.314,1.158c-.415,.207-.88,.316-1.343,.316H1c-.553,0-1,.447-1,1s.447,1,1,1h1.056c.771,0,1.545-.183,2.236-.527l2.316-1.158c1.022-.514,2.458-.375,3.374,.462l.587,.535-2.646,2.492c-1.073,1.072-1.244,2.767-.398,3.938,.52,.723,1.553,1.259,2.444,1.259,.793,0,1.554-.312,2.104-.863l1.006-.963,6.346,4.759c-.031,.022-6.198,4.646-6.198,4.646-.723,.562-1.732,.562-2.47-.011l-6.091-4.568c-.859-.645-1.925-1-3-1h-.667c-.553,0-1,.447-1,1s.447,1,1,1h.667c.645,0,1.284,.213,1.8,.6l6.077,4.558c.725,.564,1.594,.846,2.461,.846,.862,0,1.723-.279,2.437-.835l6.093-4.568c.515-.387,1.154-.6,1.799-.6h.667c.553,0,1-.447,1-1s-.447-1-1-1Z"/></svg></span>
-      <h3>Asesoría personalizada</h3>
-      <p>Cuéntanos con más detalle qué estás confeccionando y te contactaremos por WhatsApp para ayudarte a elegir mejor.</p>
-      <span class="opcion-hint">Ideal para proyectos más específicos.</span>
-      <button class="btn-opcion personalizada">Solicitar asesoría personalizada&nbsp;→</button>
-    </div>
-  </div>
-</section>
-
 <!-- CONTENIDO -->
 <div class="content-section">
 
-  <!-- CHATBOT -->
-  <div class="content-pane active" id="paneRapida">
-    <div class="chat-layout">
-      <div class="chat-container">
-        <div class="chat-header">
-          <div class="chat-avatar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5,13A1.5,1.5,0,1,1,16,11.5,1.5,1.5,0,0,1,14.5,13Zm9.425,5.144A5,5,0,0,1,19,24H15a1,1,0,0,1-1-1V20.737A7.959,7.959,0,0,1,12,21a7.84,7.84,0,0,1-2-.27V23a1,1,0,0,1-1,1H5A5,5,0,0,1,.075,18.144l.3-1.74a2.939,2.939,0,0,1,5.337-1.138C6.976,17.124,9.409,19,12,19h0c3.13,0,6.214-2.779,7.13-5.376a1.03,1.03,0,0,1,.959-.667l.432.007A1.461,1.461,0,0,0,22,11.5a1.5,1.5,0,0,0-1.23-1.474,1,1,0,0,1-.816-.879A7.977,7.977,0,0,0,12,2C6.423,2,4.892,5.628,3.662,8.544c-.224.527-.435,1.03-.662,1.483A13.354,13.354,0,0,0,13.186,4.419a1,1,0,0,1,1.628,1.162,15.089,15.089,0,0,1-4.956,4.467,1.5,1.5,0,1,1-1.725.84,15.807,15.807,0,0,1-7.257,1.1A1,1,0,0,1,.5,10.136,6.372,6.372,0,0,0,1.819,7.767C3.124,4.674,5.1,0,12,0a9.972,9.972,0,0,1,9.85,8.274A3.5,3.5,0,0,1,24,11.5a3.428,3.428,0,0,1-.854,2.257c.007.026.025.047.03.075ZM8,19.94a11.088,11.088,0,0,1-3.941-3.552.946.946,0,0,0-.783-.424H3.259a.945.945,0,0,0-.911.782l-.3,1.739A3,3,0,0,0,5,22H8Zm13.955-1.455-.628-3.613a3.384,3.384,0,0,1-.579.086A11.033,11.033,0,0,1,16,19.952V22h3a3,3,0,0,0,2.955-3.514Z"/></svg></div>
-          <div class="chat-header-info">
-            <h3>Asistente Russitex</h3>
-            <p>Especialista en materiales para confección</p>
-          </div>
-          <div class="online-dot"></div>
-        </div>
-        <div class="chat-messages" id="chatMessages">
-          <div class="msg bot">
-            <div class="msg-avatar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5,13A1.5,1.5,0,1,1,16,11.5,1.5,1.5,0,0,1,14.5,13Zm9.425,5.144A5,5,0,0,1,19,24H15a1,1,0,0,1-1-1V20.737A7.959,7.959,0,0,1,12,21a7.84,7.84,0,0,1-2-.27V23a1,1,0,0,1-1,1H5A5,5,0,0,1,.075,18.144l.3-1.74a2.939,2.939,0,0,1,5.337-1.138C6.976,17.124,9.409,19,12,19h0c3.13,0,6.214-2.779,7.13-5.376a1.03,1.03,0,0,1,.959-.667l.432.007A1.461,1.461,0,0,0,22,11.5a1.5,1.5,0,0,0-1.23-1.474,1,1,0,0,1-.816-.879A7.977,7.977,0,0,0,12,2C6.423,2,4.892,5.628,3.662,8.544c-.224.527-.435,1.03-.662,1.483A13.354,13.354,0,0,0,13.186,4.419a1,1,0,0,1,1.628,1.162,15.089,15.089,0,0,1-4.956,4.467,1.5,1.5,0,1,1-1.725.84,15.807,15.807,0,0,1-7.257,1.1A1,1,0,0,1,.5,10.136,6.372,6.372,0,0,0,1.819,7.767C3.124,4.674,5.1,0,12,0a9.972,9.972,0,0,1,9.85,8.274A3.5,3.5,0,0,1,24,11.5a3.428,3.428,0,0,1-.854,2.257c.007.026.025.047.03.075ZM8,19.94a11.088,11.088,0,0,1-3.941-3.552.946.946,0,0,0-.783-.424H3.259a.945.945,0,0,0-.911.782l-.3,1.739A3,3,0,0,0,5,22H8Zm13.955-1.455-.628-3.613a3.384,3.384,0,0,1-.579.086A11.033,11.033,0,0,1,16,19.952V22h3a3,3,0,0,0,2.955-3.514Z"/></svg></div>
-            <div>
-              <div class="msg-bubble">¡Hola! Soy el asistente de Russitex. Puedo ayudarte a encontrar los materiales correctos para tu proyecto. ¿Qué estás confeccionando?</div>
-              <div class="msg-time">ahora</div>
-            </div>
-          </div>
-          <div class="typing-indicator" id="typingIndicator">
-            <div class="msg-avatar" style="width:28px;height:28px;border-radius:50%;background:var(--azul-claro);display:flex;align-items:center;justify-content:center;font-size:0.78rem;"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5,13A1.5,1.5,0,1,1,16,11.5,1.5,1.5,0,0,1,14.5,13Zm9.425,5.144A5,5,0,0,1,19,24H15a1,1,0,0,1-1-1V20.737A7.959,7.959,0,0,1,12,21a7.84,7.84,0,0,1-2-.27V23a1,1,0,0,1-1,1H5A5,5,0,0,1,.075,18.144l.3-1.74a2.939,2.939,0,0,1,5.337-1.138C6.976,17.124,9.409,19,12,19h0c3.13,0,6.214-2.779,7.13-5.376a1.03,1.03,0,0,1,.959-.667l.432.007A1.461,1.461,0,0,0,22,11.5a1.5,1.5,0,0,0-1.23-1.474,1,1,0,0,1-.816-.879A7.977,7.977,0,0,0,12,2C6.423,2,4.892,5.628,3.662,8.544c-.224.527-.435,1.03-.662,1.483A13.354,13.354,0,0,0,13.186,4.419a1,1,0,0,1,1.628,1.162,15.089,15.089,0,0,1-4.956,4.467,1.5,1.5,0,1,1-1.725.84,15.807,15.807,0,0,1-7.257,1.1A1,1,0,0,1,.5,10.136,6.372,6.372,0,0,0,1.819,7.767C3.124,4.674,5.1,0,12,0a9.972,9.972,0,0,1,9.85,8.274A3.5,3.5,0,0,1,24,11.5a3.428,3.428,0,0,1-.854,2.257c.007.026.025.047.03.075ZM8,19.94a11.088,11.088,0,0,1-3.941-3.552.946.946,0,0,0-.783-.424H3.259a.945.945,0,0,0-.911.782l-.3,1.739A3,3,0,0,0,5,22H8Zm13.955-1.455-.628-3.613a3.384,3.384,0,0,1-.579.086A11.033,11.033,0,0,1,16,19.952V22h3a3,3,0,0,0,2.955-3.514Z"/></svg></div>
-            <div class="typing-bubble"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>
-          </div>
-        </div>
-        <div class="quick-suggestions" id="quickSuggestions">
-          <button class="suggestion-chip" onclick="sendSuggestion(this)">¿Qué entretelas tienen?</button>
-          <button class="suggestion-chip" onclick="sendSuggestion(this)">Precios de forros</button>
-          <button class="suggestion-chip" onclick="sendSuggestion(this)">Materiales para chaqueta</button>
-          <button class="suggestion-chip" onclick="sendSuggestion(this)">¿Tienen hombreras?</button>
-        </div>
-        <div class="chat-input-row">
-          <input type="text" class="chat-input" id="chatInput" placeholder="Pregunta sobre materiales, precios o usos..." maxlength="300">
-          <button class="chat-send" onclick="sendMessage()">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21.916,8.727L3.965.282C2.951-.211,1.756-.041.917.713.076,1.47-.216,2.646.172,3.708c.017.043,4.411,8.296,4.411,8.296,0,0-4.313,8.251-4.328,8.293-.387,1.063-.092,2.237.749,2.993.521.467,1.179.708,1.841.708.409,0,.819-.092,1.201-.279l17.872-8.438c1.285-.603,2.083-1.859,2.082-3.278,0-1.42-.801-2.675-2.084-3.275ZM2.032,2.967c-.122-.415.138-.69.223-.768.089-.079.414-.324.838-.116.005.002,17.974,8.455,17.974,8.455.239.112.438.27.591.462H6.315L2.032,2.967Zm19.034,10.504L3.178,21.917c-.425.209-.749-.035-.838-.116-.086-.076-.346-.353-.223-.769l4.202-8.032h15.345c-.153.195-.355.357-.597.471Z"/></svg>
-          </button>
-        </div>
-      </div>
-      <div class="chat-info">
-        <div class="chat-info-card">
-          <h4><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11.904,16c.828,0,1.5,.672,1.5,1.5s-.672,1.5-1.5,1.5-1.5-.672-1.5-1.5,.672-1.5,1.5-1.5Zm1-2c0-.561,.408-1.225,.928-1.512,1.5-.826,2.307-2.523,2.009-4.223-.283-1.613-1.607-2.938-3.221-3.221-1.182-.204-2.38,.112-3.289,.874-.907,.763-1.428,1.879-1.428,3.063,0,.553,.448,1,1,1s1-.447,1-1c0-.592,.26-1.15,.714-1.532,.461-.386,1.052-.542,1.657-.435,.787,.138,1.458,.81,1.596,1.596,.153,.871-.241,1.705-1.004,2.125-1.156,.637-1.963,1.979-1.963,3.264,0,.553,.448,1,1,1s1-.447,1-1Zm11.096,5v-6.66C24,5.861,19.096,.454,12.836,.028,9.361-.202,5.961,1.066,3.509,3.521,1.057,5.977-.211,9.378,.03,12.854c.44,6.354,6.052,11.146,13.054,11.146h5.917c2.757,0,5-2.243,5-5ZM12.701,2.024c5.215,.354,9.299,4.885,9.299,10.315v6.66c0,1.654-1.346,3-3,3h-5.917c-6.035,0-10.686-3.904-11.059-9.284-.201-2.899,.855-5.735,2.899-7.781,1.882-1.885,4.435-2.934,7.092-2.934,.228,0,.457,.008,.685,.023Z"/></svg>Puedes preguntar sobre</h4>
-          <ul>
-            <li>Qué material usar según tu prenda</li>
-            <li>Tipos de entretelas y sus diferencias</li>
-            <li>Forros disponibles y precios</li>
-            <li>Hombreras, guatas y pretinas</li>
-            <li>Tizas, cierres y otros insumos</li>
-            <li>Unidades de venta y disponibilidad</li>
-          </ul>
-        </div>
-        <div class="chat-info-card">
-          <h4><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12,24C5.383,24,0,18.617,0,12S5.383,0,12,0s12,5.383,12,12-5.383,12-12,12Zm0-22C6.486,2,2,6.486,2,12s4.486,10,10,10,10-4.486,10-10S17.514,2,12,2Zm5,10c0-.553-.447-1-1-1h-3V6c0-.553-.448-1-1-1s-1,.447-1,1v6c0,.553,.448,1,1,1h4c.553,0,1-.447,1-1Z"/></svg>Horario de atención</h4>
-          <ul>
-            <li>Asistente IA: disponible 24/7</li>
-            <li>Asesores humanos: Lun–Vie 10–6 p.m.</li>
-            <li>Sábados: 10 a.m. – 5 p.m.</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!-- FORMULARIO -->
-  <div class="content-pane" id="panePersonalizada">
+  <div id="panePersonalizada">
     <div class="form-layout">
       <div class="form-card">
         <!-- Estado: formulario -->
@@ -953,10 +810,15 @@ footer { background: var(--tinta); color: rgba(255,255,255,0.68); padding: 4rem 
             <li>Domingos y festivos: cerrado</li>
           </ul>
         </div>
+        <div class="chat-info-card">
+          <h4><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12,0A12,12,0,1,0,24,12,12.013,12.013,0,0,0,12,0Zm0,22A10,10,0,1,1,22,12,10.011,10.011,0,0,1,12,22Z"/><path d="M12.717,5.063A4,4,0,0,0,8,9a1,1,0,0,0,2,0,2,2,0,0,1,2.371-1.967,2.024,2.024,0,0,1,1.6,1.595,2,2,0,0,1-1,2.125A3.954,3.954,0,0,0,11,14.257V15a1,1,0,0,0,2,0v-.743a1.982,1.982,0,0,1,.93-1.752,4,4,0,0,0-1.213-7.442Z"/><rect x="11" y="17" width="2" height="2" rx="1"/></svg>¿No sabes por dónde empezar?</h4>
+          <p class="info-card-text">Habla con nuestro asistente. Obtén recomendaciones de materiales, información general del almacén y asesoría básica. Búscalo siempre en el botón azul de la esquina inferior derecha.</p>
+        </div>
       </div>
     </div>
   </div>
 </div>
+
 
 <!-- INTRODUCCIÓN -->
 <section class="intro-section">
@@ -1068,107 +930,36 @@ footer { background: var(--tinta); color: rgba(255,255,255,0.68); padding: 4rem 
   <div class="footer-bottom"><p>© 2026 Russitex. Todos los derechos reservados.</p></div>
 </footer>
 
-<!-- FLOATING WA (aprobado) -->
-<a href="https://wa.me/573138909118" class="wa-float" target="_blank" rel="noopener">
-  <span class="wa-float-tooltip">¿Tienes dudas? Escríbenos</span>
-  <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.122 1.532 5.852L.054 23.25a.75.75 0 00.916.927l5.487-1.493A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.75a9.713 9.713 0 01-4.978-1.365l-.356-.213-3.696 1.006 1.006-3.696-.213-.356A9.713 9.713 0 012.25 12C2.25 6.615 6.615 2.25 12 2.25S21.75 6.615 21.75 12 17.385 21.75 12 21.75z"/></svg>
-  <span class="wa-float-badge">1</span>
-</a>
+<!-- ASISTENTE FLOTANTE (dos botones) -->
+<div class="fab-stack">
+  <span class="fab-enter" style="animation-delay:.15s"><button class="fab-btn ic-asist" onclick="openChat()" aria-label="Asistente Russitex"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5,13A1.5,1.5,0,1,1,16,11.5,1.5,1.5,0,0,1,14.5,13Zm9.425,5.144A5,5,0,0,1,19,24H15a1,1,0,0,1-1-1V20.737A7.959,7.959,0,0,1,12,21a7.84,7.84,0,0,1-2-.27V23a1,1,0,0,1-1,1H5A5,5,0,0,1,.075,18.144l.3-1.74a2.939,2.939,0,0,1,5.337-1.138C6.976,17.124,9.409,19,12,19h0c3.13,0,6.214-2.779,7.13-5.376a1.03,1.03,0,0,1,.959-.667l.432.007A1.461,1.461,0,0,0,22,11.5a1.5,1.5,0,0,0-1.23-1.474,1,1,0,0,1-.816-.879A7.977,7.977,0,0,0,12,2C6.423,2,4.892,5.628,3.662,8.544c-.224.527-.435,1.03-.662,1.483A13.354,13.354,0,0,0,13.186,4.419a1,1,0,0,1,1.628,1.162,15.089,15.089,0,0,1-4.956,4.467,1.5,1.5,0,1,1-1.725.84,15.807,15.807,0,0,1-7.257,1.1A1,1,0,0,1,.5,10.136,6.372,6.372,0,0,0,1.819,7.767C3.124,4.674,5.1,0,12,0a9.972,9.972,0,0,1,9.85,8.274A3.5,3.5,0,0,1,24,11.5a3.428,3.428,0,0,1-.854,2.257c.007.026.025.047.03.075ZM8,19.94a11.088,11.088,0,0,1-3.941-3.552.946.946,0,0,0-.783-.424H3.259a.945.945,0,0,0-.911.782l-.3,1.739A3,3,0,0,0,5,22H8Zm13.955-1.455-.628-3.613a3.384,3.384,0,0,1-.579.086A11.033,11.033,0,0,1,16,19.952V22h3a3,3,0,0,0,2.955-3.514Z"/></svg><span class="fab-tip">Asistente · al instante</span></button></span>
+  <span class="fab-enter" style="animation-delay:.3s"><a class="fab-btn ic-wa" href="https://wa.me/573138909118" target="_blank" rel="noopener" aria-label="WhatsApp"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.122 1.532 5.852L.054 23.25a.75.75 0 00.916.927l5.487-1.493A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.75a9.713 9.713 0 01-4.978-1.365l-.356-.213-3.696 1.006 1.006-3.696-.213-.356A9.713 9.713 0 012.25 12C2.25 6.615 6.615 2.25 12 2.25S21.75 6.615 21.75 12 17.385 21.75 12 21.75z"/></svg><span class="fab-tip">WhatsApp · una persona</span></a></span>
+</div>
+
+<!-- PANEL DE CHAT -->
+<div class="chat-panel" id="chatPanel" role="dialog" aria-label="Asistente Russitex" aria-hidden="true">
+  <div class="chat-header">
+    <div class="chat-avatar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5,13A1.5,1.5,0,1,1,16,11.5,1.5,1.5,0,0,1,14.5,13Zm9.425,5.144A5,5,0,0,1,19,24H15a1,1,0,0,1-1-1V20.737A7.959,7.959,0,0,1,12,21a7.84,7.84,0,0,1-2-.27V23a1,1,0,0,1-1,1H5A5,5,0,0,1,.075,18.144l.3-1.74a2.939,2.939,0,0,1,5.337-1.138C6.976,17.124,9.409,19,12,19h0c3.13,0,6.214-2.779,7.13-5.376a1.03,1.03,0,0,1,.959-.667l.432.007A1.461,1.461,0,0,0,22,11.5a1.5,1.5,0,0,0-1.23-1.474,1,1,0,0,1-.816-.879A7.977,7.977,0,0,0,12,2C6.423,2,4.892,5.628,3.662,8.544c-.224.527-.435,1.03-.662,1.483A13.354,13.354,0,0,0,13.186,4.419a1,1,0,0,1,1.628,1.162,15.089,15.089,0,0,1-4.956,4.467,1.5,1.5,0,1,1-1.725.84,15.807,15.807,0,0,1-7.257,1.1A1,1,0,0,1,.5,10.136,6.372,6.372,0,0,0,1.819,7.767C3.124,4.674,5.1,0,12,0a9.972,9.972,0,0,1,9.85,8.274A3.5,3.5,0,0,1,24,11.5a3.428,3.428,0,0,1-.854,2.257c.007.026.025.047.03.075Z"/></svg></div>
+    <div class="chat-header-info"><h3>Asistente Russitex</h3><p>Respuestas al instante</p></div>
+    <button class="chat-close" onclick="closeChat()" aria-label="Cerrar chat"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.3 5.71a1 1 0 0 0-1.42 0L12 10.59 7.11 5.7A1 1 0 0 0 5.7 7.11L10.59 12 5.7 16.89a1 1 0 1 0 1.41 1.41L12 13.41l4.89 4.89a1 1 0 0 0 1.41-1.41L13.41 12l4.89-4.89a1 1 0 0 0 0-1.4z"/></svg></button>
+  </div>
+  <div class="chat-messages" id="chatMessages">
+    <div class="msg bot"><div class="msg-avatar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5,13A1.5,1.5,0,1,1,16,11.5,1.5,1.5,0,0,1,14.5,13Zm9.425,5.144A5,5,0,0,1,19,24H15a1,1,0,0,1-1-1V20.737A7.959,7.959,0,0,1,12,21a7.84,7.84,0,0,1-2-.27V23a1,1,0,0,1-1,1H5A5,5,0,0,1,.075,18.144l.3-1.74a2.939,2.939,0,0,1,5.337-1.138C6.976,17.124,9.409,19,12,19h0c3.13,0,6.214-2.779,7.13-5.376a1.03,1.03,0,0,1,.959-.667l.432.007A1.461,1.461,0,0,0,22,11.5a1.5,1.5,0,0,0-1.23-1.474,1,1,0,0,1-.816-.879A7.977,7.977,0,0,0,12,2C6.423,2,4.892,5.628,3.662,8.544c-.224.527-.435,1.03-.662,1.483A13.354,13.354,0,0,0,13.186,4.419a1,1,0,0,1,1.628,1.162,15.089,15.089,0,0,1-4.956,4.467,1.5,1.5,0,1,1-1.725.84,15.807,15.807,0,0,1-7.257,1.1A1,1,0,0,1,.5,10.136,6.372,6.372,0,0,0,1.819,7.767C3.124,4.674,5.1,0,12,0a9.972,9.972,0,0,1,9.85,8.274A3.5,3.5,0,0,1,24,11.5a3.428,3.428,0,0,1-.854,2.257c.007.026.025.047.03.075Z"/></svg></div><div><div class="msg-bubble">¡Hola! Soy el asistente de Russitex. Cuéntame qué vas a confeccionar y te ayudo a elegir el material, o pregúntame por precios, envíos y horarios. 🧵</div><div class="msg-time">Ahora</div></div></div>
+    <div class="typing-indicator" id="typingIndicator"><div class="msg-avatar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5,13A1.5,1.5,0,1,1,16,11.5,1.5,1.5,0,0,1,14.5,13Zm9.425,5.144A5,5,0,0,1,19,24H15a1,1,0,0,1-1-1V20.737A7.959,7.959,0,0,1,12,21a7.84,7.84,0,0,1-2-.27V23a1,1,0,0,1-1,1H5A5,5,0,0,1,.075,18.144l.3-1.74a2.939,2.939,0,0,1,5.337-1.138C6.976,17.124,9.409,19,12,19h0c3.13,0,6.214-2.779,7.13-5.376a1.03,1.03,0,0,1,.959-.667l.432.007A1.461,1.461,0,0,0,22,11.5a1.5,1.5,0,0,0-1.23-1.474,1,1,0,0,1-.816-.879A7.977,7.977,0,0,0,12,2C6.423,2,4.892,5.628,3.662,8.544c-.224.527-.435,1.03-.662,1.483A13.354,13.354,0,0,0,13.186,4.419a1,1,0,0,1,1.628,1.162,15.089,15.089,0,0,1-4.956,4.467,1.5,1.5,0,1,1-1.725.84,15.807,15.807,0,0,1-7.257,1.1A1,1,0,0,1,.5,10.136,6.372,6.372,0,0,0,1.819,7.767C3.124,4.674,5.1,0,12,0a9.972,9.972,0,0,1,9.85,8.274A3.5,3.5,0,0,1,24,11.5a3.428,3.428,0,0,1-.854,2.257c.007.026.025.047.03.075Z"/></svg></div><div class="typing-bubble"><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></div></div>
+  </div>
+  <div class="quick-suggestions" id="quickSuggestions">
+    <button class="suggestion-chip" onclick="sendSuggestion(this)">¿Qué forro uso para una chaqueta?</button>
+    <button class="suggestion-chip" onclick="sendSuggestion(this)">¿Cuánto cuesta la entretela?</button>
+    <button class="suggestion-chip" onclick="sendSuggestion(this)">¿Hacen envíos?</button>
+  </div>
+  <div class="chat-input-row">
+    <input type="text" class="chat-input" id="chatInput" placeholder="Escribe tu pregunta...">
+    <button class="chat-send" onclick="sendMessage()" aria-label="Enviar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.3 3.23 21 11.08c.79.33.79 1.5 0 1.84L2.3 20.77c-.74.31-1.53-.42-1.3-1.2l1.63-6.02L13 12 2.63 10.45 1 4.43c-.23-.78.56-1.51 1.3-1.2z"/></svg></button>
+  </div>
+  <a class="chat-to-form" href="#panePersonalizada" onclick="closeChat()">¿Tu proyecto es más específico? Solicita asesoría personalizada →</a>
+</div>
 
 <script>
-// ── SELECCIÓN DE OPCIÓN ──
-function selectOpcion(tipo) {
-  document.querySelectorAll('.opcion-card').forEach(c => c.classList.remove('active'));
-  document.querySelectorAll('.content-pane').forEach(p => p.classList.remove('active'));
-  const key = tipo.charAt(0).toUpperCase() + tipo.slice(1);
-  document.getElementById('card' + key).classList.add('active');
-  document.getElementById('pane' + key).classList.add('active');
-  setTimeout(() => {
-    document.getElementById('pane' + key).scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, 80);
-}
-
-// ── CHATBOT ──
-const SYSTEM_PROMPT = `Eres el asistente virtual de Russitex, almacén familiar de materiales para confección en Bogotá, Colombia, con 39 años de experiencia. SOLO respondes sobre productos y materiales del inventario de Russitex.
-
-INVENTARIO:
-Forros: Arabesco $12.000/m, Brioni $8.000/m, Estampado $10.000/m, Estampado grueso $9.244/m
-Entretelas: Entretela $7.143/m, Doble punto $8.000/m (negro/blanco/beige), Doble punto 90gr $9.000/m, Galleta $5.042/m, Granulada $19.328/m, Cuello camisa $14.000/m, Poliéster $8.000/m
-Hombreras: $4.500/par, Algodón 2 capas $2.941/par, En algodón $4.500/par, Espuma blanca $1.200/par, Negra $3.782/par
-Guatas: Guata $10.000/m, Fusionable $17.000/m
-Tizas: Caja $7.143, Blanca ×50 $31.092, Color ×50 $36.555, Color pequeña $11.000
-Cierres: Cremallera cobre 20cm $1.200/ud
-Otros: Banrol $1.500, Bayetilla $10.000/m, Borraflojo $2.500, Interlón $3.782/m, Interlón telfor $5.000/m, Liencillo $10.084/m, Lona calima $25.000/m, Portavestido $7.143/m, Pretina $2.269/m, Sido $23.000/m, Valencina $7.143/m
-
-Si preguntan algo fuera del catálogo, responde amablemente que solo puedes ayudar con los productos de Russitex. Sé conciso, amigable y útil. Máximo 3-4 oraciones.`;
-
-let chatHistory = [], isTyping = false;
-
-function getTime() { return new Date().toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' }); }
-
-function formatBotMessage(text) {
-  let t = String(text)
-    .replace(/\r\n/g, '\n')
-    .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
-    .replace(/\*([^*\n]+)\*/g, '<em>$1</em>');
-  // Viñetas: al inicio de línea o en formato "texto - **item**" en una sola línea
-  t = t.replace(/\n\s*[-•]\s+/g, '\n• ');
-  t = t.replace(/\s+-\s+(?=<strong>)/g, '\n• ');
-  // Si hay lista, separar la pregunta final en su propio párrafo
-  if (t.indexOf('\n• ') !== -1) {
-    t = t.replace(/\s(¿[^¿]*\?)\s*$/, '\n\n$1');
-    t = t.replace(/:\s*\n• /g, ':\n\n• ');
-  }
-  t = t.replace(/\n{2,}/g, '<br><br>').replace(/\n/g, '<br>');
-  return t;
-}
-
-function addMessage(text, role) {
-  const msgs = document.getElementById('chatMessages');
-  const typing = document.getElementById('typingIndicator');
-  const div = document.createElement('div');
-  div.className = `msg ${role}`;
-  div.innerHTML = `<div class="msg-avatar">${role === 'bot' ? '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5,13A1.5,1.5,0,1,1,16,11.5,1.5,1.5,0,0,1,14.5,13Zm9.425,5.144A5,5,0,0,1,19,24H15a1,1,0,0,1-1-1V20.737A7.959,7.959,0,0,1,12,21a7.84,7.84,0,0,1-2-.27V23a1,1,0,0,1-1,1H5A5,5,0,0,1,.075,18.144l.3-1.74a2.939,2.939,0,0,1,5.337-1.138C6.976,17.124,9.409,19,12,19h0c3.13,0,6.214-2.779,7.13-5.376a1.03,1.03,0,0,1,.959-.667l.432.007A1.461,1.461,0,0,0,22,11.5a1.5,1.5,0,0,0-1.23-1.474,1,1,0,0,1-.816-.879A7.977,7.977,0,0,0,12,2C6.423,2,4.892,5.628,3.662,8.544c-.224.527-.435,1.03-.662,1.483A13.354,13.354,0,0,0,13.186,4.419a1,1,0,0,1,1.628,1.162,15.089,15.089,0,0,1-4.956,4.467,1.5,1.5,0,1,1-1.725.84,15.807,15.807,0,0,1-7.257,1.1A1,1,0,0,1,.5,10.136,6.372,6.372,0,0,0,1.819,7.767C3.124,4.674,5.1,0,12,0a9.972,9.972,0,0,1,9.85,8.274A3.5,3.5,0,0,1,24,11.5a3.428,3.428,0,0,1-.854,2.257c.007.026.025.047.03.075ZM8,19.94a11.088,11.088,0,0,1-3.941-3.552.946.946,0,0,0-.783-.424H3.259a.945.945,0,0,0-.911.782l-.3,1.739A3,3,0,0,0,5,22H8Zm13.955-1.455-.628-3.613a3.384,3.384,0,0,1-.579.086A11.033,11.033,0,0,1,16,19.952V22h3a3,3,0,0,0,2.955-3.514Z"/></svg>' : '<svg viewBox="0 0 24 24" aria-hidden="true"><g id="_01_align_center" data-name="01 align center"><path d="M21,24H19V18.957A2.96,2.96,0,0,0,16.043,16H7.957A2.96,2.96,0,0,0,5,18.957V24H3V18.957A4.963,4.963,0,0,1,7.957,14h8.086A4.963,4.963,0,0,1,21,18.957Z"/><path d="M12,12a6,6,0,1,1,6-6A6.006,6.006,0,0,1,12,12ZM12,2a4,4,0,1,0,4,4A4,4,0,0,0,12,2Z"/></g></svg>'}</div><div><div class="msg-bubble">${role === 'bot' ? formatBotMessage(text) : text}</div><div class="msg-time">${getTime()}</div></div>`;
-  msgs.insertBefore(div, typing);
-  msgs.scrollTop = msgs.scrollHeight;
-}
-
-function showTyping(show) {
-  document.getElementById('typingIndicator').classList.toggle('visible', show);
-  document.getElementById('chatMessages').scrollTop = 99999;
-}
-
-async function sendMessage() {
-  const input = document.getElementById('chatInput');
-  const text = input.value.trim();
-  if (!text || isTyping) return;
-  input.value = '';
-  isTyping = true;
-  document.getElementById('quickSuggestions').style.display = 'none';
-  addMessage(text, 'user');
-  chatHistory.push({ role: 'user', content: text });
-  showTyping(true);
-  try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000, system: SYSTEM_PROMPT, messages: chatHistory })
-    });
-    const data = await res.json();
-    const reply = data.content?.[0]?.text || 'Lo siento, hubo un error. Intenta de nuevo.';
-    chatHistory.push({ role: 'assistant', content: reply });
-    showTyping(false);
-    addMessage(reply, 'bot');
-  } catch {
-    showTyping(false);
-    addMessage('Error de conexión. Por favor intenta de nuevo.', 'bot');
-  }
-  isTyping = false;
-}
-
-function sendSuggestion(btn) { document.getElementById('chatInput').value = btn.textContent; sendMessage(); }
-document.getElementById('chatInput').addEventListener('keydown', e => { if (e.key === 'Enter') sendMessage(); });
-
 // ── IMAGE UPLOAD ──
 let uploadedImageName = '';
 function showImagePreview(file) {
@@ -1311,5 +1102,57 @@ function toggleFaq(el) {
   })();
 </script>
 
+<script>
+const SYSTEM_PROMPT = `Eres el asistente virtual de Russitex, almacén familiar de materiales para confección en Bogotá, Colombia, con 39 años de experiencia. SOLO respondes sobre productos y materiales del inventario de Russitex, sus usos, precios, envíos, y horarios/ubicación de la tienda, además de dudas básicas de confección.
+
+INVENTARIO:
+Forros: Arabesco $12.000/m, Brioni $8.000/m, Estampado $10.000/m, Estampado grueso $9.244/m
+Entretelas: Entretela $7.143/m, Doble punto $8.000/m, Doble punto 90gr $9.000/m, Galleta $5.042/m, Granulada $19.328/m, Cuello camisa $14.000/m, Poliéster $8.000/m
+Hombreras: $4.500/par, Algodón 2 capas $2.941/par, En algodón $4.500/par, Espuma blanca $1.200/par, Negra $3.782/par
+Guatas: Guata $10.000/m, Fusionable $17.000/m
+Tizas: Caja $7.143, Blanca x50 $31.092, Color x50 $36.555, Color pequeña $11.000
+Cierres: Cremallera cobre 20cm $1.200/ud
+Otros: Banrol $1.500, Bayetilla $10.000/m, Borraflojo $2.500, Interlón $3.782/m, Interlón telfor $5.000/m, Liencillo $10.084/m, Lona calima $25.000/m, Portavestido $7.143/m, Pretina $2.269/m, Sido $23.000/m, Valencina $7.143/m
+
+Tienda: 7 de Agosto, Bogotá. Envíos a nivel local; gratis en compras superiores a $350.000. Tus consejos son una guía, no una garantía de resultados.
+Si preguntan algo fuera de estos temas, responde amablemente que solo puedes ayudar con los productos y la confección en Russitex. Sé conciso, amigable y útil. Máximo 3-4 oraciones.`;
+
+let chatHistory = [], isTyping = false;
+function getTime(){ return new Date().toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'}); }
+function formatBotMessage(text){
+  let t=String(text).replace(/\r\n/g,'\n').replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>').replace(/\*([^*\n]+)\*/g,'<em>$1</em>');
+  t=t.replace(/\n\s*[-•]\s+/g,'\n• ');
+  t=t.replace(/\n{2,}/g,'<br><br>').replace(/\n/g,'<br>');
+  return t;
+}
+function addMessage(text, role){
+  const msgs=document.getElementById('chatMessages'), typing=document.getElementById('typingIndicator');
+  const bot='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5,13A1.5,1.5,0,1,1,16,11.5,1.5,1.5,0,0,1,14.5,13Zm9.425,5.144A5,5,0,0,1,19,24H15a1,1,0,0,1-1-1V20.737A7.959,7.959,0,0,1,12,21a7.84,7.84,0,0,1-2-.27V23a1,1,0,0,1-1,1H5A5,5,0,0,1,.075,18.144l.3-1.74a2.939,2.939,0,0,1,5.337-1.138C6.976,17.124,9.409,19,12,19h0c3.13,0,6.214-2.779,7.13-5.376a1.03,1.03,0,0,1,.959-.667l.432.007A1.461,1.461,0,0,0,22,11.5a1.5,1.5,0,0,0-1.23-1.474,1,1,0,0,1-.816-.879A7.977,7.977,0,0,0,12,2C6.423,2,4.892,5.628,3.662,8.544c-.224.527-.435,1.03-.662,1.483A13.354,13.354,0,0,0,13.186,4.419a1,1,0,0,1,1.628,1.162,15.089,15.089,0,0,1-4.956,4.467,1.5,1.5,0,1,1-1.725.84,15.807,15.807,0,0,1-7.257,1.1A1,1,0,0,1,.5,10.136,6.372,6.372,0,0,0,1.819,7.767C3.124,4.674,5.1,0,12,0a9.972,9.972,0,0,1,9.85,8.274A3.5,3.5,0,0,1,24,11.5a3.428,3.428,0,0,1-.854,2.257c.007.026.025.047.03.075Z"/></svg>', user='<svg viewBox="0 0 24 24" aria-hidden="true"><g><path d="M21,24H19V18.957A2.96,2.96,0,0,0,16.043,16H7.957A2.96,2.96,0,0,0,5,18.957V24H3V18.957A4.963,4.963,0,0,1,7.957,14h8.086A4.963,4.963,0,0,1,21,18.957Z"/><path d="M12,12a6,6,0,1,1,6-6A6.006,6.006,0,0,1,12,12ZM12,2a4,4,0,1,0,4,4A4,4,0,0,0,12,2Z"/></g></svg>';
+  const div=document.createElement('div'); div.className=`msg ${role}`;
+  div.innerHTML=`<div class="msg-avatar">${role==='bot'?bot:user}</div><div><div class="msg-bubble">${role==='bot'?formatBotMessage(text):text}</div><div class="msg-time">${getTime()}</div></div>`;
+  msgs.insertBefore(div,typing); msgs.scrollTop=msgs.scrollHeight;
+}
+function showTyping(s){ document.getElementById('typingIndicator').classList.toggle('visible',s); document.getElementById('chatMessages').scrollTop=99999; }
+async function sendMessage(){
+  const input=document.getElementById('chatInput'); const text=input.value.trim();
+  if(!text||isTyping) return;
+  input.value=''; isTyping=true;
+  const qs=document.getElementById('quickSuggestions'); if(qs) qs.style.display='none';
+  addMessage(text,'user'); chatHistory.push({role:'user',content:text}); showTyping(true);
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:SYSTEM_PROMPT,messages:chatHistory})});
+    const data=await res.json(); const reply=data.content?.[0]?.text||'Lo siento, hubo un error. Intenta de nuevo.';
+    chatHistory.push({role:'assistant',content:reply}); showTyping(false); addMessage(reply,'bot');
+  }catch{ showTyping(false); addMessage('Error de conexión. Por favor intenta de nuevo.','bot'); }
+  isTyping=false;
+}
+function sendSuggestion(btn){ document.getElementById('chatInput').value=btn.textContent; sendMessage(); }
+document.getElementById('chatInput').addEventListener('keydown',e=>{ if(e.key==='Enter') sendMessage(); });
+
+function openChat(){ closeFab && closeFab(); document.getElementById('chatPanel').classList.add('open'); document.getElementById('chatPanel').setAttribute('aria-hidden','false'); setTimeout(()=>document.getElementById('chatInput').focus(),300); }
+function closeChat(){ document.getElementById('chatPanel').classList.remove('open'); document.getElementById('chatPanel').setAttribute('aria-hidden','true'); }
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeChat(); });
+</script>
+<script>function closeFab(){}</script>
 </body>
 </html>
