@@ -411,10 +411,7 @@ footer { background: var(--tinta); color: rgba(255,255,255,0.68); padding: 4rem 
   .catalog-topbar { gap: 0.75rem; }
   .footer-grid { grid-template-columns: 1fr; gap: 2.2rem; }
   .footer-bottom { justify-content: center; }
-  .fab-stack { bottom: 16px; right: 16px; gap: .7rem; }
   .fab-tip { display: none; }
-  .chat-panel { top:0; left:0; right:0; bottom:0; width:100%; height:100%; max-height:100%; border-radius:0; transform:translateY(100%); }
-  .chat-panel.open { transform:translateY(0); }
 }
 
 /* ── Móvil pequeño (≤479px) ── */
@@ -462,6 +459,8 @@ footer { background: var(--tinta); color: rgba(255,255,255,0.68); padding: 4rem 
   z-index:1000; opacity:0; visibility:hidden; transform:translateY(16px) scale(.98); transform-origin:bottom right;
   transition:opacity .28s ease, transform .28s ease, visibility .28s; }
 .chat-panel.open { opacity:1; visibility:visible; transform:translateY(0) scale(1); }
+/* Celular (<=600px): el panel se ancla arriba (top sheet). En tablet+ flota junto al boton. */
+@media (max-width: 460px){ .chat-panel { top:0; left:0; } }
 .chat-header { background:linear-gradient(135deg,var(--azul-oscuro),var(--azul)); padding:1.1rem 1.3rem; display:flex; align-items:center; gap:.8rem; flex-shrink:0; }
 .chat-avatar { width:38px; height:38px; border-radius:50%; background:rgba(255,255,255,.18); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
 .chat-avatar svg { width:20px; height:20px; fill:#fff; }
@@ -509,18 +508,22 @@ footer { background: var(--tinta); color: rgba(255,255,255,0.68); padding: 4rem 
 @keyframes fabIn { from{opacity:0; transform:translateY(18px) scale(.85)} to{opacity:1; transform:translateY(0) scale(1)} }
 .fab-btn { position:relative; width:56px; height:56px; border-radius:50%; border:none; cursor:pointer; box-shadow:var(--sh-lg); display:flex; align-items:center; justify-content:center; text-decoration:none; transition:box-shadow .25s ease, transform .2s ease; }
 .fab-btn:hover { transform:translateY(-2px); }
-.fab-btn.ic-asist:hover { box-shadow:0 8px 28px rgba(44,92,124,.45); }
+.fab-btn.ic-asist:hover { box-shadow:0 10px 24px rgba(0,0,0,.45); }
 .fab-btn.ic-wa:hover { box-shadow:0 8px 28px rgba(37,211,102,.40); }
 .fab-btn svg { width:26px; height:26px; fill:#fff; }
-.fab-btn.ic-asist { background:var(--azul-oficio); animation:beat 2.4s ease-in-out .6s infinite; }
-.fab-btn.ic-wa { background:var(--verde-wa); animation:wiggle 3.2s ease-in-out .9s infinite; transform-origin:center; box-shadow:0 6px 22px rgba(37,211,102,.40); }
+.fab-btn.ic-asist { background:#244C68; box-shadow:0 6px 18px rgba(0,0,0,.35); }
+/* resplandor blanco leve en pseudo-elemento: ninguna animacion puede sobrescribirlo */
+.fab-btn.ic-asist::after { content:''; position:absolute; inset:0; border-radius:50%; box-shadow:0 0 10px 2px rgba(255,255,255,.26); pointer-events:none; }
+.fab-btn.ic-asist:hover::after { box-shadow:0 0 13px 3px rgba(255,255,255,.38); }
+.fab-btn.ic-wa { background:var(--verde-wa); box-shadow:0 6px 22px rgba(37,211,102,.40); }
 @keyframes beat { 0%,100%{transform:scale(1)} 10%{transform:scale(1.15)} 22%{transform:scale(1)} 34%{transform:scale(1.08)} 46%{transform:scale(1)} }
 @keyframes wiggle { 0%,84%,100%{transform:rotate(0)} 87%{transform:rotate(-15deg)} 90%{transform:rotate(12deg)} 93%{transform:rotate(-7deg)} 96%{transform:rotate(4deg)} }
 .fab-tip { position:absolute; right:66px; top:50%; transform:translateY(-50%) translateX(6px); background:var(--tinta); color:#fff; font-size:.72rem; font-weight:600; padding:.35rem .7rem; border-radius:var(--r-sm); white-space:nowrap; opacity:0; visibility:hidden; transition:all .2s; pointer-events:none; font-family:'Mulish',sans-serif; }
 .fab-btn:hover .fab-tip { opacity:1; visibility:visible; transform:translateY(-50%) translateX(0); }
 @keyframes typing { 0%,60%,100%{transform:translateY(0);opacity:.4} 30%{transform:translateY(-4px);opacity:1} }
-@media (prefers-reduced-motion:reduce){ .fab-enter{ animation:none; opacity:1 } .fab-btn.ic-asist,.fab-btn.ic-wa{ animation:halo 2.8s ease-in-out infinite } }
 @keyframes halo { 0%,100%{box-shadow:var(--sh-lg)} 50%{box-shadow:0 0 0 5px rgba(59,48,42,.10), var(--sh-lg)} }
+
+@keyframes glowPulse { 0%,100%{box-shadow:0 0 8px 1px rgba(255,255,255,.15)} 50%{box-shadow:0 0 10px 2px rgba(255,255,255,.25)} }
 
 .chat-info-card .info-card-text { font-size:.82rem; color:var(--gris); line-height:1.6; margin:0; }
 
@@ -552,12 +555,8 @@ footer { background: var(--tinta); color: rgba(255,255,255,0.68); padding: 4rem 
 
 /* ── Tamaño proporcional de los botones flotantes ── */
 @media (max-width: 767px) {
-  .fab-btn { width: 52px; height: 52px; }
-  .fab-btn svg { width: 24px; height: 24px; }
 }
 @media (max-width: 479px) {
-  .fab-btn { width: 48px; height: 48px; }
-  .fab-btn svg { width: 22px; height: 22px; }
 }
 </style>
 </head>
@@ -726,9 +725,13 @@ footer { background: var(--tinta); color: rgba(255,255,255,0.68); padding: 4rem 
                 <input type="text" class="form-input" id="f-nombre" placeholder="Tu nombre">
               </div>
               <div class="form-group">
-                <label class="form-label">WhatsApp <span class="req">*</span></label>
+                <label class="form-label">Celular <span class="req">*</span></label>
                 <input type="tel" class="form-input" id="f-wa" placeholder="Ej: 300 123 4567">
               </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Correo electrónico <span class="req">*</span></label>
+              <input type="email" class="form-input" id="f-correo" placeholder="Ej: nombre@correo.com">
             </div>
             <div class="form-group">
               <label class="form-label">¿Qué estás confeccionando? <span class="req">*</span></label>
@@ -770,7 +773,7 @@ footer { background: var(--tinta); color: rgba(255,255,255,0.68); padding: 4rem 
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.85,.03C9.38-.21,5.97,1.06,3.51,3.52,1.06,5.97-.21,9.38,.03,12.85c.43,6.25,5.84,11.15,12.31,11.15h6.66c2.94,0,5-2.4,5-5.85v-5.82C24,5.87,19.1,.46,12.85,.03Zm9.15,18.12c0,2.3-1.21,3.85-3,3.85h-6.66c-5.42,0-9.95-4.08-10.31-9.28-.2-2.9,.86-5.74,2.9-7.79,1.88-1.88,4.43-2.93,7.09-2.93,.23,0,.47,0,.7,.02,5.21,.36,9.28,4.89,9.28,10.31v5.82Z"/></svg>
             Enviar solicitud de asesoría
           </button>
-          <p class="form-note">Al enviar, serás redirigido a WhatsApp con tu solicitud lista. Si adjuntaste imagen, podrás enviarla desde el chat.</p>
+          <p class="form-note">Al enviar, tu solicitud llega al equipo de Russitex y te responderemos por correo o celular.</p>
         </div>
         <!-- Estado: confirmación -->
         <div class="form-confirm" id="formConfirm">
@@ -939,13 +942,13 @@ footer { background: var(--tinta); color: rgba(255,255,255,0.68); padding: 4rem 
 <!-- PANEL DE CHAT -->
 <div class="chat-panel" id="chatPanel" role="dialog" aria-label="Asistente Russitex" aria-hidden="true">
   <div class="chat-header">
-    <div class="chat-avatar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5,13A1.5,1.5,0,1,1,16,11.5,1.5,1.5,0,0,1,14.5,13Zm9.425,5.144A5,5,0,0,1,19,24H15a1,1,0,0,1-1-1V20.737A7.959,7.959,0,0,1,12,21a7.84,7.84,0,0,1-2-.27V23a1,1,0,0,1-1,1H5A5,5,0,0,1,.075,18.144l.3-1.74a2.939,2.939,0,0,1,5.337-1.138C6.976,17.124,9.409,19,12,19h0c3.13,0,6.214-2.779,7.13-5.376a1.03,1.03,0,0,1,.959-.667l.432.007A1.461,1.461,0,0,0,22,11.5a1.5,1.5,0,0,0-1.23-1.474,1,1,0,0,1-.816-.879A7.977,7.977,0,0,0,12,2C6.423,2,4.892,5.628,3.662,8.544c-.224.527-.435,1.03-.662,1.483A13.354,13.354,0,0,0,13.186,4.419a1,1,0,0,1,1.628,1.162,15.089,15.089,0,0,1-4.956,4.467,1.5,1.5,0,1,1-1.725.84,15.807,15.807,0,0,1-7.257,1.1A1,1,0,0,1,.5,10.136,6.372,6.372,0,0,0,1.819,7.767C3.124,4.674,5.1,0,12,0a9.972,9.972,0,0,1,9.85,8.274A3.5,3.5,0,0,1,24,11.5a3.428,3.428,0,0,1-.854,2.257c.007.026.025.047.03.075Z"/></svg></div>
+    <div class="chat-avatar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5,13A1.5,1.5,0,1,1,16,11.5,1.5,1.5,0,0,1,14.5,13Zm9.425,5.144A5,5,0,0,1,19,24H15a1,1,0,0,1-1-1V20.737A7.959,7.959,0,0,1,12,21a7.84,7.84,0,0,1-2-.27V23a1,1,0,0,1-1,1H5A5,5,0,0,1,.075,18.144l.3-1.74a2.939,2.939,0,0,1,5.337-1.138C6.976,17.124,9.409,19,12,19h0c3.13,0,6.214-2.779,7.13-5.376a1.03,1.03,0,0,1,.959-.667l.432.007A1.461,1.461,0,0,0,22,11.5a1.5,1.5,0,0,0-1.23-1.474,1,1,0,0,1-.816-.879A7.977,7.977,0,0,0,12,2C6.423,2,4.892,5.628,3.662,8.544c-.224.527-.435,1.03-.662,1.483A13.354,13.354,0,0,0,13.186,4.419a1,1,0,0,1,1.628,1.162,15.089,15.089,0,0,1-4.956,4.467,1.5,1.5,0,1,1-1.725.84,15.807,15.807,0,0,1-7.257,1.1A1,1,0,0,1,.5,10.136,6.372,6.372,0,0,0,1.819,7.767C3.124,4.674,5.1,0,12,0a9.972,9.972,0,0,1,9.85,8.274A3.5,3.5,0,0,1,24,11.5a3.428,3.428,0,0,1-.854,2.257c.007.026.025.047.03.075ZM8,19.94a11.088,11.088,0,0,1-3.941-3.552.946.946,0,0,0-.783-.424H3.259a.945.945,0,0,0-.911.782l-.3,1.739A3,3,0,0,0,5,22H8Zm13.955-1.455-.628-3.613a3.384,3.384,0,0,1-.579.086A11.033,11.033,0,0,1,16,19.952V22h3a3,3,0,0,0,2.955-3.514Z"/></svg></div>
     <div class="chat-header-info"><h3>Asistente Russitex</h3><p>Respuestas al instante</p></div>
     <button class="chat-close" onclick="closeChat()" aria-label="Cerrar chat"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.3 5.71a1 1 0 0 0-1.42 0L12 10.59 7.11 5.7A1 1 0 0 0 5.7 7.11L10.59 12 5.7 16.89a1 1 0 1 0 1.41 1.41L12 13.41l4.89 4.89a1 1 0 0 0 1.41-1.41L13.41 12l4.89-4.89a1 1 0 0 0 0-1.4z"/></svg></button>
   </div>
   <div class="chat-messages" id="chatMessages">
-    <div class="msg bot"><div class="msg-avatar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5,13A1.5,1.5,0,1,1,16,11.5,1.5,1.5,0,0,1,14.5,13Zm9.425,5.144A5,5,0,0,1,19,24H15a1,1,0,0,1-1-1V20.737A7.959,7.959,0,0,1,12,21a7.84,7.84,0,0,1-2-.27V23a1,1,0,0,1-1,1H5A5,5,0,0,1,.075,18.144l.3-1.74a2.939,2.939,0,0,1,5.337-1.138C6.976,17.124,9.409,19,12,19h0c3.13,0,6.214-2.779,7.13-5.376a1.03,1.03,0,0,1,.959-.667l.432.007A1.461,1.461,0,0,0,22,11.5a1.5,1.5,0,0,0-1.23-1.474,1,1,0,0,1-.816-.879A7.977,7.977,0,0,0,12,2C6.423,2,4.892,5.628,3.662,8.544c-.224.527-.435,1.03-.662,1.483A13.354,13.354,0,0,0,13.186,4.419a1,1,0,0,1,1.628,1.162,15.089,15.089,0,0,1-4.956,4.467,1.5,1.5,0,1,1-1.725.84,15.807,15.807,0,0,1-7.257,1.1A1,1,0,0,1,.5,10.136,6.372,6.372,0,0,0,1.819,7.767C3.124,4.674,5.1,0,12,0a9.972,9.972,0,0,1,9.85,8.274A3.5,3.5,0,0,1,24,11.5a3.428,3.428,0,0,1-.854,2.257c.007.026.025.047.03.075Z"/></svg></div><div><div class="msg-bubble">¡Hola! Soy el asistente de Russitex. Cuéntame qué vas a confeccionar y te ayudo a elegir el material, o pregúntame por precios, envíos y horarios. 🧵</div><div class="msg-time">Ahora</div></div></div>
-    <div class="typing-indicator" id="typingIndicator"><div class="msg-avatar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5,13A1.5,1.5,0,1,1,16,11.5,1.5,1.5,0,0,1,14.5,13Zm9.425,5.144A5,5,0,0,1,19,24H15a1,1,0,0,1-1-1V20.737A7.959,7.959,0,0,1,12,21a7.84,7.84,0,0,1-2-.27V23a1,1,0,0,1-1,1H5A5,5,0,0,1,.075,18.144l.3-1.74a2.939,2.939,0,0,1,5.337-1.138C6.976,17.124,9.409,19,12,19h0c3.13,0,6.214-2.779,7.13-5.376a1.03,1.03,0,0,1,.959-.667l.432.007A1.461,1.461,0,0,0,22,11.5a1.5,1.5,0,0,0-1.23-1.474,1,1,0,0,1-.816-.879A7.977,7.977,0,0,0,12,2C6.423,2,4.892,5.628,3.662,8.544c-.224.527-.435,1.03-.662,1.483A13.354,13.354,0,0,0,13.186,4.419a1,1,0,0,1,1.628,1.162,15.089,15.089,0,0,1-4.956,4.467,1.5,1.5,0,1,1-1.725.84,15.807,15.807,0,0,1-7.257,1.1A1,1,0,0,1,.5,10.136,6.372,6.372,0,0,0,1.819,7.767C3.124,4.674,5.1,0,12,0a9.972,9.972,0,0,1,9.85,8.274A3.5,3.5,0,0,1,24,11.5a3.428,3.428,0,0,1-.854,2.257c.007.026.025.047.03.075Z"/></svg></div><div class="typing-bubble"><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></div></div>
+    <div class="msg bot"><div class="msg-avatar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5,13A1.5,1.5,0,1,1,16,11.5,1.5,1.5,0,0,1,14.5,13Zm9.425,5.144A5,5,0,0,1,19,24H15a1,1,0,0,1-1-1V20.737A7.959,7.959,0,0,1,12,21a7.84,7.84,0,0,1-2-.27V23a1,1,0,0,1-1,1H5A5,5,0,0,1,.075,18.144l.3-1.74a2.939,2.939,0,0,1,5.337-1.138C6.976,17.124,9.409,19,12,19h0c3.13,0,6.214-2.779,7.13-5.376a1.03,1.03,0,0,1,.959-.667l.432.007A1.461,1.461,0,0,0,22,11.5a1.5,1.5,0,0,0-1.23-1.474,1,1,0,0,1-.816-.879A7.977,7.977,0,0,0,12,2C6.423,2,4.892,5.628,3.662,8.544c-.224.527-.435,1.03-.662,1.483A13.354,13.354,0,0,0,13.186,4.419a1,1,0,0,1,1.628,1.162,15.089,15.089,0,0,1-4.956,4.467,1.5,1.5,0,1,1-1.725.84,15.807,15.807,0,0,1-7.257,1.1A1,1,0,0,1,.5,10.136,6.372,6.372,0,0,0,1.819,7.767C3.124,4.674,5.1,0,12,0a9.972,9.972,0,0,1,9.85,8.274A3.5,3.5,0,0,1,24,11.5a3.428,3.428,0,0,1-.854,2.257c.007.026.025.047.03.075ZM8,19.94a11.088,11.088,0,0,1-3.941-3.552.946.946,0,0,0-.783-.424H3.259a.945.945,0,0,0-.911.782l-.3,1.739A3,3,0,0,0,5,22H8Zm13.955-1.455-.628-3.613a3.384,3.384,0,0,1-.579.086A11.033,11.033,0,0,1,16,19.952V22h3a3,3,0,0,0,2.955-3.514Z"/></svg></div><div><div class="msg-bubble">¡Hola! Soy el asistente de Russitex. Cuéntame qué vas a confeccionar y te ayudo a elegir el material, o pregúntame por precios, envíos y horarios. 🧵</div><div class="msg-time">Ahora</div></div></div>
+    <div class="typing-indicator" id="typingIndicator"><div class="msg-avatar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5,13A1.5,1.5,0,1,1,16,11.5,1.5,1.5,0,0,1,14.5,13Zm9.425,5.144A5,5,0,0,1,19,24H15a1,1,0,0,1-1-1V20.737A7.959,7.959,0,0,1,12,21a7.84,7.84,0,0,1-2-.27V23a1,1,0,0,1-1,1H5A5,5,0,0,1,.075,18.144l.3-1.74a2.939,2.939,0,0,1,5.337-1.138C6.976,17.124,9.409,19,12,19h0c3.13,0,6.214-2.779,7.13-5.376a1.03,1.03,0,0,1,.959-.667l.432.007A1.461,1.461,0,0,0,22,11.5a1.5,1.5,0,0,0-1.23-1.474,1,1,0,0,1-.816-.879A7.977,7.977,0,0,0,12,2C6.423,2,4.892,5.628,3.662,8.544c-.224.527-.435,1.03-.662,1.483A13.354,13.354,0,0,0,13.186,4.419a1,1,0,0,1,1.628,1.162,15.089,15.089,0,0,1-4.956,4.467,1.5,1.5,0,1,1-1.725.84,15.807,15.807,0,0,1-7.257,1.1A1,1,0,0,1,.5,10.136,6.372,6.372,0,0,0,1.819,7.767C3.124,4.674,5.1,0,12,0a9.972,9.972,0,0,1,9.85,8.274A3.5,3.5,0,0,1,24,11.5a3.428,3.428,0,0,1-.854,2.257c.007.026.025.047.03.075ZM8,19.94a11.088,11.088,0,0,1-3.941-3.552.946.946,0,0,0-.783-.424H3.259a.945.945,0,0,0-.911.782l-.3,1.739A3,3,0,0,0,5,22H8Zm13.955-1.455-.628-3.613a3.384,3.384,0,0,1-.579.086A11.033,11.033,0,0,1,16,19.952V22h3a3,3,0,0,0,2.955-3.514Z"/></svg></div><div class="typing-bubble"><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></div></div>
   </div>
   <div class="quick-suggestions" id="quickSuggestions">
     <button class="suggestion-chip" onclick="sendSuggestion(this)">¿Qué forro uso para una chaqueta?</button>
@@ -994,10 +997,15 @@ function removeImage(e) {
 function enviarFormulario() {
   const nombre = document.getElementById('f-nombre').value.trim();
   const wa = document.getElementById('f-wa').value.trim();
+  const correo = document.getElementById('f-correo').value.trim();
   const prenda = document.getElementById('f-prenda').value.trim();
   const logro = document.getElementById('f-logro').value.trim();
-  if (!nombre || !wa || !prenda || !logro) {
-    alert('Por favor completa los campos obligatorios: nombre, WhatsApp, qué confeccionas y qué necesitas lograr.');
+  if (!nombre || !wa || !correo || !prenda || !logro) {
+    alert('Por favor completa los campos obligatorios: nombre, celular, correo, qué confeccionas y qué necesitas lograr.');
+    return;
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)) {
+    alert('Por favor escribe un correo electrónico válido.');
     return;
   }
   const tela = document.getElementById('f-tela').value.trim();
@@ -1127,7 +1135,7 @@ function formatBotMessage(text){
 }
 function addMessage(text, role){
   const msgs=document.getElementById('chatMessages'), typing=document.getElementById('typingIndicator');
-  const bot='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5,13A1.5,1.5,0,1,1,16,11.5,1.5,1.5,0,0,1,14.5,13Zm9.425,5.144A5,5,0,0,1,19,24H15a1,1,0,0,1-1-1V20.737A7.959,7.959,0,0,1,12,21a7.84,7.84,0,0,1-2-.27V23a1,1,0,0,1-1,1H5A5,5,0,0,1,.075,18.144l.3-1.74a2.939,2.939,0,0,1,5.337-1.138C6.976,17.124,9.409,19,12,19h0c3.13,0,6.214-2.779,7.13-5.376a1.03,1.03,0,0,1,.959-.667l.432.007A1.461,1.461,0,0,0,22,11.5a1.5,1.5,0,0,0-1.23-1.474,1,1,0,0,1-.816-.879A7.977,7.977,0,0,0,12,2C6.423,2,4.892,5.628,3.662,8.544c-.224.527-.435,1.03-.662,1.483A13.354,13.354,0,0,0,13.186,4.419a1,1,0,0,1,1.628,1.162,15.089,15.089,0,0,1-4.956,4.467,1.5,1.5,0,1,1-1.725.84,15.807,15.807,0,0,1-7.257,1.1A1,1,0,0,1,.5,10.136,6.372,6.372,0,0,0,1.819,7.767C3.124,4.674,5.1,0,12,0a9.972,9.972,0,0,1,9.85,8.274A3.5,3.5,0,0,1,24,11.5a3.428,3.428,0,0,1-.854,2.257c.007.026.025.047.03.075Z"/></svg>', user='<svg viewBox="0 0 24 24" aria-hidden="true"><g><path d="M21,24H19V18.957A2.96,2.96,0,0,0,16.043,16H7.957A2.96,2.96,0,0,0,5,18.957V24H3V18.957A4.963,4.963,0,0,1,7.957,14h8.086A4.963,4.963,0,0,1,21,18.957Z"/><path d="M12,12a6,6,0,1,1,6-6A6.006,6.006,0,0,1,12,12ZM12,2a4,4,0,1,0,4,4A4,4,0,0,0,12,2Z"/></g></svg>';
+  const bot='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5,13A1.5,1.5,0,1,1,16,11.5,1.5,1.5,0,0,1,14.5,13Zm9.425,5.144A5,5,0,0,1,19,24H15a1,1,0,0,1-1-1V20.737A7.959,7.959,0,0,1,12,21a7.84,7.84,0,0,1-2-.27V23a1,1,0,0,1-1,1H5A5,5,0,0,1,.075,18.144l.3-1.74a2.939,2.939,0,0,1,5.337-1.138C6.976,17.124,9.409,19,12,19h0c3.13,0,6.214-2.779,7.13-5.376a1.03,1.03,0,0,1,.959-.667l.432.007A1.461,1.461,0,0,0,22,11.5a1.5,1.5,0,0,0-1.23-1.474,1,1,0,0,1-.816-.879A7.977,7.977,0,0,0,12,2C6.423,2,4.892,5.628,3.662,8.544c-.224.527-.435,1.03-.662,1.483A13.354,13.354,0,0,0,13.186,4.419a1,1,0,0,1,1.628,1.162,15.089,15.089,0,0,1-4.956,4.467,1.5,1.5,0,1,1-1.725.84,15.807,15.807,0,0,1-7.257,1.1A1,1,0,0,1,.5,10.136,6.372,6.372,0,0,0,1.819,7.767C3.124,4.674,5.1,0,12,0a9.972,9.972,0,0,1,9.85,8.274A3.5,3.5,0,0,1,24,11.5a3.428,3.428,0,0,1-.854,2.257c.007.026.025.047.03.075ZM8,19.94a11.088,11.088,0,0,1-3.941-3.552.946.946,0,0,0-.783-.424H3.259a.945.945,0,0,0-.911.782l-.3,1.739A3,3,0,0,0,5,22H8Zm13.955-1.455-.628-3.613a3.384,3.384,0,0,1-.579.086A11.033,11.033,0,0,1,16,19.952V22h3a3,3,0,0,0,2.955-3.514Z"/></svg>', user='<svg viewBox="0 0 24 24" aria-hidden="true"><g><path d="M21,24H19V18.957A2.96,2.96,0,0,0,16.043,16H7.957A2.96,2.96,0,0,0,5,18.957V24H3V18.957A4.963,4.963,0,0,1,7.957,14h8.086A4.963,4.963,0,0,1,21,18.957Z"/><path d="M12,12a6,6,0,1,1,6-6A6.006,6.006,0,0,1,12,12ZM12,2a4,4,0,1,0,4,4A4,4,0,0,0,12,2Z"/></g></svg>';
   const div=document.createElement('div'); div.className=`msg ${role}`;
   div.innerHTML=`<div class="msg-avatar">${role==='bot'?bot:user}</div><div><div class="msg-bubble">${role==='bot'?formatBotMessage(text):text}</div><div class="msg-time">${getTime()}</div></div>`;
   msgs.insertBefore(div,typing); msgs.scrollTop=msgs.scrollHeight;
