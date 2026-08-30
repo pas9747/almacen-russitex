@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Preguntas frecuentes — Russitex</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Mulish:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<!-- Estilos compartidos (header, footer, topbar, botones, chat) -->
+<link rel="stylesheet" href="russitex-ui.css">
+<!-- Componentes compartidos (se cargan antes del cuerpo para evitar parpadeo) -->
+<script src="russitexui.js"></script>
+<style>
+/* ═══════════════ PÁGINA FAQ (estilo Russitex) ═══════════════ */
+.breadcrumb-bar { background: var(--crema-osc); padding: 0.9rem 8%; border-bottom: 1px solid var(--linea); }
+.breadcrumb { display: flex; align-items: center; gap: 0.5rem; font-size: 0.82rem; color: var(--gris-calido); flex-wrap: wrap; }
+.breadcrumb a { color: var(--gris-calido); text-decoration: none; transition: color 0.2s; }
+.breadcrumb a:hover { color: var(--azul-oficio); }
+.breadcrumb .sep { color: var(--linea); }
+.breadcrumb .current { color: var(--tinta); font-weight: 600; }
+
+.page-banner { background: var(--azul-oficio); padding: 3.4rem 8%; position: relative; overflow: hidden; }
+.page-banner::before { content: ''; position: absolute; width: 460px; height: 460px; border-radius: 50%; background: rgba(255,255,255,0.04); top: -200px; right: -90px; pointer-events: none; }
+.page-banner::after { content: ''; position: absolute; width: 240px; height: 240px; border-radius: 50%; background: rgba(169,84,69,0.16); bottom: -110px; left: 8%; pointer-events: none; }
+.banner-inner { position: relative; z-index: 1; max-width: 700px; }
+.banner-eyebrow { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--arena); margin-bottom: 0.9rem; display: flex; align-items: center; gap: 0.6rem; }
+.banner-eyebrow::before { content: ''; width: 26px; height: 2px; background: var(--arena); }
+.banner-title { font-family: var(--f-head); font-size: clamp(2rem, 3.2vw, 2.8rem); font-weight: 600; color: #fff; line-height: 1.12; margin-bottom: 0.8rem; }
+.banner-title em { font-style: italic; color: #EAD9C4; }
+.banner-sub { font-size: 0.98rem; color: rgba(255,255,255,0.72); line-height: 1.7; max-width: 560px; }
+/* PC: el subtítulo del banner ocupa todo el ancho disponible */
+@media (min-width: 1200px) {
+  .banner-inner { max-width: none; }
+  .banner-title { max-width: 700px; }
+  .banner-sub { max-width: none; }
+}
+
+.faq-layout { padding: 3.6rem 8% 4.5rem; background: var(--crema); }
+.faq-content { max-width: 860px; margin: 0 auto; }
+.faq-group { margin-bottom: 2.8rem; }
+.faq-group:last-child { margin-bottom: 0; }
+.group-label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ladrillo); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.7rem; }
+.group-label::after { content: ''; flex: 1; height: 1px; background: var(--linea); }
+
+.faq-item { background: #fff; border-radius: var(--r-md); border: 1px solid var(--linea); margin-bottom: 0.7rem; overflow: hidden; transition: box-shadow 0.2s, border-color 0.2s; }
+.faq-item:last-child { margin-bottom: 0; }
+.faq-item.open { box-shadow: var(--sh-md); border-color: var(--arena); }
+.faq-q { display: flex; align-items: center; justify-content: space-between; padding: 1.15rem 1.4rem; cursor: pointer; gap: 1rem; background: none; border: none; width: 100%; text-align: left; font-family: var(--f-body); }
+.faq-q-text { font-size: 0.95rem; font-weight: 600; color: var(--tinta); line-height: 1.4; transition: color 0.2s; }
+.faq-item.open .faq-q-text { color: var(--azul-oficio); }
+.faq-icon { width: 28px; height: 28px; border-radius: 50%; background: var(--crema-osc); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 1.05rem; color: var(--gris-calido); font-weight: 700; transition: all 0.28s; }
+.faq-item.open .faq-icon { background: var(--azul-oficio); color: #fff; transform: rotate(45deg); }
+.faq-a { max-height: 0; overflow: hidden; transition: max-height 0.4s ease, padding 0.25s ease; }
+.faq-a.open { max-height: 700px; padding-bottom: 1.2rem; }
+.faq-a-inner { padding: 0 1.4rem; font-size: 0.9rem; color: var(--gris-calido); line-height: 1.8; }
+.faq-a-inner a { color: var(--azul-oficio); text-decoration: none; font-weight: 600; }
+.faq-a-inner a:hover { text-decoration: underline; }
+.faq-a-inner strong { color: var(--tinta); }
+.faq-highlight { background: var(--azul-claro); border-radius: var(--r-sm); padding: 0.75rem 1rem; margin-top: 0.85rem; font-size: 0.85rem; color: var(--azul-profundo); line-height: 1.6; }
+.faq-highlight strong { color: var(--azul-profundo); }
+.faq-highlight.terracota { background: #F6E7E4; color: var(--ladrillo-osc); }
+.faq-highlight.terracota strong { color: var(--ladrillo-osc); }
+
+/* ── Responsive FAQ ── */
+@media (max-width: 991px) {
+  .breadcrumb-bar { padding: 0.9rem 6%; }
+  .page-banner { padding: 2.8rem 6%; }
+  .faq-layout { padding: 3rem 6% 3.6rem; }
+}
+@media (max-width: 767px) {
+  .faq-layout { padding: 2.4rem 6% 3rem; }
+  .faq-group { margin-bottom: 2.2rem; }
+  .faq-q { padding: 1rem 1.1rem; }
+  .faq-q-text { font-size: 0.9rem; }
+  .faq-a-inner { padding: 0 1.1rem; font-size: 0.88rem; }
+  .faq-a.open { max-height: 900px; }
+}
+</style>
+</head>
+<body>
+
+<russitex-topbar></russitex-topbar>
+<russitex-header></russitex-header>
+
+<!-- BREADCRUMB -->
+<div class="breadcrumb-bar">
+  <div class="breadcrumb">
+    <a href="#">Inicio</a><span class="sep">/</span>
+    <span class="current">Preguntas frecuentes</span>
+  </div>
+</div>
+
+<!-- BANNER -->
+<section class="page-banner">
+  <div class="banner-inner">
+    <div class="banner-eyebrow">Estamos para ayudarte</div>
+    <h1 class="banner-title">Preguntas <em>frecuentes</em></h1>
+    <p class="banner-sub">Resolvemos las dudas más comunes sobre compras, envíos, pagos y devoluciones en Russitex.</p>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq-layout">
+  <div class="faq-content">
+
+    <!-- PAGOS -->
+    <div class="faq-group" id="grupo-pagos">
+      <div class="group-label">Pagos</div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggle(this)">
+          <span class="faq-q-text">¿Cuáles son los métodos de pago aceptados?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">
+            Los pagos en nuestra tienda online se procesan a través de <strong>Wompi</strong>, una pasarela de pago segura que acepta tarjetas de crédito y débito (Visa, Mastercard, American Express), PSE, Nequi y Daviplata. En nuestra <strong>tienda física</strong> también recibimos efectivo y tarjeta.
+            <div class="faq-highlight">Todas las transacciones online están encriptadas y protegidas por Wompi.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggle(this)">
+          <span class="faq-q-text">¿Los precios incluyen IVA?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">
+            Sí. Todos los precios que ves en el catálogo ya incluyen IVA. No habrá cobros adicionales por impuestos al momento de pagar.
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggle(this)">
+          <span class="faq-q-text">¿Hay un monto mínimo de compra?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">
+            No hay monto mínimo de compra. Sin embargo, ten en cuenta que el costo del envío se calcula según tu ubicación y se muestra antes de confirmar el pago — te recomendamos revisarlo antes de finalizar tu pedido.
+            <div class="faq-highlight">En nuestra tienda física en Bogotá tampoco hay monto mínimo.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ENVÍOS -->
+    <div class="faq-group" id="grupo-envios">
+      <div class="group-label">Envíos</div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggle(this)">
+          <span class="faq-q-text">¿Hacen envíos a todo Colombia?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">
+            Sí, hacemos envíos a todo el territorio nacional a través de empresas de mensajería. El costo y el tiempo de entrega varían según tu ubicación y se calculan automáticamente al ingresar tu dirección en el proceso de pago.
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggle(this)">
+          <span class="faq-q-text">¿Cuánto cuesta el envío y cuánto demora?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">
+            El costo exacto se calcula al ingresar tu dirección. Como referencia aproximada:
+            <br><br>
+            <strong>Bogotá:</strong> entre $8.000 y $12.000 COP. Entrega el mismo día o al día siguiente.<br>
+            <strong>Ciudades principales</strong> (Medellín, Cali, Barranquilla, etc.): entre $12.000 y $18.000 COP. Entrega en 2 a 5 días hábiles.<br>
+            <strong>Municipios pequeños o zonas de difícil acceso:</strong> entre $15.000 y $25.000 COP. Entrega en 5 a 10 días hábiles.
+            <div class="faq-highlight">Los envíos superiores a <strong>$350.000 COP</strong> tienen envío gratis a toda Colombia.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- DEVOLUCIONES -->
+    <div class="faq-group" id="grupo-devoluciones">
+      <div class="group-label">Devoluciones</div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggle(this)">
+          <span class="faq-q-text">¿Puedo devolver o cambiar un producto?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">
+            Aceptamos devoluciones únicamente en los siguientes casos:
+            <br><br>
+            — El producto llegó con un <strong>defecto de fabricación</strong>.<br>
+            — Se envió un <strong>material diferente</strong> al que pediste.<br>
+            — La <strong>cantidad recibida no corresponde</strong> a la solicitada.
+            <br><br>
+            Los materiales cortados a la medida solicitada por el cliente no son susceptibles de devolución por arrepentimiento, de acuerdo con el artículo 47 de la Ley 1480 de 2011.
+            <div class="faq-highlight terracota">Para gestionar una devolución, escríbenos por WhatsApp al <strong>+57 313 249 4118</strong> dentro de los 5 días hábiles siguientes a la recepción del pedido.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ASESORÍA -->
+    <div class="faq-group" id="grupo-asesoria">
+      <div class="group-label">Asesoría</div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggle(this)">
+          <span class="faq-q-text">¿Cómo sé qué material necesito para mi proyecto?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">
+            Contamos con un servicio de asesoría gratuito. Puedes usar nuestro <a href="#">asistente con IA</a> para resolver dudas al instante, o diligenciar el <a href="#">formulario de asesoría personalizada</a> para que uno de nuestros asesores te oriente por correo o WhatsApp. También puedes visitarnos en el local y te atendemos en persona.
+            <div class="faq-highlight">Te recomendamos asesorarte antes de comprar para evitar adquirir materiales que no se ajusten a tu proyecto.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggle(this)">
+          <span class="faq-q-text">¿La asesoría tiene costo?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">
+            No. La asesoría es completamente gratuita, tanto la rápida con IA como la personalizada. Orientarte para que elijas bien tus materiales es parte de lo que hacemos en Russitex.
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggle(this)">
+          <span class="faq-q-text">¿Qué puedo esperar de la asesoría y del asistente?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">
+            El asistente con IA resuelve tus dudas al instante sobre materiales, precios, envíos y horarios, y con la asesoría personalizada te orientamos en proyectos que necesitan más detalle. En ambos casos te ayudamos a elegir mejor tus materiales y a decidir con más información.
+            <div class="faq-highlight">Ten presente que son una guía, no una garantía de resultado: cómo queda tu prenda al final también depende de la confección y del uso que le des a cada material. La decisión final siempre es tuya.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- TIENDA FÍSICA -->
+    <div class="faq-group" id="grupo-tienda">
+      <div class="group-label">Tienda física</div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggle(this)">
+          <span class="faq-q-text">¿Tienen tienda física? ¿Puedo ir a ver los materiales?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">
+            Sí. Nuestra tienda está ubicada en la <strong>Calle 66 # 21-50, Bogotá</strong>, cerca a la Plaza del 7 de Agosto. Puedes venir a ver y tocar los materiales antes de comprar, y recibirás atención directa en el mostrador.
+            <div class="faq-highlight">
+              <strong>Horario de atención:</strong><br>
+              Lunes a viernes: 10:00 a.m. – 6:00 p.m.<br>
+              Sábados: 10:00 a.m. – 5:00 p.m.<br>
+              Domingos y festivos: cerrado
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<russitex-footer></russitex-footer>
+<russitex-floating></russitex-floating>
+
+<script>
+/* Acordeón FAQ: abre el clickeado y cierra los demás */
+function toggle(btn) {
+  const item = btn.closest('.faq-item');
+  const answer = item.querySelector('.faq-a');
+  const isOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item.open').forEach(i => {
+    i.classList.remove('open');
+    i.querySelector('.faq-a').classList.remove('open');
+  });
+  if (!isOpen) { item.classList.add('open'); answer.classList.add('open'); }
+}
+</script>
+</body>
+</html>
