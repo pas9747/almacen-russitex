@@ -680,76 +680,16 @@ footer { background: var(--tinta); color: rgba(255,255,255,0.68); padding: 4rem 
   .hero-right { grid-template-columns: 1fr 1fr; height: 190px; }
 }
 </style>
+<link rel="stylesheet" href="russitex-ui.css">
+<script src="russitexui.js"></script>
 </head>
 <body>
 
 <!-- TOPBAR ROTANTE HORIZONTAL -->
-<div class="topbar">
-  <div class="topbar-inner">
-    <!-- Escritorio / tablet: 2 mensajes -->
-    <div class="topbar-set topbar-set-desktop">
-      <div class="topbar-msg">
-        📦 En Bogotá, pide antes de las 12 p.m. y <strong>recibe el mismo día.</strong>
-      </div>
-      <div class="topbar-msg">
-        🎁 <strong>Envío gratis</strong> en compras superiores a <strong>$350.000 COP</strong>
-      </div>
-    </div>
-    <!-- Celular: 2 mensajes (mensaje de envíos resumido) -->
-    <div class="topbar-set topbar-set-mobile">
-      <div class="topbar-msg">📦 Bogotá: pide antes de las 12 pm y <strong>recibe hoy</strong></div>
-      <div class="topbar-msg">🎁 <strong>Envío gratis</strong> en compras superiores a <strong>$350.000 COP</strong></div>
-    </div>
-  </div>
-</div>
+<russitex-topbar></russitex-topbar>
 
 <!-- HEADER -->
-<header>
-  <div class="header-inner">
-    <a href="#" class="logo">Russi<span>tex</span></a>
-    <nav id="mainNav">
-      <a href="#">Inicio</a>
-      <a href="#">Catálogo</a>
-      <a href="#">Asesoría</a>
-      <a href="#">Sobre nosotros</a>
-      <a href="#">Contacto</a>
-    </nav>
-    <div class="header-icons">
-      <button class="nav-toggle" id="navToggle" aria-label="Abrir menú" aria-expanded="false" title="Menú"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
-      <button class="icon-btn" id="searchToggle" title="Buscar" aria-label="Buscar" aria-expanded="false">
-        <svg width="17" height="17" fill="none" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M20 20l-3-3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-      </button>
-      <div class="user-menu-wrap">
-        <button class="icon-btn user-logged" id="userToggle" title="Mi cuenta" aria-label="Mi cuenta" aria-expanded="false" aria-haspopup="true">
-          <span class="user-initials">JR</span>
-        </button>
-        <div class="user-menu" id="userMenu">
-          <div class="user-menu-head">
-            <span class="user-avatar">JR</span>
-            <div class="user-id">
-              <strong>Hola, Jenny</strong>
-            </div>
-          </div>
-          <a href="#"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12,12A6,6,0,1,0,6,6,6.006,6.006,0,0,0,12,12ZM12,2A4,4,0,1,1,8,6,4,4,0,0,1,12,2Z"/><path d="M12,14a9.01,9.01,0,0,0-9,9,1,1,0,0,0,2,0,7,7,0,0,1,14,0,1,1,0,0,0,2,0A9.01,9.01,0,0,0,12,14Z"/></svg>Mi cuenta</a>
-          <a href="#" class="user-menu-out"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11.476,15a1,1,0,0,0-1,1v3a3,3,0,0,1-3,3H5a3,3,0,0,1-3-3V5A3,3,0,0,1,5,2H7.476a3,3,0,0,1,3,3V8a1,1,0,0,0,2,0V5a5.006,5.006,0,0,0-5-5H5A5.006,5.006,0,0,0,0,5V19a5.006,5.006,0,0,0,5,5H7.476a5.006,5.006,0,0,0,5-5V16A1,1,0,0,0,11.476,15Z"/><path d="M22.867,9.879,18.281,5.293a1,1,0,1,0-1.414,1.414l4.262,4.263L6,11a1,1,0,0,0,0,2H6l15.188-.031-4.323,4.324a1,1,0,1,0,1.414,1.414l4.586-4.586A3,3,0,0,0,22.867,9.879Z"/></svg>Cerrar sesión</a>
-        </div>
-      </div>
-      <button class="icon-btn cart-btn" title="Carrito">
-        <svg width="17" height="17" fill="none" viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><line x1="3" y1="6" x2="21" y2="6" stroke="currentColor" stroke-width="2"/><path d="M16 10a4 4 0 01-8 0" stroke="currentColor" stroke-width="2"/></svg>
-        <span class="cart-badge">0</span>
-      </button>
-    </div>
-  </div>
-  <div class="header-search" id="headerSearch">
-    <div class="header-search-inner">
-      <div class="header-search-box">
-        <svg fill="none" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M20 20l-3-3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-        <input type="text" class="header-search-input" id="headerSearchInput" placeholder="Buscar material..." aria-label="Buscar material">
-      </div>
-      <button class="header-search-close" id="headerSearchClose" aria-label="Cerrar búsqueda"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-    </div>
-  </div>
-</header>
+<russitex-header active="inicio" user="Jenny" iniciales="JR"></russitex-header>
 
 <!-- HERO -->
 <section class="hero">
@@ -1048,108 +988,10 @@ footer { background: var(--tinta); color: rgba(255,255,255,0.68); padding: 4rem 
 </section>
 
 <!-- FOOTER -->
-<footer>
-  <div class="footer-grid">
-    <div>
-      <span class="f-logo">Russi<span>tex</span></span>
-      <p class="footer-desc">Materiales para confección en Bogotá, Colombia.</p>
-      <p class="footer-slogan">39 años siendo tu mano amiga en confección.</p>
-    </div>
-    <div class="f-col">
-      <h4>Información</h4>
-      <ul>
-        <li><a href="#">Preguntas frecuentes</a></li>
-        <li><a href="#">Políticas de envío</a></li>
-        <li><a href="#">Cambios y devoluciones</a></li>
-        <li><a href="#">Términos y condiciones</a></li>
-        <li><a href="#">Política de privacidad</a></li>
-      </ul>
-    </div>
-    <div class="f-col">
-      <h4>Contacto</h4>
-      <div class="f-contact">
-        <div class="f-ci-item">
-          <span class="f-ci"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.6A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.3 1.8.7 2.7a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.4-1.2a2 2 0 0 1 2.1-.5c.9.4 1.8.6 2.7.7a2 2 0 0 1 1.7 2Z"/></svg></span>
-          <div>WhatsApp: <a href="https://wa.me/573138909118">+57 313 890 9118</a></div>
-        </div>
-        <div class="f-ci-item">
-          <span class="f-ci"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
-          <div>Lun–Vie: 10:00 a.m. – 6:00 p.m.<br>Sábados: 10:00 a.m. – 5:00 p.m.</div>
-        </div>
-        <div class="f-ci-item">
-          <span class="f-ci"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg></span>
-          <div>Bogotá, Colombia</div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="footer-bottom">
-    <p>© 2026 Russitex. Todos los derechos reservados.</p>
-  </div>
-</footer>
+<russitex-footer></russitex-footer>
 
 <!-- BOTÓN FLOTANTE WHATSAPP -->
-<a href="https://wa.me/573138909118" class="wa-float" target="_blank" rel="noopener" title="Escríbenos por WhatsApp">
-  <span class="wa-float-tooltip">¿Tienes dudas? Escríbenos</span>
-  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
-    <path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.122 1.532 5.852L.054 23.25a.75.75 0 00.916.927l5.487-1.493A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.75a9.713 9.713 0 01-4.978-1.365l-.356-.213-3.696 1.006 1.006-3.696-.213-.356A9.713 9.713 0 012.25 12C2.25 6.615 6.615 2.25 12 2.25S21.75 6.615 21.75 12 17.385 21.75 12 21.75z"/>
-  </svg>
-  <span class="wa-float-badge">1</span>
-</a>
+<russitex-floating></russitex-floating>
 
-<script>
-  (function(){
-    var t=document.getElementById('navToggle'), n=document.getElementById('mainNav');
-    if(t&&n){
-      t.addEventListener('click',function(){
-        var open=n.classList.toggle('open');
-        t.setAttribute('aria-expanded', open ? 'true' : 'false');
-      });
-      n.querySelectorAll('a').forEach(function(a){
-        a.addEventListener('click',function(){ n.classList.remove('open'); t.setAttribute('aria-expanded','false'); });
-      });
-    }
-  })();
-</script>
-<script>
-  /* Búsqueda en cabecera: abrir/cerrar desplegable (solo UI; sin lógica de backend) */
-  (function(){
-    var btn=document.getElementById('searchToggle'),
-        panel=document.getElementById('headerSearch'),
-        input=document.getElementById('headerSearchInput'),
-        closeBtn=document.getElementById('headerSearchClose'),
-        navEl=document.getElementById('mainNav'),
-        navBtn=document.getElementById('navToggle');
-    if(!btn||!panel) return;
-    function open(){
-      panel.classList.add('open'); btn.classList.add('active'); btn.setAttribute('aria-expanded','true');
-      if(navEl){ navEl.classList.remove('open'); if(navBtn) navBtn.setAttribute('aria-expanded','false'); }
-      setTimeout(function(){ if(input) input.focus(); }, 60);
-    }
-    function close(){
-      panel.classList.remove('open'); btn.classList.remove('active'); btn.setAttribute('aria-expanded','false');
-    }
-    function toggle(){ panel.classList.contains('open') ? close() : open(); }
-    btn.addEventListener('click', function(e){ e.preventDefault(); toggle(); });
-    if(closeBtn) closeBtn.addEventListener('click', close);
-    document.addEventListener('keydown', function(e){ if(e.key==='Escape') close(); });
-    if(navBtn) navBtn.addEventListener('click', function(){ close(); });
-  })();
-</script>
-<script>
-(function(){
-  var btn=document.getElementById('userToggle'), menu=document.getElementById('userMenu');
-  if(!btn||!menu) return;
-  function close(){ menu.classList.remove('open'); btn.classList.remove('active'); btn.setAttribute('aria-expanded','false'); }
-  btn.addEventListener('click',function(e){
-    e.stopPropagation();
-    if(menu.classList.contains('open')){ close(); }
-    else { menu.classList.add('open'); btn.classList.add('active'); btn.setAttribute('aria-expanded','true'); }
-  });
-  document.addEventListener('click',function(e){ if(!menu.contains(e.target)) close(); });
-  document.addEventListener('keydown',function(e){ if(e.key==='Escape') close(); });
-})();
-</script>
 </body>
 </html>
