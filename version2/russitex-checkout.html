@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Finalizar compra — Russitex</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Mulish:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="russitex-ui.css">
+<script src="russitexui.js"></script>
+<style>
+/* ═══════════════ CHECKOUT ═══════════════
+   Los campos del formulario están puestos con un motivo, no de adorno:
+   son los que hacen falta para facturar en Alegra y para cobrar con
+   Wompi. Si se quita alguno, mirar antes qué se rompe:
+
+     documento  -> Alegra lo exige para emitir la factura
+     celular    -> la transportadora avisa la entrega por ahí
+     depto+ciudad -> con eso se calcula el costo del envío
+
+   Lo demás sí es negociable. */
+
+.breadcrumb-bar { background: var(--crema-osc); padding: 0.9rem 8%; border-bottom: 1px solid var(--linea); }
+.breadcrumb { display: flex; align-items: center; gap: 0.5rem; font-size: 0.82rem; color: var(--gris-calido); flex-wrap: wrap; }
+.breadcrumb a { color: var(--gris-calido); text-decoration: none; }
+.breadcrumb a:hover { color: var(--azul-oficio); }
+.breadcrumb .sep { color: var(--linea); }
+.breadcrumb .current { color: var(--tinta); font-weight: 600; }
+
+.co-wrap { padding: 2.4rem 8% 4.5rem; background: var(--crema); }
+
+/* ── PASOS ── */
+.pasos { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 2rem; flex-wrap: wrap; }
+.paso { display: flex; align-items: center; gap: 0.55rem; font-size: 0.85rem; color: var(--gris-calido); }
+.paso-num { width: 26px; height: 26px; border-radius: 50%; background: var(--crema-osc); border: 1px solid var(--linea); display: flex; align-items: center; justify-content: center; font-size: 0.78rem; font-weight: 700; flex-shrink: 0; }
+.paso.hecho .paso-num { background: var(--verde); border-color: var(--verde); color: #fff; }
+.paso.activo { color: var(--tinta); font-weight: 700; }
+.paso.activo .paso-num { background: var(--azul-oficio); border-color: var(--azul-oficio); color: #fff; }
+.paso-linea { flex: 1; height: 1px; background: var(--linea); min-width: 20px; }
+
+.co-title { font-family: var(--f-head); font-size: clamp(1.6rem, 3vw, 2rem); font-weight: 600; color: var(--tinta); margin-bottom: 1.6rem; }
+
+.co-layout { display: grid; grid-template-columns: 1fr 340px; gap: 2rem; align-items: start; }
+
+/* ── BLOQUES DEL FORMULARIO ── */
+.bloque { background: #fff; border: 1px solid var(--linea); border-radius: var(--r-lg); padding: 1.6rem; margin-bottom: 1.2rem; }
+.bloque h2 { font-family: var(--f-head); font-size: 1.1rem; font-weight: 600; color: var(--tinta); margin-bottom: 0.35rem; }
+.bloque-sub { font-size: 0.82rem; color: var(--gris-calido); margin-bottom: 1.2rem; line-height: 1.6; }
+
+.fila { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+.fila.una { grid-template-columns: 1fr; }
+.campo { display: flex; flex-direction: column; gap: 0.4rem; }
+.campo label { font-size: 0.8rem; font-weight: 600; color: var(--tinta); }
+.campo .opt { font-weight: 400; color: var(--gris-calido); }
+.campo input, .campo select, .campo textarea {
+  padding: 0.8rem 1rem; border: 1px solid var(--linea); border-radius: var(--r-sm);
+  font-family: var(--f-body); font-size: 0.88rem; color: var(--tinta); background: #fff;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.campo input:focus, .campo select:focus, .campo textarea:focus {
+  outline: none; border-color: var(--azul-oficio); box-shadow: 0 0 0 3px rgba(44,92,124,0.10);
+}
+.campo textarea { resize: vertical; min-height: 76px; }
+.campo .ayuda { font-size: 0.74rem; color: var(--gris-calido); }
+
+/* Documento: el tipo es un desplegable pegado al número. */
+.doc { display: grid; grid-template-columns: 110px 1fr; gap: 0.6rem; }
+
+/* ── ENVÍO ── */
+.envio-op { display: flex; align-items: flex-start; gap: 0.8rem; border: 1px solid var(--linea); border-radius: var(--r-md); padding: 1rem; margin-bottom: 0.7rem; cursor: pointer; transition: all 0.2s; }
+.envio-op:hover { border-color: var(--arena); background: var(--crema); }
+.envio-op.sel { border-color: var(--azul-oficio); background: var(--azul-claro); }
+.envio-op input { margin-top: 0.2rem; accent-color: var(--azul-oficio); }
+.envio-op-txt { flex: 1; }
+.envio-op-nom { font-size: 0.9rem; font-weight: 600; color: var(--tinta); }
+.envio-op-desc { font-size: 0.8rem; color: var(--gris-calido); margin-top: 0.2rem; line-height: 1.55; }
+.envio-op-precio { font-size: 0.92rem; font-weight: 700; color: var(--tinta); white-space: nowrap; }
+.envio-op-precio.gratis { color: var(--verde); }
+
+/* ── PAGO ── */
+.pago-caja { display: flex; gap: 0.9rem; background: var(--azul-claro); border: 1px solid #CFE0EA; border-radius: var(--r-md); padding: 1.1rem; }
+.pago-caja svg { width: 22px; height: 22px; fill: var(--azul-oficio); flex-shrink: 0; margin-top: 0.1rem; }
+.pago-txt { font-size: 0.85rem; color: var(--azul-profundo); line-height: 1.65; }
+.pago-txt strong { font-weight: 700; }
+.medios { display: flex; gap: 0.45rem; flex-wrap: wrap; margin-top: 0.8rem; }
+.medio { background: #fff; border: 1px solid #CFE0EA; border-radius: var(--r-sm); padding: 0.3rem 0.6rem; font-size: 0.74rem; color: var(--azul-profundo); font-weight: 600; }
+
+.acepto { display: flex; align-items: flex-start; gap: 0.6rem; margin-top: 1.2rem; font-size: 0.82rem; color: var(--gris-calido); line-height: 1.6; }
+.acepto input { margin-top: 0.15rem; accent-color: var(--azul-oficio); }
+.acepto a { color: var(--azul-oficio); font-weight: 600; }
+
+/* ── RESUMEN ── */
+.resumen { background: #fff; border: 1px solid var(--linea); border-radius: var(--r-lg); padding: 1.5rem; position: sticky; top: 90px; }
+.resumen h2 { font-family: var(--f-head); font-size: 1.15rem; font-weight: 600; color: var(--tinta); margin-bottom: 1.1rem; }
+.res-item { display: grid; grid-template-columns: 48px 1fr auto; gap: 0.75rem; align-items: center; padding-bottom: 0.9rem; margin-bottom: 0.9rem; border-bottom: 1px solid var(--linea); }
+.res-item img { width: 48px; height: 48px; border-radius: var(--r-sm); object-fit: cover; border: 1px solid var(--linea); }
+.res-item-nom { font-size: 0.82rem; font-weight: 600; color: var(--tinta); line-height: 1.35; }
+.res-item-det { font-size: 0.74rem; color: var(--gris-calido); margin-top: 0.15rem; }
+.res-item-val { font-size: 0.85rem; font-weight: 700; color: var(--tinta); white-space: nowrap; }
+
+.res-fila { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; font-size: 0.88rem; color: var(--gris-calido); margin-bottom: 0.7rem; }
+.res-fila span:last-child { color: var(--tinta); font-weight: 600; }
+.res-total { display: flex; justify-content: space-between; align-items: baseline; border-top: 1px solid var(--linea); margin-top: 1rem; padding-top: 1rem; }
+.res-total-label { font-size: 0.95rem; font-weight: 700; color: var(--tinta); }
+.res-total-valor { font-family: var(--f-head); font-size: 1.5rem; font-weight: 700; color: var(--ladrillo); }
+
+.btn-pagar { width: 100%; margin-top: 1.2rem; padding: 1rem; background: var(--ladrillo); color: #fff; border: none; border-radius: var(--r-md); cursor: pointer; font-family: var(--f-body); font-size: 0.98rem; font-weight: 700; box-shadow: var(--sh-sm); transition: all 0.2s; }
+.btn-pagar:hover { background: var(--ladrillo-osc); transform: translateY(-1px); box-shadow: var(--sh-md); }
+.btn-volver { display: block; text-align: center; margin-top: 0.8rem; font-size: 0.84rem; color: var(--gris-calido); text-decoration: none; }
+.btn-volver:hover { color: var(--azul-oficio); text-decoration: underline; }
+
+.res-seguro { display: flex; align-items: center; justify-content: center; gap: 0.45rem; margin-top: 1rem; font-size: 0.76rem; color: var(--gris-calido); text-align: center; line-height: 1.5; }
+.res-seguro svg { width: 13px; height: 13px; fill: var(--verde); flex-shrink: 0; }
+
+/* ── Responsive ── */
+@media (max-width: 991px) {
+  .co-wrap { padding: 2rem 6% 3.5rem; }
+  .breadcrumb-bar { padding: 0.9rem 6%; }
+  .co-layout { grid-template-columns: 1fr; }
+  /* En móvil el resumen va ARRIBA: hay que saber cuánto se va a pagar
+     antes de ponerse a llenar campos. */
+  .co-layout .resumen { position: static; order: -1; margin-bottom: 1.2rem; }
+}
+@media (max-width: 600px) {
+  .fila { grid-template-columns: 1fr; }
+  .pasos { font-size: 0.78rem; }
+  .paso span:not(.paso-num) { display: none; }
+  .paso.activo span:not(.paso-num) { display: inline; }
+}
+</style>
+</head>
+<body>
+
+<russitex-topbar></russitex-topbar>
+<russitex-header active="catalogo"></russitex-header>
+
+<div class="breadcrumb-bar">
+  <div class="breadcrumb">
+    <a href="russitex-home.html">Inicio</a><span class="sep">/</span>
+    <a href="russitex-carrito.html">Carrito</a><span class="sep">/</span>
+    <span class="current">Finalizar compra</span>
+  </div>
+</div>
+
+<section class="co-wrap">
+
+  <div class="pasos">
+    <div class="paso hecho"><span class="paso-num">✓</span> <span>Carrito</span></div>
+    <div class="paso-linea"></div>
+    <div class="paso activo"><span class="paso-num">2</span> <span>Datos y envío</span></div>
+    <div class="paso-linea"></div>
+    <div class="paso"><span class="paso-num">3</span> <span>Pago</span></div>
+  </div>
+
+  <h1 class="co-title">Finalizar compra</h1>
+
+  <div class="co-layout">
+
+    <form>
+      <!-- ── QUIÉN COMPRA ── -->
+      <div class="bloque">
+        <h2>Tus datos</h2>
+        <p class="bloque-sub">Los necesitamos para emitir la factura y para que la transportadora te ubique.</p>
+
+        <div class="fila">
+          <div class="campo">
+            <label for="nombre">Nombre</label>
+            <input id="nombre" type="text" placeholder="María">
+          </div>
+          <div class="campo">
+            <label for="apellido">Apellidos</label>
+            <input id="apellido" type="text" placeholder="Gómez Ruiz">
+          </div>
+        </div>
+
+        <div class="fila">
+          <div class="campo">
+            <label for="doc">Documento</label>
+            <div class="doc">
+              <select id="tipodoc" aria-label="Tipo de documento">
+                <option>C.C.</option>
+                <option>NIT</option>
+                <option>C.E.</option>
+              </select>
+              <input id="doc" type="text" placeholder="1020304050">
+            </div>
+            <span class="ayuda">Va en la factura.</span>
+          </div>
+          <div class="campo">
+            <label for="cel">Celular</label>
+            <input id="cel" type="tel" placeholder="300 123 4567">
+            <span class="ayuda">Por aquí avisa la transportadora.</span>
+          </div>
+        </div>
+
+        <div class="fila una">
+          <div class="campo">
+            <label for="correo">Correo electrónico</label>
+            <input id="correo" type="email" placeholder="maria@correo.com">
+            <span class="ayuda">Ahí te llega la confirmación y la guía del envío.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── A DÓNDE VA ── -->
+      <div class="bloque">
+        <h2>Dirección de entrega</h2>
+        <p class="bloque-sub">Con el departamento y la ciudad calculamos el costo del envío.</p>
+
+        <div class="fila">
+          <div class="campo">
+            <label for="depto">Departamento</label>
+            <select id="depto">
+              <option>Cundinamarca</option>
+              <option>Antioquia</option>
+              <option>Valle del Cauca</option>
+              <option>Atlántico</option>
+            </select>
+          </div>
+          <div class="campo">
+            <label for="ciudad">Ciudad</label>
+            <select id="ciudad">
+              <option>Bogotá D.C.</option>
+              <option>Soacha</option>
+              <option>Chía</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="fila una">
+          <div class="campo">
+            <label for="dir">Dirección</label>
+            <input id="dir" type="text" placeholder="Calle 66 # 21-50">
+          </div>
+        </div>
+
+        <div class="fila una">
+          <div class="campo">
+            <label for="notas">Indicaciones para la entrega <span class="opt">(opcional)</span></label>
+            <textarea id="notas" placeholder="Apartamento, conjunto, punto de referencia, a qué horas hay alguien…"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── CÓMO LLEGA ── -->
+      <div class="bloque">
+        <h2>Forma de entrega</h2>
+        <p class="bloque-sub">Las opciones cambian según la ciudad que elegiste.</p>
+
+        <label class="envio-op sel">
+          <input type="radio" name="envio" checked>
+          <div class="envio-op-txt">
+            <div class="envio-op-nom">Domicilio en Bogotá</div>
+            <div class="envio-op-desc">Entrega el mismo día si pides antes de las 12:00 p.m. Si no, al día siguiente.</div>
+          </div>
+          <div class="envio-op-precio">$10.000</div>
+        </label>
+
+        <label class="envio-op">
+          <input type="radio" name="envio">
+          <div class="envio-op-txt">
+            <div class="envio-op-nom">Recoger en la tienda</div>
+            <div class="envio-op-desc">Calle 66 No 21-50, Bogotá. Te avisamos por WhatsApp cuando esté listo.</div>
+          </div>
+          <div class="envio-op-precio gratis">Gratis</div>
+        </label>
+      </div>
+
+      <!-- ── CÓMO SE PAGA ── -->
+      <div class="bloque">
+        <h2>Pago</h2>
+        <p class="bloque-sub">El cobro lo procesa Wompi. Nosotros nunca vemos los datos de tu tarjeta.</p>
+
+        <div class="pago-caja">
+          <svg viewBox="0 0 24 24"><path d="M12 1 3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4Zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8Z"/></svg>
+          <div class="pago-txt">
+            Al confirmar te llevamos a <strong>Wompi</strong> para completar el pago. Cuando termines
+            vuelves acá con la confirmación del pedido.
+            <div class="medios">
+              <span class="medio">Tarjetas</span>
+              <span class="medio">PSE</span>
+              <span class="medio">Nequi</span>
+              <span class="medio">Daviplata</span>
+            </div>
+          </div>
+        </div>
+
+        <label class="acepto">
+          <input type="checkbox">
+          <span>Acepto los <a href="#">Términos y condiciones</a> y la <a href="#">Política de privacidad</a>.</span>
+        </label>
+      </div>
+    </form>
+
+    <!-- ── RESUMEN ── -->
+    <aside class="resumen">
+      <h2>Tu pedido</h2>
+
+      <div class="res-item">
+        <img src="https://yggxhnpcjxemwjnwxibc.supabase.co/storage/v1/object/public/productos_russitex/1.jpg" alt="">
+        <div>
+          <div class="res-item-nom">Entretela doble punto</div>
+          <div class="res-item-det">Negro · 3 metros</div>
+        </div>
+        <div class="res-item-val">$24.000</div>
+      </div>
+
+      <div class="res-item">
+        <img src="https://yggxhnpcjxemwjnwxibc.supabase.co/storage/v1/object/public/productos_russitex/22.jpg" alt="">
+        <div>
+          <div class="res-item-nom">Caja tiza blanca, 50 uds.</div>
+          <div class="res-item-det">1 caja</div>
+        </div>
+        <div class="res-item-val">$31.092</div>
+      </div>
+
+      <div class="res-fila"><span>Subtotal</span><span>$55.092</span></div>
+      <div class="res-fila"><span>Envío</span><span>$10.000</span></div>
+      <div class="res-fila"><span>IVA</span><span>Incluido</span></div>
+
+      <div class="res-total">
+        <span class="res-total-label">Total a pagar</span>
+        <span class="res-total-valor">$65.092</span>
+      </div>
+
+      <button class="btn-pagar" type="button">Pagar con Wompi</button>
+      <a class="btn-volver" href="russitex-carrito.html">Volver al carrito</a>
+
+      <div class="res-seguro">
+        <svg viewBox="0 0 24 24"><path d="M12 1 3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4Zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8Z"/></svg>
+        Conexión cifrada. Russitex no almacena datos de tarjetas.
+      </div>
+    </aside>
+
+  </div>
+</section>
+
+<russitex-footer></russitex-footer>
+<russitex-floating></russitex-floating>
+
+</body>
+</html>
