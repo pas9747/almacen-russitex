@@ -99,9 +99,9 @@ header {
 }
 .logo {
   font-family: var(--f-head);
-  font-size: 1.6rem; font-weight: 600;
+  font-size: 1.6rem; font-weight: 600; line-height: normal;
   color: var(--azul-oficio); text-decoration: none;
-  letter-spacing: -0.01em; white-space: nowrap;
+  letter-spacing: -0.01em; white-space: nowrap; display: block;
 }
 .logo span { color: var(--ladrillo); }
 nav { display: flex; gap: 1.7rem; flex: 1; }
