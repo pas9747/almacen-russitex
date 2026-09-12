@@ -107,9 +107,9 @@ header {
 nav { display: flex; gap: 1.7rem; flex: 1; }
 nav a {
   text-decoration: none; color: var(--tinta);
-  font-size: 0.92rem; font-weight: 500;
+  font-size: 0.92rem; font-weight: 500; line-height: normal;
   white-space: nowrap; transition: color 0.2s;
-  display: flex; align-items: center; gap: 0.3rem;
+  display: flex; align-items: center; gap: 0.3rem; padding: 0 0 4px;
   position: relative;
 }
 nav a::after {

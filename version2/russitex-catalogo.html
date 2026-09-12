@@ -54,11 +54,11 @@ a:focus-visible, button:focus-visible {
 
 /* ── BANNER ── */
 .page-banner {
-  background: var(--azul-oficio); padding: 2.2rem 8%;
+  background: var(--azul-oficio); padding: 3.4rem 8%;
   display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;
 }
 .breadcrumb-bar { background: var(--crema-osc); padding: 0.9rem 5%; border-bottom: 1px solid var(--linea); }
-.breadcrumb { display: flex; align-items: center; gap: 0.5rem; font-size: 0.82rem; color: var(--gris-calido); flex-wrap: wrap; }
+.breadcrumb { display: flex; line-height: normal; align-items: center; gap: 0.5rem; font-size: 0.82rem; color: var(--gris-calido); flex-wrap: wrap; }
 .breadcrumb a { color: var(--gris-calido); text-decoration: none; transition: color 0.2s; }
 .breadcrumb a:hover { color: var(--azul-oficio); }
 .breadcrumb .sep { color: var(--linea); }
@@ -262,7 +262,7 @@ a:focus-visible, button:focus-visible {
    ════════════════════════════════════════════ */
 
 @media (max-width: 1199px) {
-  .page-banner { padding: 2.2rem 6%; }
+  .page-banner { padding: 2.8rem 6%; }
   .catalog-layout { grid-template-columns: 230px 1fr; }
   .catalog-main { padding: 1.8rem 1.8rem 4rem; }
   .products-grid { grid-template-columns: repeat(3, 1fr); }
@@ -286,7 +286,7 @@ a:focus-visible, button:focus-visible {
 @media (max-width: 767px) {
   body { font-size: 16px; }
 
-  .page-banner { padding: 2.2rem 6%; }
+  .page-banner { padding: 2.8rem 6%; }
   .products-grid { grid-template-columns: repeat(2, 1fr); gap: 0.9rem; }
   .prod-body { padding: 0.85rem 0.9rem 1rem; }
   .prod-name { font-size: 1.1rem; }
