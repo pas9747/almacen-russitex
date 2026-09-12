@@ -54,13 +54,15 @@ a:focus-visible, button:focus-visible {
 
 /* ── BANNER ── */
 .page-banner {
-  background: var(--azul-oficio); padding: 3rem 8%;
+  background: var(--azul-oficio); padding: 2.2rem 8%;
   display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;
 }
-.breadcrumb { display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; color: rgba(255,255,255,0.6); margin-bottom: 0.5rem; }
-.breadcrumb a { color: rgba(255,255,255,0.6); text-decoration: none; transition: color 0.2s; }
-.breadcrumb a:hover { color: #fff; }
-.breadcrumb span { color: rgba(255,255,255,0.35); }
+.breadcrumb-bar { background: var(--crema-osc); padding: 0.9rem 5%; border-bottom: 1px solid var(--linea); }
+.breadcrumb { display: flex; align-items: center; gap: 0.5rem; font-size: 0.82rem; color: var(--gris-calido); flex-wrap: wrap; }
+.breadcrumb a { color: var(--gris-calido); text-decoration: none; transition: color 0.2s; }
+.breadcrumb a:hover { color: var(--azul-oficio); }
+.breadcrumb .sep { color: var(--linea); }
+.breadcrumb .current { color: var(--tinta); font-weight: 600; }
 .banner-title {
   font-family: var(--f-head); font-size: clamp(1.9rem, 3vw, 2.6rem);
   font-weight: 600; color: #fff; line-height: 1.1; letter-spacing: -0.01em;
@@ -260,7 +262,7 @@ a:focus-visible, button:focus-visible {
    ════════════════════════════════════════════ */
 
 @media (max-width: 1199px) {
-  .page-banner { padding: 2.6rem 6%; }
+  .page-banner { padding: 2.2rem 6%; }
   .catalog-layout { grid-template-columns: 230px 1fr; }
   .catalog-main { padding: 1.8rem 1.8rem 4rem; }
   .products-grid { grid-template-columns: repeat(3, 1fr); }
@@ -310,10 +312,14 @@ a:focus-visible, button:focus-visible {
 <!-- HEADER -->
 <russitex-header></russitex-header>
 
+<!-- BREADCRUMB -->
+<div class="breadcrumb-bar">
+  <div class="breadcrumb"><a href="#">Inicio</a><span class="sep">/</span><span class="current">Catálogo</span></div>
+</div>
+
 <!-- BANNER -->
 <div class="page-banner">
   <div>
-    <div class="breadcrumb"><a href="#">Inicio</a><span>/</span><span style="color:rgba(255,255,255,0.75)">Catálogo</span></div>
     <h1 class="banner-title">Catálogo de materiales</h1>
     <p class="banner-sub">Materiales para confección en Bogotá</p>
   </div>
