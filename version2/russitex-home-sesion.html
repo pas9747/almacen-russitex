@@ -460,6 +460,28 @@ nav a:hover::after { right: 0; }
   font-size: 1.35rem; font-weight: 600; color: #fff; margin-bottom: 0.6rem;
 }
 .asesoria-card p { font-size: 0.95rem; color: rgba(255,255,255,0.72); line-height: 1.65; margin-bottom: 1.8rem; }
+.section.asesoria { padding-top: 3rem; padding-bottom: 3rem; }
+.asesoria-copy .s-title { max-width: 18ch; }
+.asesoria-copy .s-sub { max-width: 46ch; }
+.asesoria-card-head { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.2rem; }
+.asesoria-layout {
+  display: grid; grid-template-columns: 1fr minmax(0, 520px);
+  gap: 3.5rem; align-items: center;
+}
+.asesoria-hint {
+  margin: 2.2rem 0 0; max-width: 46ch;
+  display: flex; align-items: flex-start; gap: 0.55rem;
+  font-size: 0.92rem; color: var(--arena); cursor: pointer;
+  transition: color 0.2s; line-height: 1.55;
+}
+.asesoria-hint svg { width: 20px; height: 20px; flex-shrink: 0; margin-top: 2px; }
+.asesoria-hint span { text-decoration: underline; text-decoration-color: rgba(255,255,255,0.3); text-underline-offset: 3px; }
+.asesoria-hint:hover { color: #fff; }
+.asesoria-hint:hover span { text-decoration-color: #fff; }
+@media (max-width: 991px) {
+  .asesoria-layout { grid-template-columns: 1fr; gap: 2.2rem; }
+  .asesoria-copy .s-title { max-width: none; }
+}
 
 /* Chatbot steps (estilos conservados) */
 .chatbot-preview {
@@ -901,28 +923,29 @@ footer { background: var(--tinta); color: rgba(255,255,255,0.68); padding: 4rem 
 
 <!-- ASESORÍA -->
 <section class="section asesoria">
-  <div class="s-label">Estamos para ayudarte</div>
-  <h2 class="s-title">¿No sabes qué material necesitas?</h2>
-  <p class="s-sub">Cuéntanos qué estás confeccionando y te orientamos para elegir los materiales correctos.</p>
+  <div class="asesoria-layout">
 
-  <div class="asesoria-cards">
+    <!-- Columna izquierda: texto + mención del asistente -->
+    <div class="asesoria-copy">
+      <div class="s-label">Estamos para ayudarte</div>
+      <h2 class="s-title">¿No sabes qué material necesitas?</h2>
+      <p class="s-sub">Te ayudamos a acertar con el material, ya sea una consulta rápida o un proyecto que necesita más detalle.</p>
 
-    <!-- CHATBOT -->
-    <div class="asesoria-card">
-      <span class="a-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/><path d="M8 12h.01"/><path d="M12 12h.01"/><path d="M16 12h.01"/></svg></span>
-      <h3>Asesoría rápida</h3>
-      <p>¿Tienes una duda puntual o no sabes por dónde empezar? Nuestro asistente te orienta al instante con preguntas cortas sobre tu proyecto.</p>
-      <p style="font-size:0.82rem; color:rgba(255,255,255,0.45); margin-bottom:1.5rem;">Ideal para consultas rápidas sin necesidad de registro.</p>
-      <button class="btn-card-white">Iniciar asesoría →</button>
+      <!-- Mención breve del asistente (abre el chat flotante) -->
+      <p class="asesoria-hint" onclick="openChat()" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openChat();}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>
+        <span>¿Una duda puntual? Habla con nuestro asistente y te responde al instante.</span>
+      </p>
     </div>
 
-    <!-- FORMULARIO -->
+    <!-- Columna derecha: tarjeta del formulario -->
     <div class="asesoria-card">
-      <span class="a-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M9 12h6"/><path d="M9 16h6"/></svg></span>
-      <h3>Asesoría personalizada</h3>
-      <p>¿Tu proyecto es más específico o necesitas una orientación detallada? Diligencia el formulario y un asesor de Russitex te contactará directamente.</p>
-      <p style="font-size:0.82rem; color:rgba(255,255,255,0.45); margin-bottom:1.5rem;">Incluye descripción del proyecto, materiales y presupuesto.</p>
-      <button class="btn-card-outline">Ir al formulario →</button>
+      <div class="asesoria-card-head">
+        <span class="a-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M9 12h6"/><path d="M9 16h6"/></svg></span>
+        <h3>Asesoría personalizada</h3>
+      </div>
+      <p>Cuéntanos los detalles de tu proyecto y un asesor de Russitex te contacta directamente para recomendarte lo que necesitas.</p>
+      <a class="btn-card-white" href="russitex-asesoria.html#panePersonalizada">Ir al formulario →</a>
     </div>
 
   </div>
