@@ -108,7 +108,8 @@
 
 /* ── CARRITO VACÍO ── */
 .cart-vacio { background: #fff; border: 1px solid var(--linea); border-radius: var(--r-lg); padding: 4rem 2rem; text-align: center; }
-.vacio-icono { font-size: 3rem; margin-bottom: 1rem; opacity: 0.55; }
+.vacio-icono { margin-bottom: 1rem; opacity: 0.55; }
+.vacio-icono svg { width: 64px; height: 64px; fill: var(--azul-oficio); }
 .vacio-titulo { font-family: var(--f-head); font-size: 1.4rem; font-weight: 600; color: var(--tinta); margin-bottom: 0.6rem; }
 .vacio-texto { font-size: 0.92rem; color: var(--gris-calido); line-height: 1.7; max-width: 400px; margin: 0 auto 1.6rem; }
 .btn-catalogo { display: inline-block; padding: 0.9rem 2rem; background: var(--azul-oficio); color: #fff; border: none; border-radius: var(--r-md); cursor: pointer; font-family: var(--f-body); font-size: 0.92rem; font-weight: 700; text-decoration: none; }
@@ -119,6 +120,20 @@
 .demo-switch b { padding-left: 0.5rem; opacity: 0.65; font-weight: 500; }
 .demo-switch button { border: none; border-radius: var(--r-pill); padding: 0.35rem 0.75rem; cursor: pointer; font-family: var(--f-body); font-size: 0.72rem; font-weight: 600; background: rgba(255,255,255,0.15); color: #fff; }
 .demo-switch button.on { background: #fff; color: var(--tinta); }
+
+/* ── Aviso: producto agotado pendiente de quitar ── */
+.cart-warning { display: flex; align-items: center; gap: 0.6rem; background: #F6E7E4; border: 1px solid #E7C6BE; color: var(--ladrillo-osc); border-radius: var(--r-md); padding: 0.85rem 1.1rem; font-size: 0.88rem; line-height: 1.45; margin-bottom: 1.4rem; }
+.cart-warning[hidden] { display: none; }
+.cart-warning strong { font-weight: 700; }
+.cw-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--rojo); flex-shrink: 0; }
+
+/* ── Aviso flotante: cantidad no disponible ── */
+.stock-toast { position: fixed; top: 0; left: 0; right: 0; z-index: 2000; background: var(--tinta); color: #fff; text-align: center; font-size: 0.85rem; font-weight: 600; padding: 0.85rem 1.2rem; transform: translateY(-100%); transition: transform 0.3s ease; box-shadow: var(--sh-md); }
+.stock-toast.show { transform: translateY(0); }
+
+/* Botón de pago bloqueado mientras haya un producto agotado */
+.btn-pagar:disabled { background: var(--linea); color: var(--gris-calido); cursor: not-allowed; box-shadow: none; transform: none; }
+.btn-pagar:disabled:hover { background: var(--linea); transform: none; box-shadow: none; }
 
 /* ── Responsive ── */
 @media (max-width: 991px) {
@@ -139,7 +154,7 @@
 <body>
 
 <russitex-topbar></russitex-topbar>
-<russitex-header active="catalogo"></russitex-header>
+<russitex-header></russitex-header>
 
 <div class="breadcrumb-bar">
   <div class="breadcrumb">
@@ -157,12 +172,17 @@
       <div class="cart-count">3 productos · 6 artículos en total</div>
     </div>
 
+    <div class="cart-warning" id="cartWarning" hidden>
+      <span class="cw-dot"></span>
+      <span>Tienes un producto <strong>agotado</strong> en tu carrito. Quítalo para poder continuar al pago.</span>
+    </div>
+
     <div class="cart-layout">
       <div>
         <div class="cart-items">
 
           <!-- Producto CON variante -->
-          <div class="cart-item">
+          <div class="cart-item" data-name="Entretela doble punto" data-price="8000" data-stock="5" data-unit="metros">
             <img class="ci-img" src="https://yggxhnpcjxemwjnwxibc.supabase.co/storage/v1/object/public/productos_russitex/1.jpg" alt="Entretela doble punto">
             <div class="ci-info">
               <div class="ci-name"><a href="russitex-entretela-doble.html">Entretela doble punto</a></div>
@@ -170,12 +190,12 @@
               <div class="ci-unit">Venta <strong>por metro</strong></div>
               <div class="ci-actions">
                 <div class="qty">
-                  <button type="button" aria-label="Quitar uno">−</button>
-                  <input type="text" value="3" aria-label="Cantidad">
-                  <button type="button" aria-label="Añadir uno">+</button>
+                  <button type="button" aria-label="Quitar uno" onclick="changeQty(this,-1)">−</button>
+                  <input type="text" inputmode="numeric" value="3" aria-label="Cantidad" onchange="setQty(this)">
+                  <button type="button" aria-label="Añadir uno" onclick="changeQty(this,1)">+</button>
                 </div>
                 <span class="qty-label">metros</span>
-                <button class="ci-remove" type="button">Quitar</button>
+                <button class="ci-remove" type="button" onclick="removeItem(this)">Quitar</button>
               </div>
             </div>
             <div class="ci-price">
@@ -185,19 +205,19 @@
           </div>
 
           <!-- Producto SIN variante -->
-          <div class="cart-item">
+          <div class="cart-item" data-name="Caja tiza blanca, 50 unidades" data-price="31092" data-stock="8" data-unit="cajas">
             <img class="ci-img" src="https://yggxhnpcjxemwjnwxibc.supabase.co/storage/v1/object/public/productos_russitex/22.jpg" alt="Caja de tiza blanca">
             <div class="ci-info">
               <div class="ci-name"><a href="russitex-caja-tiza.html">Caja tiza blanca, 50 unidades</a></div>
               <div class="ci-unit">Venta <strong>por caja</strong> · Presentación única</div>
               <div class="ci-actions">
                 <div class="qty">
-                  <button type="button" aria-label="Quitar uno">−</button>
-                  <input type="text" value="1" aria-label="Cantidad">
-                  <button type="button" aria-label="Añadir uno">+</button>
+                  <button type="button" aria-label="Quitar uno" onclick="changeQty(this,-1)">−</button>
+                  <input type="text" inputmode="numeric" value="1" aria-label="Cantidad" onchange="setQty(this)">
+                  <button type="button" aria-label="Añadir uno" onclick="changeQty(this,1)">+</button>
                 </div>
                 <span class="qty-label">cajas</span>
-                <button class="ci-remove" type="button">Quitar</button>
+                <button class="ci-remove" type="button" onclick="removeItem(this)">Quitar</button>
               </div>
             </div>
             <div class="ci-price">
@@ -207,7 +227,7 @@
           </div>
 
           <!-- Producto AGOTADO mientras estaba en el carrito -->
-          <div class="cart-item agotado">
+          <div class="cart-item agotado" data-name="Forro estampado" data-qty="2">
             <img class="ci-img" src="https://yggxhnpcjxemwjnwxibc.supabase.co/storage/v1/object/public/productos_russitex/13.jpg" alt="Forro estampado">
             <div class="ci-info">
               <div class="ci-alert">
@@ -218,8 +238,7 @@
               <div class="ci-variant">Diseño: Puntos grandes</div>
               <div class="ci-unit">Venta <strong>por metro</strong></div>
               <div class="ci-actions">
-                <button class="ci-remove" type="button">Quitar del carrito</button>
-                <button class="ci-remove" type="button">Avísame cuando vuelva</button>
+                <button class="ci-remove" type="button" onclick="removeItem(this)">Quitar del carrito</button>
               </div>
             </div>
             <div class="ci-price">
@@ -231,25 +250,25 @@
         </div>
 
         <div class="envio-libre">
-          <div class="envio-libre-txt">
+          <div class="envio-libre-txt" id="envioTxt">
             Te faltan <strong>$294.908</strong> para tener <strong>envío gratis</strong> a toda Colombia.
           </div>
-          <div class="barra"><span style="width:16%"></span></div>
+          <div class="barra"><span id="envioBar" style="width:16%"></span></div>
         </div>
       </div>
 
       <aside class="resumen">
         <h2>Resumen</h2>
-        <div class="res-fila"><span>Subtotal (2 productos)</span><span>$55.092</span></div>
+        <div class="res-fila"><span id="subLabel">Subtotal (2 productos)</span><span id="subVal">$55.092</span></div>
         <div class="res-fila"><span>Envío</span><span class="res-nota">Se calcula al pagar</span></div>
         <div class="res-fila"><span>IVA</span><span class="res-nota">Incluido</span></div>
 
         <div class="res-total">
           <span class="res-total-label">Total</span>
-          <span class="res-total-valor">$55.092</span>
+          <span class="res-total-valor" id="totVal">$55.092</span>
         </div>
 
-        <button class="btn-pagar" type="button">Continuar al pago</button>
+        <button class="btn-pagar" type="button" id="btnPagar">Continuar al pago</button>
         <a class="btn-seguir" href="russitex-catalogo.html">Seguir comprando</a>
 
         <div class="res-seguro">
@@ -266,7 +285,9 @@
       <h1 class="cart-title">Tu carrito</h1>
     </div>
     <div class="cart-vacio">
-      <div class="vacio-icono">🧺</div>
+      <div class="vacio-icono">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M22.713,4.077A2.993,2.993,0,0,0,20.41,3H4.242L4.2,2.649A3,3,0,0,0,1.222,0H1A1,1,0,0,0,1,2h.222a1,1,0,0,1,.993.883l1.376,11.7A5,5,0,0,0,8.557,19H19a1,1,0,0,0,0-2H8.557a3,3,0,0,1-2.82-2h11.92a5,5,0,0,0,4.921-4.113l.785-4.354A2.994,2.994,0,0,0,22.713,4.077ZM21.4,6.178l-.786,4.354A3,3,0,0,1,17.657,13H5.419L4.478,5H20.41A1,1,0,0,1,21.4,6.178Z"/><circle cx="7" cy="22" r="2"/><circle cx="17" cy="22" r="2"/></svg>
+      </div>
       <div class="vacio-titulo">Todavía no has agregado nada</div>
       <p class="vacio-texto">
         Cuando encuentres el material que buscas, aparecerá acá.
@@ -281,6 +302,9 @@
 <russitex-footer></russitex-footer>
 <russitex-floating></russitex-floating>
 
+<!-- Aviso flotante de "cantidad no disponible" -->
+<div class="stock-toast" id="stockToast" role="status" aria-live="polite"></div>
+
 <!-- Solo para revisar la maqueta: no va en la página final -->
 <div class="demo-switch">
   <b>Ver:</b>
@@ -288,12 +312,108 @@
   <button id="b-vacia" onclick="verEstado('vacia')">Vacío</button>
 </div>
 <script>
-function verEstado(cual) {
+/* ── Carrito interactivo ──
+   Cantidades reales, quitar productos, recálculo de totales, aviso de
+   agotado y control de stock. El umbral de envío gratis es $350.000. */
+const ENVIO_GRATIS_DESDE = 350000;
+const itemsBox = document.querySelector('#vista-llena .cart-items');
+const carritoOriginal = itemsBox.innerHTML;   // para reiniciar el estado "con productos"
+
+function money(n){ return '$' + Math.round(n).toLocaleString('es-CO'); }
+
+function itemQty(it){
+  if (it.classList.contains('agotado')) return parseInt(it.dataset.qty || '0', 10);
+  return parseInt(it.querySelector('.qty input').value, 10) || 1;
+}
+
+function updateItemTotal(it){
+  const price = parseInt(it.dataset.price, 10);
+  if (isNaN(price)) return;
+  const total = it.querySelector('.ci-total');
+  if (total) total.textContent = money(price * itemQty(it));
+}
+
+function changeQty(btn, delta){
+  const it = btn.closest('.cart-item');
+  const input = it.querySelector('.qty input');
+  const stock = parseInt(it.dataset.stock, 10);
+  let q = (parseInt(input.value, 10) || 1) + delta;
+  if (q < 1) q = 1;
+  if (q > stock){ q = stock; avisoStock(it, stock); }
+  input.value = q;
+  updateItemTotal(it);
+  recalcular();
+}
+
+function setQty(input){
+  const it = input.closest('.cart-item');
+  const stock = parseInt(it.dataset.stock, 10);
+  let q = parseInt(input.value, 10);
+  if (isNaN(q) || q < 1) q = 1;
+  if (q > stock){ q = stock; avisoStock(it, stock); }
+  input.value = q;
+  updateItemTotal(it);
+  recalcular();
+}
+
+function removeItem(btn){
+  btn.closest('.cart-item').remove();
+  recalcular();
+}
+
+let toastTimer;
+function avisoStock(it, stock){
+  const t = document.getElementById('stockToast');
+  t.textContent = 'No está disponible la cantidad deseada para «' + it.dataset.name + '». Máximo disponible: ' + stock + ' ' + (it.dataset.unit || 'unidades') + '.';
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ t.classList.remove('show'); }, 3500);
+}
+
+function recalcular(){
+  const items = Array.prototype.slice.call(document.querySelectorAll('#vista-llena .cart-items .cart-item'));
+  if (items.length === 0){ verEstado('vacia'); return; }
+
+  let subtotal = 0, articulos = 0, comprables = 0, hayAgotado = false;
+  items.forEach(function(it){
+    const q = itemQty(it);
+    articulos += q;
+    if (it.classList.contains('agotado')){ hayAgotado = true; }
+    else { subtotal += parseInt(it.dataset.price, 10) * q; comprables++; }
+  });
+
+  const cc = document.querySelector('#vista-llena .cart-count');
+  if (cc) cc.textContent = items.length + (items.length === 1 ? ' producto' : ' productos') + ' · ' + articulos + (articulos === 1 ? ' artículo en total' : ' artículos en total');
+
+  const subLabel = document.getElementById('subLabel');
+  if (subLabel) subLabel.textContent = 'Subtotal (' + comprables + (comprables === 1 ? ' producto)' : ' productos)');
+  const subVal = document.getElementById('subVal'); if (subVal) subVal.textContent = money(subtotal);
+  const totVal = document.getElementById('totVal'); if (totVal) totVal.textContent = money(subtotal);
+
+  const falta = ENVIO_GRATIS_DESDE - subtotal;
+  const envTxt = document.getElementById('envioTxt');
+  const envBar = document.getElementById('envioBar');
+  if (falta > 0){
+    if (envTxt) envTxt.innerHTML = 'Te faltan <strong>' + money(falta) + '</strong> para tener <strong>envío gratis</strong> a toda Colombia.';
+    if (envBar) envBar.style.width = Math.max(2, subtotal / ENVIO_GRATIS_DESDE * 100) + '%';
+  } else {
+    if (envTxt) envTxt.innerHTML = '¡Genial! Tu pedido tiene <strong>envío gratis</strong> a toda Colombia. 🎉';
+    if (envBar) envBar.style.width = '100%';
+  }
+
+  const warn = document.getElementById('cartWarning'); if (warn) warn.hidden = !hayAgotado;
+  const pay = document.getElementById('btnPagar'); if (pay) pay.disabled = hayAgotado;
+}
+
+function verEstado(cual){
+  if (cual === 'llena'){ itemsBox.innerHTML = carritoOriginal; recalcular(); }
   document.getElementById('vista-llena').hidden = cual !== 'llena';
-  document.getElementById('vista-vacia').hidden = cual !== 'vacia';
+  document.getElementById('vista-vacia').hidden  = cual !== 'vacia';
   document.getElementById('b-llena').classList.toggle('on', cual === 'llena');
   document.getElementById('b-vacia').classList.toggle('on', cual === 'vacia');
 }
+
+recalcular();
 </script>
 </body>
 </html>
