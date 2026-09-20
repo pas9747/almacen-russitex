@@ -54,13 +54,17 @@
 .campo label { font-size: 0.8rem; font-weight: 600; color: var(--tinta); }
 .campo .opt { font-weight: 400; color: var(--gris-calido); }
 .campo input, .campo select, .campo textarea {
-  padding: 0.8rem 1rem; border: 1px solid var(--linea); border-radius: var(--r-sm);
-  font-family: var(--f-body); font-size: 0.88rem; color: var(--tinta); background: #fff;
+  padding: 0.8rem 1rem; border: 1.5px solid var(--linea); border-radius: var(--r-sm);
+  font-family: var(--f-body); font-size: 0.88rem; color: var(--tinta); background-color: var(--crema);
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 .campo input:focus, .campo select:focus, .campo textarea:focus {
-  outline: none; border-color: var(--azul-oficio); box-shadow: 0 0 0 3px rgba(44,92,124,0.10);
+  outline: none; border-color: var(--azul-oficio); background-color: #fff; box-shadow: 0 0 0 3px rgba(44,92,124,0.10);
 }
+.campo input::placeholder, .campo textarea::placeholder { color: var(--gris-calido); }
+.campo select { appearance: none; -webkit-appearance: none; padding-right: 2rem; cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%236b7280' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 12px center; }
 .campo textarea { resize: vertical; min-height: 76px; }
 .campo .ayuda { font-size: 0.74rem; color: var(--gris-calido); }
 
@@ -113,14 +117,30 @@
 .res-seguro { display: flex; align-items: center; justify-content: center; gap: 0.45rem; margin-top: 1rem; font-size: 0.76rem; color: var(--gris-calido); text-align: center; line-height: 1.5; }
 .res-seguro svg { width: 13px; height: 13px; fill: var(--verde); flex-shrink: 0; }
 
+/* ── EMPRESA / VALIDACIÓN ── */
+.empresa-check { display: flex; align-items: flex-start; gap: 0.55rem; margin: 0.2rem 0 0.2rem; font-size: 0.83rem; color: var(--tinta); line-height: 1.5; cursor: pointer; }
+.empresa-check input { margin-top: 0.15rem; accent-color: var(--azul-oficio); flex-shrink: 0; }
+.empresa-extra { border-top: 1px dashed var(--linea); padding-top: 1.2rem; margin-top: 1rem; }
+.empresa-extra .fila:last-child { margin-bottom: 0; }
+.nit-grid { display: grid; grid-template-columns: 1fr 72px; gap: 0.6rem; }
+
+.campo.error label { color: var(--rojo); }
+.campo.error input, .campo.error select, .campo.error textarea { border-color: var(--rojo); background-color: #FCF3F1; }
+.acepto.error { color: var(--rojo); }
+.acepto.error input { outline: 2px solid var(--rojo); outline-offset: 1px; }
+
+.form-error { display: none; align-items: flex-start; gap: 0.5rem; background: #F6E7E4; border: 1px solid #E7C6BE; color: var(--ladrillo-osc); border-radius: var(--r-md); padding: 0.8rem 1rem; font-size: 0.82rem; line-height: 1.45; margin-top: 1.1rem; }
+.form-error.show { display: flex; }
+.form-error.ok { background: #EAF1E6; border-color: #CADBC0; color: var(--verde); }
+
 /* ── Responsive ── */
 @media (max-width: 991px) {
   .co-wrap { padding: 2rem 6% 3.5rem; }
   .breadcrumb-bar { padding: 0.9rem 6%; }
   .co-layout { grid-template-columns: 1fr; }
-  /* En móvil el resumen va ARRIBA: hay que saber cuánto se va a pagar
-     antes de ponerse a llenar campos. */
-  .co-layout .resumen { position: static; order: -1; margin-bottom: 1.2rem; }
+  /* En tablet y celular el orden es: formulario (incluye la caja de pago)
+     y al final el resumen. */
+  .co-layout .resumen { position: static; order: 0; margin-top: 1.2rem; }
 }
 @media (max-width: 600px) {
   .fila { grid-template-columns: 1fr; }
@@ -133,7 +153,7 @@
 <body>
 
 <russitex-topbar></russitex-topbar>
-<russitex-header active="catalogo"></russitex-header>
+<russitex-header></russitex-header>
 
 <div class="breadcrumb-bar">
   <div class="breadcrumb">
@@ -166,11 +186,11 @@
         <div class="fila">
           <div class="campo">
             <label for="nombre">Nombre</label>
-            <input id="nombre" type="text" placeholder="María">
+            <input id="nombre" type="text" placeholder="Ej: Juan">
           </div>
           <div class="campo">
             <label for="apellido">Apellidos</label>
-            <input id="apellido" type="text" placeholder="Gómez Ruiz">
+            <input id="apellido" type="text" placeholder="Ej: Pérez">
           </div>
         </div>
 
@@ -180,25 +200,52 @@
             <div class="doc">
               <select id="tipodoc" aria-label="Tipo de documento">
                 <option>C.C.</option>
-                <option>NIT</option>
                 <option>C.E.</option>
               </select>
-              <input id="doc" type="text" placeholder="1020304050">
+              <input id="doc" type="text" placeholder="Ej: 1234567890">
             </div>
-            <span class="ayuda">Va en la factura.</span>
           </div>
           <div class="campo">
             <label for="cel">Celular</label>
-            <input id="cel" type="tel" placeholder="300 123 4567">
-            <span class="ayuda">Por aquí avisa la transportadora.</span>
+            <input id="cel" type="tel" placeholder="Ej: 3001234567">
           </div>
         </div>
 
         <div class="fila una">
           <div class="campo">
             <label for="correo">Correo electrónico</label>
-            <input id="correo" type="email" placeholder="maria@correo.com">
-            <span class="ayuda">Ahí te llega la confirmación y la guía del envío.</span>
+            <input id="correo" type="email" placeholder="Ej: nombre@correo.com">
+          </div>
+        </div>
+
+        <label class="empresa-check">
+          <input type="checkbox" id="esEmpresa" onchange="toggleEmpresa(this)">
+          <span>Datos de empresa</span>
+        </label>
+
+        <div class="empresa-extra" id="empresaExtra" hidden>
+          <div class="fila una">
+            <div class="campo">
+              <label for="razon">Razón social</label>
+              <input id="razon" type="text" placeholder="Ej: Textiles ABC S.A.S.">
+            </div>
+          </div>
+          <div class="fila">
+            <div class="campo">
+              <label for="nit">NIT</label>
+              <div class="nit-grid">
+                <input id="nit" type="text" inputmode="numeric" placeholder="Ej: 900123456">
+                <input id="nitdv" type="text" inputmode="numeric" maxlength="1" placeholder="DV" aria-label="Dígito de verificación">
+              </div>
+            </div>
+            <div class="campo">
+              <label for="regimen">Responsabilidad de IVA</label>
+              <select id="regimen">
+                <option value="">Selecciona…</option>
+                <option>Responsable de IVA</option>
+                <option>No responsable de IVA</option>
+              </select>
+            </div>
           </div>
         </div>
       </div>
@@ -212,33 +259,32 @@
           <div class="campo">
             <label for="depto">Departamento</label>
             <select id="depto">
-              <option>Cundinamarca</option>
-              <option>Antioquia</option>
-              <option>Valle del Cauca</option>
-              <option>Atlántico</option>
+              <option value="">Selecciona el departamento</option>
             </select>
           </div>
           <div class="campo">
             <label for="ciudad">Ciudad</label>
-            <select id="ciudad">
-              <option>Bogotá D.C.</option>
-              <option>Soacha</option>
-              <option>Chía</option>
+            <select id="ciudad" disabled>
+              <option value="">Elige primero el departamento</option>
             </select>
           </div>
         </div>
 
-        <div class="fila una">
+        <div class="fila">
           <div class="campo">
             <label for="dir">Dirección</label>
-            <input id="dir" type="text" placeholder="Calle 66 # 21-50">
+            <input id="dir" type="text" placeholder="Ej: Calle 123 # 45-67">
+          </div>
+          <div class="campo">
+            <label for="barrio">Barrio <span class="opt">(opcional)</span></label>
+            <input id="barrio" type="text" placeholder="Ej: El Prado">
           </div>
         </div>
 
         <div class="fila una">
           <div class="campo">
             <label for="notas">Indicaciones para la entrega <span class="opt">(opcional)</span></label>
-            <textarea id="notas" placeholder="Apartamento, conjunto, punto de referencia, a qué horas hay alguien…"></textarea>
+            <textarea id="notas" placeholder="Ej: dejar en portería, llamar antes de llegar…"></textarea>
           </div>
         </div>
       </div>
@@ -287,7 +333,7 @@
         </div>
 
         <label class="acepto">
-          <input type="checkbox">
+          <input type="checkbox" id="acepto">
           <span>Acepto los <a href="#">Términos y condiciones</a> y la <a href="#">Política de privacidad</a>.</span>
         </label>
       </div>
@@ -324,7 +370,8 @@
         <span class="res-total-valor">$65.092</span>
       </div>
 
-      <button class="btn-pagar" type="button">Pagar con Wompi</button>
+      <div class="form-error" id="formError"></div>
+      <button class="btn-pagar" type="button" id="btnPagar" onclick="validar()">Pagar con Wompi</button>
       <a class="btn-volver" href="russitex-carrito.html">Volver al carrito</a>
 
       <div class="res-seguro">
@@ -338,6 +385,132 @@
 
 <russitex-footer></russitex-footer>
 <russitex-floating></russitex-floating>
+
+<script>
+/* ── Departamentos y ciudades de Colombia ──
+   Lista curada: cada departamento con su capital y sus municipios
+   principales. Se puede ampliar agregando municipios al arreglo. */
+const COLOMBIA = {
+  "Amazonas": ["Leticia", "Puerto Nariño"],
+  "Antioquia": ["Medellín", "Bello", "Itagüí", "Envigado", "Sabaneta", "La Estrella", "Caldas", "Copacabana", "Girardota", "Barbosa", "Rionegro", "Marinilla", "La Ceja", "Guarne", "Apartadó", "Turbo", "Carepa", "Chigorodó", "Necoclí", "Caucasia", "Yarumal", "Santa Fe de Antioquia", "Puerto Berrío", "Andes", "Segovia"],
+  "Arauca": ["Arauca", "Tame", "Saravena", "Arauquita", "Fortul", "Puerto Rondón", "Cravo Norte"],
+  "Atlántico": ["Barranquilla", "Soledad", "Malambo", "Sabanalarga", "Baranoa", "Puerto Colombia", "Galapa", "Sabanagrande", "Santo Tomás", "Palmar de Varela"],
+  "Bogotá, D.C.": ["Bogotá, D.C."],
+  "Bolívar": ["Cartagena", "Magangué", "Turbaco", "Arjona", "El Carmen de Bolívar", "Santa Rosa del Sur", "San Juan Nepomuceno", "Mompós", "Simití", "Mahates"],
+  "Boyacá": ["Tunja", "Duitama", "Sogamoso", "Chiquinquirá", "Paipa", "Villa de Leyva", "Puerto Boyacá", "Moniquirá", "Nobsa", "Samacá", "Garagoa", "Tibasosa", "Soatá"],
+  "Caldas": ["Manizales", "Villamaría", "La Dorada", "Chinchiná", "Riosucio", "Anserma", "Supía", "Neira", "Aguadas", "Salamina", "Manzanares"],
+  "Caquetá": ["Florencia", "San Vicente del Caguán", "Puerto Rico", "La Montañita", "El Doncello", "Belén de los Andaquíes", "Cartagena del Chairá"],
+  "Casanare": ["Yopal", "Aguazul", "Villanueva", "Tauramena", "Monterrey", "Paz de Ariporo", "Maní", "Hato Corozal", "Trinidad"],
+  "Cauca": ["Popayán", "Santander de Quilichao", "Puerto Tejada", "Patía (El Bordo)", "Piendamó", "Miranda", "Corinto", "Timbío", "Caloto", "Guapi", "Silvia"],
+  "Cesar": ["Valledupar", "Aguachica", "Bosconia", "Agustín Codazzi", "La Jagua de Ibirico", "El Copey", "Chiriguaná", "Curumaní", "San Diego", "La Paz"],
+  "Chocó": ["Quibdó", "Istmina", "Condoto", "Tadó", "Riosucio", "Acandí", "Bahía Solano", "Nuquí"],
+  "Córdoba": ["Montería", "Lorica", "Cereté", "Sahagún", "Montelíbano", "Planeta Rica", "Tierralta", "Ciénaga de Oro", "Chinú", "Puerto Libertador", "Ayapel"],
+  "Cundinamarca": ["Soacha", "Facatativá", "Zipaquirá", "Chía", "Mosquera", "Madrid", "Funza", "Fusagasugá", "Girardot", "Cajicá", "Cota", "Sibaté", "Tocancipá", "La Calera", "Tenjo", "Gachancipá", "Sopó", "Villeta", "Ubaté", "Chocontá", "Cáqueza", "Anapoima", "La Mesa", "Pacho", "Guaduas"],
+  "Guainía": ["Inírida"],
+  "Guaviare": ["San José del Guaviare", "Calamar", "El Retorno", "Miraflores"],
+  "Huila": ["Neiva", "Pitalito", "Garzón", "La Plata", "Campoalegre", "Gigante", "Palermo", "Aipe", "San Agustín", "Rivera", "Timaná"],
+  "La Guajira": ["Riohacha", "Maicao", "Uribia", "Fonseca", "San Juan del Cesar", "Villanueva", "Barrancas", "Manaure", "Dibulla", "Albania"],
+  "Magdalena": ["Santa Marta", "Ciénaga", "Fundación", "El Banco", "Zona Bananera", "Plato", "Aracataca", "Pivijay", "Ariguaní (El Difícil)"],
+  "Meta": ["Villavicencio", "Acacías", "Granada", "Puerto López", "San Martín", "Cumaral", "Restrepo", "Puerto Gaitán", "Guamal", "Cubarral"],
+  "Nariño": ["Pasto", "Ipiales", "Tumaco", "Túquerres", "La Unión", "Samaniego", "Sandoná", "Barbacoas", "Buesaco", "Pupiales"],
+  "Norte de Santander": ["Cúcuta", "Ocaña", "Villa del Rosario", "Los Patios", "Pamplona", "Tibú", "El Zulia", "Chinácota", "Ábrego", "Sardinata"],
+  "Putumayo": ["Mocoa", "Puerto Asís", "Orito", "Valle del Guamuez (La Hormiga)", "Villagarzón", "Sibundoy", "Puerto Caicedo"],
+  "Quindío": ["Armenia", "Calarcá", "La Tebaida", "Montenegro", "Quimbaya", "Circasia", "Filandia", "Salento", "Génova"],
+  "Risaralda": ["Pereira", "Dosquebradas", "Santa Rosa de Cabal", "La Virginia", "Marsella", "Belén de Umbría", "Quinchía", "Apía", "Santuario"],
+  "San Andrés y Providencia": ["San Andrés", "Providencia"],
+  "Santander": ["Bucaramanga", "Floridablanca", "Girón", "Piedecuesta", "Barrancabermeja", "San Gil", "Socorro", "Málaga", "Barbosa", "Vélez", "Lebrija", "Cimitarra", "Zapatoca"],
+  "Sucre": ["Sincelejo", "Corozal", "Sampués", "San Marcos", "San Onofre", "Santiago de Tolú", "Coveñas", "Majagual", "Sincé"],
+  "Tolima": ["Ibagué", "Espinal", "Melgar", "Honda", "Líbano", "San Sebastián de Mariquita", "Chaparral", "Flandes", "Guamo", "Purificación", "Fresno", "Lérida"],
+  "Valle del Cauca": ["Cali", "Palmira", "Buenaventura", "Tuluá", "Cartago", "Guadalajara de Buga", "Jamundí", "Yumbo", "Florida", "Candelaria", "Pradera", "Zarzal", "Sevilla", "Roldanillo", "La Unión", "El Cerrito"],
+  "Vaupés": ["Mitú", "Carurú"],
+  "Vichada": ["Puerto Carreño", "La Primavera", "Cumaribo", "Santa Rosalía"]
+};
+
+function initDepto(){
+  const dSel = document.getElementById('depto');
+  const opciones = Object.keys(COLOMBIA).map(function(d){ return '<option>' + d + '</option>'; }).join('');
+  dSel.insertAdjacentHTML('beforeend', opciones);
+  dSel.addEventListener('change', llenarCiudades);
+}
+function llenarCiudades(){
+  const d = document.getElementById('depto').value;
+  const cSel = document.getElementById('ciudad');
+  const ciudades = COLOMBIA[d] || [];
+  const ph = d ? 'Selecciona la ciudad' : 'Elige primero el departamento';
+  cSel.innerHTML = '<option value="">' + ph + '</option>' + ciudades.map(function(c){ return '<option>' + c + '</option>'; }).join('');
+  cSel.disabled = !d;
+}
+
+function toggleEmpresa(chk){
+  document.getElementById('empresaExtra').hidden = !chk.checked;
+}
+
+/* ── Validación de campos obligatorios y tipo de dato ── */
+function validar(){
+  const err = document.getElementById('formError');
+  document.querySelectorAll('.campo.error, .acepto.error').forEach(function(c){ c.classList.remove('error'); });
+
+  const esEmpresa = document.getElementById('esEmpresa').checked;
+  // Con empresa, la identidad fiscal es el NIT: el documento personal (C.C.) deja de ser obligatorio.
+  const obligatorios = ['nombre', 'apellido', 'cel', 'correo', 'depto', 'ciudad', 'dir'];
+  if (!esEmpresa) obligatorios.push('doc');
+  if (esEmpresa) obligatorios.push('razon', 'nit', 'regimen');
+
+  let malos = [];
+  let hayTipoMalo = false;
+  function marcar(id){
+    const c = document.getElementById(id).closest('.campo');
+    if (!c.classList.contains('error')){ c.classList.add('error'); malos.push(c); }
+  }
+
+  // Campos obligatorios vacíos
+  obligatorios.forEach(function(id){
+    if (!document.getElementById(id).value.trim()) marcar(id);
+  });
+
+  // Tipo de dato: texto sin números / números sin letras
+  const soloTexto = ['nombre', 'apellido'];
+  const soloNumero = ['doc', 'cel'];
+  if (esEmpresa) soloNumero.push('nit');
+
+  soloTexto.forEach(function(id){
+    const v = document.getElementById(id).value.trim();
+    if (v && /[0-9]/.test(v)){ marcar(id); hayTipoMalo = true; }
+  });
+  soloNumero.forEach(function(id){
+    const v = document.getElementById(id).value.trim();
+    if (v && /[a-zA-ZáéíóúÁÉÍÓÚñÑ]/.test(v)){ marcar(id); hayTipoMalo = true; }
+  });
+
+  // Correo con formato válido
+  const reCorreo = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+  const correo = document.getElementById('correo');
+  if (correo.value.trim() && !reCorreo.test(correo.value.trim())){ marcar('correo'); hayTipoMalo = true; }
+
+  const acepto = document.getElementById('acepto');
+  if (!acepto.checked){ const w = acepto.closest('.acepto'); w.classList.add('error'); malos.push(w); }
+
+  if (malos.length){
+    err.className = 'form-error show';
+    err.textContent = hayTipoMalo
+      ? 'Algunos datos no tienen el formato correcto. Corrige los campos marcados en rojo para continuar al pago.'
+      : 'Te faltan algunos datos. Completa los campos marcados en rojo para continuar al pago.';
+    malos[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+
+  err.className = 'form-error show ok';
+  err.textContent = '¡Todo listo! Aquí te llevaríamos a Wompi para completar el pago de forma segura.';
+}
+
+/* Al escribir/corregir un campo, se le quita la marca de error. */
+document.querySelector('form').addEventListener('input', function(e){
+  const campo = e.target.closest('.campo, .acepto');
+  if (campo) campo.classList.remove('error');
+});
+
+initDepto();
+</script>
 
 </body>
 </html>
