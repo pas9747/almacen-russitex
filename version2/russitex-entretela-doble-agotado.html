@@ -626,5 +626,26 @@ function closeModalConfirmed() { closeModal(); const b = document.getElementById
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 </script>
 
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-form" id="modalForm" style="display:flex;flex-direction:column;">
+      <button class="modal-close" onclick="closeModal()"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M18,6h0a1,1,0,0,0-1.414,0L12,10.586,7.414,6A1,1,0,0,0,6,6H6A1,1,0,0,0,6,7.414L10.586,12,6,16.586A1,1,0,0,0,6,18H6a1,1,0,0,0,1.414,0L12,13.414,16.586,18A1,1,0,0,0,18,18h0a1,1,0,0,0,0-1.414L13.414,12,18,7.414A1,1,0,0,0,18,6Z"/></svg></button>
+      <div class="modal-icon"><svg width="46" height="46" viewBox="0 0 24 24" fill="currentColor" style="color:var(--azul-oficio)" xmlns="http://www.w3.org/2000/svg"><path d="M22.555,13.662l-1.9-6.836A9.321,9.321,0,0,0,2.576,7.3L1.105,13.915A5,5,0,0,0,5.986,20H7.1a5,5,0,0,0,9.8,0h.838a5,5,0,0,0,4.818-6.338ZM12,22a3,3,0,0,1-2.816-2h5.632A3,3,0,0,1,12,22Zm8.126-5.185A2.977,2.977,0,0,1,17.737,18H5.986a3,3,0,0,1-2.928-3.651l1.47-6.616a7.321,7.321,0,0,1,14.2-.372l1.9,6.836A2.977,2.977,0,0,1,20.126,16.815Z"/></svg></div>
+      <h2 class="modal-title">Avísame cuando este producto vuelva a estar disponible</h2>
+      <p class="modal-sub">Déjanos tu correo y te avisaremos cuando tengamos inventario nuevamente.</p>
+      <input type="email" class="modal-input" placeholder="tucorreo@ejemplo.com" id="emailInput">
+      <button class="btn-modal-submit" onclick="submitNotify()">Quiero recibir el aviso</button>
+      <p class="modal-privacy">Usaremos tu correo únicamente para avisarte sobre la disponibilidad de este producto.</p>
+    </div>
+    <div class="modal-confirm" id="modalConfirm" style="display:none;">
+      <div class="confirm-icon"><svg width="54" height="54" viewBox="0 0 24 24" fill="currentColor" style="color:var(--verde)" xmlns="http://www.w3.org/2000/svg"><path d="m18.214,9.098c.387.394.381,1.027-.014,1.414l-4.426,4.345c-.783.768-1.791,1.151-2.8,1.151-.998,0-1.996-.376-2.776-1.129l-1.899-1.867c-.394-.387-.399-1.02-.012-1.414.386-.395,1.021-.4,1.414-.012l1.893,1.861c.776.75,2.001.746,2.781-.018l4.425-4.344c.393-.388,1.024-.381,1.414.013Zm5.786,2.902c0,6.617-5.383,12-12,12S0,18.617,0,12,5.383,0,12,0s12,5.383,12,12Zm-2,0c0-5.514-4.486-10-10-10S2,6.486,2,12s4.486,10,10,10,10-4.486,10-10Z"/></svg></div>
+      <h3>¡Listo! Registramos tu solicitud.</h3>
+      <p>Te avisaremos por correo cuando este producto vuelva a estar disponible.</p>
+      <button class="btn-close-confirm" onclick="closeModalConfirmed()">Cerrar</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
