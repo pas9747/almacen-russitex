@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Confirmación de compra — Russitex</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Mulish:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="russitex-ui.css">
+<script src="russitexui.js"></script>
+<style>
+/* ═══════════════ CONFIRMACIÓN DE COMPRA ═══════════════
+   Página hermana del checkout: es lo que se muestra al volver de Wompi.
+   Wompi puede devolver 3 estados (aprobado / pendiente / rechazado);
+   el switch de demo de abajo permite ver cada uno. */
+
+:root {
+  --azul-oficio:#2C5C7C; --azul-profundo:#1C3D54; --ladrillo:#A95445; --ladrillo-osc:#8F4537;
+  --arena:#D8C2A1; --crema:#FDFBF7; --crema-osc:#F1EADC; --tinta:#3B302A; --gris-calido:#6E665C;
+  --linea:#E0D8CB; --azul-claro:#E8EFF4; --verde:#5B7A52; --rojo:#9E3B2E; --ambar:#D89A3C; --verde-wa:#25D366;
+  --r-sm:10px; --r-md:14px; --r-lg:18px; --r-xl:22px; --r-pill:100px;
+  --sh-sm:0 2px 8px rgba(59,48,42,0.06); --sh-md:0 6px 20px rgba(59,48,42,0.10); --sh-lg:0 16px 38px rgba(59,48,42,0.14);
+  --f-head:'Fraunces', Georgia, serif; --f-body:'Mulish', system-ui, sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: var(--f-body); background: var(--crema); color: var(--tinta); overflow-x: hidden; }
+img { max-width: 100%; }
+
+/* ── Miga de pan ── */
+.breadcrumb-bar { background: var(--crema-osc); padding: 0.9rem 5%; border-bottom: 1px solid var(--linea); }
+.breadcrumb { display: flex; line-height: normal; align-items: center; gap: 0.5rem; font-size: 0.82rem; color: var(--gris-calido); flex-wrap: wrap; }
+.breadcrumb a { color: var(--gris-calido); text-decoration: none; }
+.breadcrumb a:hover { color: var(--azul-oficio); }
+.breadcrumb .sep { color: var(--linea); }
+.breadcrumb .current { color: var(--tinta); font-weight: 600; }
+
+.conf-wrap { padding: 2.4rem 8% 4.5rem; background: var(--crema); }
+
+.conf-layout { display: grid; grid-template-columns: 1fr 340px; grid-template-areas: "left resumen" "actions resumen"; column-gap: 2rem; align-items: start; }
+.conf-left { grid-area: left; min-width: 0; }
+.conf-cta { grid-area: actions; }
+
+/* ── Hero ── */
+.conf-hero { display: flex; align-items: flex-start; gap: 1.3rem; margin-bottom: 2.2rem; }
+.conf-ico { width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; animation: popIn 0.5s cubic-bezier(.34,1.56,.64,1) both; }
+.conf-ico svg { width: 30px; height: 30px; }
+.conf-ico.aprobado  { background: #EAF1E6; color: var(--verde); }
+.conf-ico.pendiente { background: #FBF1DE; color: var(--ambar); }
+.conf-ico.rechazado { background: #F6E7E4; color: var(--rojo); }
+@keyframes popIn { from{transform:scale(0);opacity:0} to{transform:scale(1);opacity:1} }
+.conf-eyebrow { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.45rem; }
+.conf-eyebrow.aprobado  { color: var(--verde); }
+.conf-eyebrow.pendiente { color: #8A5E12; }
+.conf-eyebrow.rechazado { color: var(--rojo); }
+.conf-hero h1 { font-family: var(--f-head); font-size: clamp(1.6rem, 3vw, 2.2rem); font-weight: 600; color: var(--tinta); line-height: 1.15; margin-bottom: 0.5rem; }
+.conf-hero h1 em { font-style: italic; color: var(--ladrillo); }
+.conf-hero p { font-size: 0.9rem; color: var(--gris-calido); line-height: 1.7; max-width: 520px; }
+
+/* ── Tarjetas de detalle ── */
+.conf-card { background: #fff; border: 1px solid var(--linea); border-radius: var(--r-lg); padding: 1.6rem 1.6rem 1.1rem; margin-bottom: 1.2rem; }
+.conf-card-title { font-family: var(--f-head); font-size: 1.05rem; font-weight: 600; color: var(--tinta); margin-bottom: 1.1rem; display: flex; align-items: center; gap: 0.5rem; padding-bottom: 0.8rem; border-bottom: 1px solid var(--linea); }
+.conf-card-title svg { width: 18px; height: 18px; fill: var(--azul-oficio); flex-shrink: 0; }
+
+.info-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; padding: 0.55rem 0; border-bottom: 1px solid var(--crema-osc); }
+.info-row:last-child { border-bottom: none; }
+.info-label { font-size: 0.8rem; color: var(--gris-calido); flex-shrink: 0; }
+.info-value { font-size: 0.85rem; color: var(--tinta); font-weight: 500; text-align: right; line-height: 1.45; }
+.info-value.ok  { color: var(--verde); font-weight: 700; }
+.info-value.wait{ color: #8A5E12; font-weight: 700; }
+.info-value.bad { color: var(--rojo); font-weight: 700; }
+
+/* ── Pasos siguientes ── */
+.next-steps { display: flex; flex-direction: column; }
+.next-step { display: flex; gap: 1rem; align-items: flex-start; padding: 1rem 0; border-bottom: 1px solid var(--crema-osc); }
+.next-step:last-child { border-bottom: none; }
+.next-step-num { width: 28px; height: 28px; border-radius: 50%; background: var(--azul-claro); color: var(--azul-oficio); font-size: 0.72rem; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 0.1rem; }
+.next-step-text strong { font-size: 0.87rem; color: var(--tinta); display: block; margin-bottom: 0.2rem; }
+.next-step-text span { font-size: 0.8rem; color: var(--gris-calido); line-height: 1.55; }
+
+/* ── Nota explicativa ── */
+.nota-box { display: flex; gap: 0.8rem; border-radius: var(--r-md); padding: 1.1rem; font-size: 0.85rem; line-height: 1.6; margin-bottom: 1.2rem; }
+.nota-box svg { width: 20px; height: 20px; flex-shrink: 0; margin-top: 0.1rem; fill: currentColor; }
+.nota-box strong { font-weight: 700; }
+.nota-box.info { background: var(--azul-claro); border: 1px solid #CFE0EA; color: var(--azul-profundo); }
+.nota-box.warn { background: #FBF1DE; border: 1px solid #EAD6A8; color: #7A5410; }
+.nota-box.err  { background: #F6E7E4; border: 1px solid #E7C6BE; color: var(--ladrillo-osc); }
+
+/* ── Botones de acción ── */
+.conf-actions { display: flex; gap: 0.8rem; margin-top: 1rem; flex-wrap: wrap; }
+.conf-actions[hidden] { display: none; }
+.btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; background: var(--azul-oficio); color: #fff; border: none; cursor: pointer; border-radius: var(--r-md); padding: 0.85rem 1.6rem; font-family: var(--f-body); font-size: 0.9rem; font-weight: 700; text-decoration: none; transition: all 0.2s; box-shadow: var(--sh-sm); }
+.btn-primary:hover { background: var(--azul-profundo); transform: translateY(-1px); box-shadow: var(--sh-md); }
+.btn-primary.ladrillo { background: var(--ladrillo); }
+.btn-primary.ladrillo:hover { background: var(--ladrillo-osc); }
+.btn-ghost { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; background: none; color: var(--tinta); border: 1.5px solid var(--linea); cursor: pointer; border-radius: var(--r-md); padding: 0.85rem 1.6rem; font-family: var(--f-body); font-size: 0.9rem; font-weight: 600; text-decoration: none; transition: all 0.2s; }
+.btn-ghost:hover { border-color: var(--azul-oficio); background: var(--crema-osc); }
+.btn-ghost.wa { color: var(--verde); }
+.btn-ghost.wa:hover { border-color: var(--verde-wa); background: #EAF1E6; }
+.btn-primary svg, .btn-ghost svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+/* ── Resumen (igual que en el checkout) ── */
+.resumen { grid-area: resumen; background: #fff; border: 1px solid var(--linea); border-radius: var(--r-lg); padding: 1.5rem; position: sticky; top: 90px; }
+.resumen h2 { font-family: var(--f-head); font-size: 1.15rem; font-weight: 600; color: var(--tinta); margin-bottom: 1.1rem; }
+.res-item { display: grid; grid-template-columns: 48px 1fr auto; gap: 0.75rem; align-items: center; padding-bottom: 0.9rem; margin-bottom: 0.9rem; border-bottom: 1px solid var(--linea); }
+.res-thumb { width: 48px; height: 48px; position: relative; flex-shrink: 0; }
+.res-thumb img { width: 48px; height: 48px; border-radius: var(--r-sm); object-fit: cover; border: 1px solid var(--linea); display: block; background: var(--crema-osc); }
+.res-thumb .badge { position: absolute; top: -6px; right: -6px; min-width: 18px; height: 18px; padding: 0 4px; border-radius: 100px; background: var(--azul-oficio); color: #fff; font-size: 0.6rem; font-weight: 700; display: flex; align-items: center; justify-content: center; border: 2px solid #fff; }
+.res-item-nom { font-size: 0.82rem; font-weight: 600; color: var(--tinta); line-height: 1.35; }
+.res-item-det { font-size: 0.74rem; color: var(--gris-calido); margin-top: 0.15rem; }
+.res-item-val { font-size: 0.85rem; font-weight: 700; color: var(--tinta); white-space: nowrap; }
+
+.res-fila { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; font-size: 0.88rem; color: var(--gris-calido); margin-bottom: 0.7rem; }
+.res-fila span:last-child { color: var(--tinta); font-weight: 600; }
+.res-total { display: flex; justify-content: space-between; align-items: baseline; border-top: 1px solid var(--linea); margin-top: 1rem; padding-top: 1rem; }
+.res-total-label { font-size: 0.95rem; font-weight: 700; color: var(--tinta); }
+.res-total-valor { font-family: var(--f-head); font-size: 1.5rem; font-weight: 700; color: var(--ladrillo); }
+
+/* Chip de estado del pago dentro del resumen */
+.pago-chip { display: flex; align-items: center; gap: 0.6rem; border-radius: var(--r-md); padding: 0.85rem 1rem; margin-top: 1.2rem; font-size: 0.8rem; font-weight: 700; }
+.pago-chip .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.pago-chip.aprobado  { background: #EAF1E6; color: var(--verde); }
+.pago-chip.aprobado .dot { background: var(--verde); animation: pulse 2s ease-in-out infinite; }
+.pago-chip.pendiente { background: #FBF1DE; color: #8A5E12; }
+.pago-chip.pendiente .dot { background: var(--ambar); animation: pulse 2s ease-in-out infinite; }
+.pago-chip.rechazado { background: #F6E7E4; color: var(--rojo); }
+.pago-chip.rechazado .dot { background: var(--rojo); }
+@keyframes pulse { 0%,100%{box-shadow:0 0 0 0 rgba(91,122,82,0)} 50%{box-shadow:0 0 0 4px rgba(91,122,82,0.18)} }
+
+/* ── Switch de demo (solo para revisar; no va en la página final) ── */
+.demo-switch { position: fixed; bottom: 20px; left: 20px; z-index: 100; background: var(--tinta); color: #fff; border-radius: var(--r-pill); padding: 0.4rem 0.5rem; display: flex; align-items: center; gap: 0.25rem; box-shadow: var(--sh-md); }
+.demo-switch b { padding: 0 0.5rem; opacity: 0.7; font-size: 0.78rem; font-weight: 600; }
+.demo-switch button { background: none; border: none; color: rgba(255,255,255,0.7); font-family: var(--f-body); font-size: 0.78rem; font-weight: 600; padding: 0.35rem 0.75rem; border-radius: var(--r-pill); cursor: pointer; transition: all 0.15s; }
+.demo-switch button.on { background: #fff; color: var(--tinta); }
+
+/* ── Responsive ── */
+@media (max-width: 991px) {
+  .conf-wrap { padding: 2rem 6% 3.5rem; }
+  .breadcrumb-bar { padding: 0.9rem 6%; }
+  /* En tablet y celular se apila en orden DOM: detalle, luego el resumen
+     (con el total) y al final los botones. */
+  .conf-layout { display: block; }
+  .resumen { position: static; margin-top: 1.2rem; }
+}
+@media (max-width: 600px) {
+  .conf-hero { gap: 1rem; }
+  .conf-ico { width: 54px; height: 54px; }
+  .conf-ico svg { width: 26px; height: 26px; }
+  .conf-actions .btn-primary, .conf-actions .btn-ghost { width: 100%; }
+  .demo-switch { left: 50%; transform: translateX(-50%); }
+}
+</style>
+</head>
+<body>
+
+<russitex-topbar></russitex-topbar>
+<russitex-header></russitex-header>
+
+<div class="breadcrumb-bar">
+  <div class="breadcrumb">
+    <a href="russitex-home.html">Inicio</a><span class="sep">/</span>
+    <a href="russitex-carrito.html">Carrito</a><span class="sep">/</span>
+    <span class="current">Confirmación</span>
+  </div>
+</div>
+
+<section class="conf-wrap">
+
+  <div class="conf-layout">
+
+    <!-- ══════════ COLUMNA IZQUIERDA (cambia por estado) ══════════ -->
+    <div class="conf-left">
+
+      <!-- ───────── APROBADO ───────── -->
+      <div id="vista-aprobado">
+        <div class="conf-hero">
+          <div class="conf-ico aprobado">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M20 6 9 17l-5-5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div>
+            <div class="conf-eyebrow aprobado">Pedido #RS-2026-00847</div>
+            <h1>¡Gracias por tu <em>compra!</em></h1>
+            <p>Hemos recibido tu pago y estamos preparando tu pedido. Te notificaremos al correo cuando sea enviado.</p>
+          </div>
+        </div>
+
+        <div class="conf-card">
+          <div class="conf-card-title"><svg viewBox="0 0 24 24"><path d="M19.949,5.536,16.465,2.05A6.958,6.958,0,0,0,11.515,0H7A5.006,5.006,0,0,0,2,5V19a5.006,5.006,0,0,0,5,5H17a5.006,5.006,0,0,0,5-5V10.485A6.951,6.951,0,0,0,19.949,5.536ZM18.535,6.95A4.983,4.983,0,0,1,19.316,8H15a1,1,0,0,1-1-1V2.684a5.01,5.01,0,0,1,1.051.78ZM20,19a3,3,0,0,1-3,3H7a3,3,0,0,1-3-3V5A3,3,0,0,1,7,2h4.515c.164,0,.323.032.485.047V7a3,3,0,0,0,3,3h4.953c.015.162.047.32.047.485Z"/></svg> Detalle del pedido</div>
+          <div class="info-row"><span class="info-label">Número de pedido</span><span class="info-value">#RS-2026-00847</span></div>
+          <div class="info-row"><span class="info-label">Fecha</span><span class="info-value">17 de mayo de 2026, 2:34 p.m.</span></div>
+          <div class="info-row"><span class="info-label">Método de pago</span><span class="info-value">Tarjeta de crédito · Wompi</span></div>
+          <div class="info-row"><span class="info-label">Estado del pago</span><span class="info-value ok"><svg viewBox="0 0 507.506 507.506" fill="currentColor" style="width:0.9em;height:0.9em;vertical-align:-0.1em;margin-right:0.15em"><path d="M163.865,436.934c-14.406,0.006-28.222-5.72-38.4-15.915L9.369,304.966c-12.492-12.496-12.492-32.752,0-45.248c12.496-12.492,32.752-12.492,45.248,0l109.248,109.248L452.889,79.942c12.496-12.492,32.752-12.492,45.248,0c12.492,12.496,12.492,32.752,0,45.248L202.265,421.019C192.087,431.214,178.271,436.94,163.865,436.934z"/></svg> Aprobado</span></div>
+        </div>
+
+        <div class="conf-card">
+          <div class="conf-card-title"><svg viewBox="0 0 24 24"><path d="M9,14h6a1,1,0,0,0,0-2H9a1,1,0,0,0,0,2Z"/><path d="M19,0H5A5.006,5.006,0,0,0,0,5V6A3,3,0,0,0,1,8.234V19a5.006,5.006,0,0,0,5,5H18a5.006,5.006,0,0,0,5-5V8.234A3,3,0,0,0,24,6V5A5.006,5.006,0,0,0,19,0ZM2,5A3,3,0,0,1,5,2H19a3,3,0,0,1,3,3V6a1,1,0,0,1-1,1H3A1,1,0,0,1,2,6ZM21,19a3,3,0,0,1-3,3H6a3,3,0,0,1-3-3V9H21Z"/></svg> Información de envío</div>
+          <div class="info-row"><span class="info-label">Nombre</span><span class="info-value">María García Rodríguez</span></div>
+          <div class="info-row"><span class="info-label">Teléfono</span><span class="info-value">300 123 4567</span></div>
+          <div class="info-row"><span class="info-label">Dirección</span><span class="info-value">Carrera 15 # 82-45, Apto 301<br>Bogotá, Cundinamarca</span></div>
+          <div class="info-row"><span class="info-label">Tiempo estimado</span><span class="info-value">1–3 días hábiles en Bogotá</span></div>
+          <div class="info-row"><span class="info-label">Correo de confirmación</span><span class="info-value">maria.garcia@correo.com</span></div>
+        </div>
+
+        <div class="conf-card">
+          <div class="conf-card-title"><svg viewBox="0 0 24 24"><path d="M20.358,7.5l3.237-4.297c.459-.609,.533-1.413,.192-2.096s-1.026-1.107-1.79-1.107H4C1.794,0,0,1.794,0,4V23c0,.553,.448,1,1,1s1-.447,1-1V15H21.998c.764,0,1.449-.425,1.79-1.107s.267-1.486-.192-2.096l-3.237-4.297ZM2,13V4c0-1.103,.897-2,2-2H21.998l-3.69,4.898c-.268,.356-.268,.847,0,1.203l3.69,4.898H2Z"/></svg> ¿Qué sigue ahora?</div>
+          <div class="next-steps">
+            <div class="next-step"><div class="next-step-num">1</div><div class="next-step-text"><strong>Confirmación por correo</strong><span>Te enviamos al correo la factura electrónica y el resumen de tu pedido.</span></div></div>
+            <div class="next-step"><div class="next-step-num">2</div><div class="next-step-text"><strong>Preparación del pedido</strong><span>Nuestro equipo alista y verifica cada material antes de enviarlo. Cuando esté listo, te enviamos el número de seguimiento a tu correo.</span></div></div>
+            <div class="next-step"><div class="next-step-num">3</div><div class="next-step-text"><strong>Envío a tu dirección</strong><span>Tu pedido será entregado en 1–3 días hábiles en Bogotá. Para el resto del país llega en aproximadamente 2 a 5 días hábiles.</span></div></div>
+            <div class="next-step"><div class="next-step-num">4</div><div class="next-step-text"><strong>¿Tienes preguntas?</strong><span>Escríbenos por WhatsApp y te respondemos de inmediato.</span></div></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ───────── PENDIENTE ───────── -->
+      <div id="vista-pendiente" hidden>
+        <div class="conf-hero">
+          <div class="conf-ico pendiente">
+            <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M12 7.5V12l3 1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div>
+            <div class="conf-eyebrow pendiente">Referencia #RS-2026-00847</div>
+            <h1>Tu pago está <em>en proceso</em></h1>
+            <p>Estamos esperando la confirmación de tu medio de pago. Apenas se confirme, te avisamos por correo y preparamos tu pedido.</p>
+          </div>
+        </div>
+
+        <div class="nota-box warn">
+          <svg viewBox="0 0 24 24"><path d="M12,24C5.383,24,0,18.617,0,12S5.383,0,12,0s12,5.383,12,12-5.383,12-12,12Zm0-22C6.486,2,2,6.486,2,12s4.486,10,10,10,10-4.486,10-10S17.514,2,12,2Zm5,10c0-.553-.447-1-1-1h-3V6c0-.553-.448-1-1-1s-1,.447-1,1v6c0,.553,.448,1,1,1h4c.553,0,1-.447,1-1Z"/></svg>
+          <div>Medios como el <strong>efectivo (Corresponsal Bancolombia)</strong>, la <strong>transferencia con Bancolombia</strong> o el <strong>PSE</strong> pueden tardar unos minutos en confirmarse. <strong>Tu pedido queda reservado</strong> mientras tanto.</div>
+        </div>
+
+        <div class="conf-card">
+          <div class="conf-card-title"><svg viewBox="0 0 24 24"><path d="M19.949,5.536,16.465,2.05A6.958,6.958,0,0,0,11.515,0H7A5.006,5.006,0,0,0,2,5V19a5.006,5.006,0,0,0,5,5H17a5.006,5.006,0,0,0,5-5V10.485A6.951,6.951,0,0,0,19.949,5.536ZM18.535,6.95A4.983,4.983,0,0,1,19.316,8H15a1,1,0,0,1-1-1V2.684a5.01,5.01,0,0,1,1.051.78ZM20,19a3,3,0,0,1-3,3H7a3,3,0,0,1-3-3V5A3,3,0,0,1,7,2h4.515c.164,0,.323.032.485.047V7a3,3,0,0,0,3,3h4.953c.015.162.047.32.047.485Z"/></svg> Detalle del pedido</div>
+          <div class="info-row"><span class="info-label">Referencia</span><span class="info-value">#RS-2026-00847</span></div>
+          <div class="info-row"><span class="info-label">Fecha</span><span class="info-value">17 de mayo de 2026, 2:34 p.m.</span></div>
+          <div class="info-row"><span class="info-label">Método de pago</span><span class="info-value">PSE · Wompi</span></div>
+          <div class="info-row"><span class="info-label">Estado del pago</span><span class="info-value wait"><svg viewBox="0 0 24 24" fill="currentColor" style="width:0.95em;height:0.95em;vertical-align:-0.15em;margin-right:0.15em"><path d="m16.551,12.096c2.522-2.257,4.003-4.759,4.405-7.449.169-1.131-.165-2.281-.917-3.154-.765-.887-1.874-1.396-3.043-1.396H7.005c-1.169,0-2.279.51-3.043,1.397-.753.875-1.087,2.026-.917,3.158.405,2.699,1.884,5.198,4.401,7.444-2.517,2.246-3.996,4.746-4.401,7.444-.17,1.132.165,2.284.917,3.158.765.888,1.874,1.397,3.043,1.397h9.99c1.169,0,2.278-.509,3.043-1.396.753-.874,1.087-2.023.918-3.155-.402-2.69-1.883-5.191-4.405-7.449Zm1.972,9.298c-.384.446-.941.702-1.528.702H7.005c-.587,0-1.144-.256-1.528-.703-.378-.439-.54-.992-.456-1.556.375-2.499,1.923-4.839,4.599-6.957.24-.189.379-.479.379-.784s-.14-.595-.379-.784c-2.676-2.118-4.224-4.458-4.599-6.957-.084-.564.077-1.117.456-1.556.384-.446.941-.702,1.528-.702h9.99c.587,0,1.144.255,1.528.702.377.438.539.99.455,1.553-.373,2.488-1.92,4.831-4.601,6.962-.238.19-.377.478-.377.783s.139.593.377.783c2.681,2.132,4.229,4.474,4.601,6.962.084.563-.078,1.115-.456,1.553Zm-1.916-15.922c.125-.309.088-.659-.098-.935-.186-.275-.497-.441-.829-.441h-7.363c-.333,0-.643.166-.829.442-.186.275-.223.625-.098.933.748,1.853,2.3,3.346,3.471,4.272l.519.411c.182.145.401.216.621.216s.441-.073.623-.218l.508-.405c1.173-.933,2.728-2.432,3.475-4.276Zm-4.608,2.621c-.631-.509-1.371-1.193-1.966-1.996h3.928c-.593.798-1.331,1.484-1.962,1.996Z"/></svg> En proceso</span></div>
+        </div>
+
+        <div class="conf-card">
+          <div class="conf-card-title"><svg viewBox="0 0 24 24"><path d="M20.358,7.5l3.237-4.297c.459-.609,.533-1.413,.192-2.096s-1.026-1.107-1.79-1.107H4C1.794,0,0,1.794,0,4V23c0,.553,.448,1,1,1s1-.447,1-1V15H21.998c.764,0,1.449-.425,1.79-1.107s.267-1.486-.192-2.096l-3.237-4.297ZM2,13V4c0-1.103,.897-2,2-2H21.998l-3.69,4.898c-.268,.356-.268,.847,0,1.203l3.69,4.898H2Z"/></svg> ¿Qué sigue ahora?</div>
+          <div class="next-steps">
+            <div class="next-step"><div class="next-step-num">1</div><div class="next-step-text"><strong>Verificamos tu pago</strong><span>Estamos a la espera de que tu medio de pago confirme la transacción.</span></div></div>
+            <div class="next-step"><div class="next-step-num">2</div><div class="next-step-text"><strong>Te avisamos por correo</strong><span>Apenas se confirme, recibirás un correo con la confirmación de tu pedido.</span></div></div>
+            <div class="next-step"><div class="next-step-num">3</div><div class="next-step-text"><strong>Preparamos y enviamos</strong><span>Alistamos tus materiales y los enviamos en 1–3 días hábiles en Bogotá. Para el resto del país llega en aproximadamente 2 a 5 días hábiles.</span></div></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ───────── RECHAZADO ───────── -->
+      <div id="vista-rechazado" hidden>
+        <div class="conf-hero">
+          <div class="conf-ico rechazado">
+            <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M15 9l-6 6M9 9l6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          </div>
+          <div>
+            <div class="conf-eyebrow rechazado">Referencia #RS-2026-00847</div>
+            <h1>Tu pago <em>no pudo procesarse</em></h1>
+            <p>No te preocupes: no se realizó ningún cobro y tu carrito sigue guardado. Puedes intentarlo de nuevo cuando quieras.</p>
+          </div>
+        </div>
+
+        <div class="nota-box err">
+          <svg viewBox="0 0 24 24"><path d="M12,0A12,12,0,1,0,24,12,12.013,12.013,0,0,0,12,0Zm0,22A10,10,0,1,1,22,12,10.011,10.011,0,0,1,12,22Z"/><path d="M12,5a1,1,0,0,0-1,1v8a1,1,0,0,0,2,0V6A1,1,0,0,0,12,5Z"/><rect x="11" y="17" width="2" height="2" rx="1"/></svg>
+          <div><strong>No se realizó ningún cobro</strong> a tu medio de pago. Tu carrito sigue guardado, así que no perderás lo que ya habías elegido.</div>
+        </div>
+
+        <div class="conf-card">
+          <div class="conf-card-title"><svg viewBox="0 0 24 24"><path d="M19.949,5.536,16.465,2.05A6.958,6.958,0,0,0,11.515,0H7A5.006,5.006,0,0,0,2,5V19a5.006,5.006,0,0,0,5,5H17a5.006,5.006,0,0,0,5-5V10.485A6.951,6.951,0,0,0,19.949,5.536ZM18.535,6.95A4.983,4.983,0,0,1,19.316,8H15a1,1,0,0,1-1-1V2.684a5.01,5.01,0,0,1,1.051.78ZM20,19a3,3,0,0,1-3,3H7a3,3,0,0,1-3-3V5A3,3,0,0,1,7,2h4.515c.164,0,.323.032.485.047V7a3,3,0,0,0,3,3h4.953c.015.162.047.32.047.485Z"/></svg> Detalle del intento</div>
+          <div class="info-row"><span class="info-label">Referencia</span><span class="info-value">#RS-2026-00847</span></div>
+          <div class="info-row"><span class="info-label">Fecha</span><span class="info-value">17 de mayo de 2026, 2:34 p.m.</span></div>
+          <div class="info-row"><span class="info-label">Método de pago</span><span class="info-value">Tarjeta de crédito · Wompi</span></div>
+          <div class="info-row"><span class="info-label">Estado del pago</span><span class="info-value bad"><svg viewBox="0 0 512.021 512.021" fill="currentColor" style="width:0.82em;height:0.82em;vertical-align:-0.05em;margin-right:0.2em"><path d="M301.258,256.01L502.645,54.645c12.501-12.501,12.501-32.769,0-45.269c-12.501-12.501-32.769-12.501-45.269,0L256.01,210.762L54.645,9.376c-12.501-12.501-32.769-12.501-45.269,0s-12.501,32.769,0,45.269L210.762,256.01L9.376,457.376c-12.501,12.501-12.501,32.769,0,45.269s32.769,12.501,45.269,0L256.01,301.258l201.365,201.387c12.501,12.501,32.769,12.501,45.269,0c12.501-12.501,12.501-32.769,0-45.269L301.258,256.01z"/></svg> Rechazado</span></div>
+        </div>
+
+        <div class="conf-card">
+          <div class="conf-card-title"><svg viewBox="0 0 24 24"><path d="M20.358,7.5l3.237-4.297c.459-.609,.533-1.413,.192-2.096s-1.026-1.107-1.79-1.107H4C1.794,0,0,1.794,0,4V23c0,.553,.448,1,1,1s1-.447,1-1V15H21.998c.764,0,1.449-.425,1.79-1.107s.267-1.486-.192-2.096l-3.237-4.297ZM2,13V4c0-1.103,.897-2,2-2H21.998l-3.69,4.898c-.268,.356-.268,.847,0,1.203l3.69,4.898H2Z"/></svg> ¿Qué puedes hacer?</div>
+          <div class="next-steps">
+            <div class="next-step"><div class="next-step-num">1</div><div class="next-step-text"><strong>Reintenta con otro medio</strong><span>Puedes pagar con otra tarjeta, PSE, Nequi o Daviplata desde el checkout. Si vuelve a fallar, espera unos minutos o consulta con tu entidad financiera.</span></div></div>
+            <div class="next-step"><div class="next-step-num">2</div><div class="next-step-text"><strong>Revisa tus datos</strong><span>Verifica que el número, la fecha y el cupo de tu tarjeta o cuenta estén correctos.</span></div></div>
+            <div class="next-step"><div class="next-step-num">3</div><div class="next-step-text"><strong>Contáctanos</strong><span>Si sigue fallando, escríbenos por WhatsApp y te ayudamos a completar tu compra.</span></div></div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ══════════ COLUMNA DERECHA — resumen (compartido) ══════════ -->
+    <aside class="resumen">
+      <h2>Resumen de tu compra</h2>
+
+      <div class="res-item">
+        <div class="res-thumb"><img src="https://yggxhnpcjxemwjnwxibc.supabase.co/storage/v1/object/public/productos_russitex/13.jpg" alt="Forro Brioni"><span class="badge">3</span></div>
+        <div><div class="res-item-nom">Forro Brioni</div><div class="res-item-det">3 metros</div></div>
+        <span class="res-item-val">$24.000</span>
+      </div>
+      <div class="res-item">
+        <div class="res-thumb"><img src="https://yggxhnpcjxemwjnwxibc.supabase.co/storage/v1/object/public/productos_russitex/1.jpg" alt="Entretela doble punto"><span class="badge">2</span></div>
+        <div><div class="res-item-nom">Entretela doble punto · Negro</div><div class="res-item-det">2 metros</div></div>
+        <span class="res-item-val">$16.000</span>
+      </div>
+      <div class="res-item">
+        <div class="res-thumb"><img src="https://yggxhnpcjxemwjnwxibc.supabase.co/storage/v1/object/public/productos_russitex/22.jpg" alt="Caja tiza blanca"><span class="badge">1</span></div>
+        <div><div class="res-item-nom">Caja tiza blanca × 50 uds.</div><div class="res-item-det">1 caja</div></div>
+        <span class="res-item-val">$31.092</span>
+      </div>
+
+      <div class="res-fila"><span>Subtotal</span><span>$71.092</span></div>
+      <div class="res-fila"><span>Envío a Bogotá</span><span>$8.000</span></div>
+
+      <div class="res-total">
+        <span class="res-total-label" id="totalLabel">Total pagado</span>
+        <span class="res-total-valor">$79.092</span>
+      </div>
+
+      <div class="pago-chip aprobado" id="pagoChip"></div>
+    </aside>
+
+    <!-- Botones (al final): cambian según el estado -->
+    <div class="conf-cta">
+      <div class="conf-actions" id="actions-aprobado">
+        <a href="russitex-catalogo.html" class="btn-primary">Seguir comprando</a>
+        <a href="russitex-home.html" class="btn-ghost">Volver al inicio</a>
+      </div>
+      <div class="conf-actions" id="actions-pendiente" hidden>
+        <a href="russitex-catalogo.html" class="btn-primary">Seguir comprando</a>
+        <a href="russitex-home.html" class="btn-ghost">Volver al inicio</a>
+      </div>
+      <div class="conf-actions" id="actions-rechazado" hidden>
+        <a href="russitex-checkout.html" class="btn-primary ladrillo">Reintentar el pago</a>
+        <a href="russitex-carrito.html" class="btn-ghost">Volver al carrito</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<russitex-footer></russitex-footer>
+<russitex-floating></russitex-floating>
+
+<!-- Solo para revisar la maqueta: no va en la página final -->
+<div class="demo-switch">
+  <b>Ver:</b>
+  <button id="btn-aprobado" class="on" onclick="setEstado('aprobado')">Aprobado</button>
+  <button id="btn-pendiente" onclick="setEstado('pendiente')">Pendiente</button>
+  <button id="btn-rechazado" onclick="setEstado('rechazado')">Rechazado</button>
+</div>
+
+<script>
+/* Wompi devuelve uno de estos estados. Cada uno cambia la columna
+   izquierda, el chip del resumen y la etiqueta del total. */
+const DATA = {
+  aprobado:  { chip: 'Pago aprobado · Wompi',   total: 'Total pagado' },
+  pendiente: { chip: 'Pago en proceso · Wompi', total: 'Total (en verificación)' },
+  rechazado: { chip: 'Pago rechazado · Wompi',  total: 'Total (no cobrado)' }
+};
+
+function setEstado(e){
+  ['aprobado','pendiente','rechazado'].forEach(function(k){
+    document.getElementById('vista-' + k).hidden = (k !== e);
+    document.getElementById('actions-' + k).hidden = (k !== e);
+    document.getElementById('btn-' + k).classList.toggle('on', k === e);
+  });
+  const d = DATA[e];
+  const chip = document.getElementById('pagoChip');
+  chip.className = 'pago-chip ' + e;
+  chip.innerHTML = '<span class="dot"></span><span>' + d.chip + '</span>';
+
+  document.getElementById('totalLabel').textContent = d.total;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+setEstado('aprobado');
+</script>
+
+</body>
+</html>
