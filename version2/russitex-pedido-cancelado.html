@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pedido cancelado — Russitex</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Mulish:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="russitex-ui.css">
+<script src="russitexui.js"></script>
+<style>
+/* ═══════════════ PEDIDO CANCELADO ═══════════════
+   Página que se muestra (o se enlaza desde el correo) cuando la tienda
+   cancela un pedido YA PAGADO — por ejemplo, si el producto quedó
+   agotado. Lleva reembolso. No es un estado de Wompi: es un estado del
+   pedido, posterior al pago. Comparte el diseño de la confirmación. */
+
+:root {
+  --azul-oficio:#2C5C7C; --azul-profundo:#1C3D54; --ladrillo:#A95445; --ladrillo-osc:#8F4537;
+  --arena:#D8C2A1; --crema:#FDFBF7; --crema-osc:#F1EADC; --tinta:#3B302A; --gris-calido:#6E665C;
+  --linea:#E0D8CB; --azul-claro:#E8EFF4; --verde:#5B7A52; --rojo:#9E3B2E; --ambar:#D89A3C; --verde-wa:#25D366;
+  --r-sm:10px; --r-md:14px; --r-lg:18px; --r-xl:22px; --r-pill:100px;
+  --sh-sm:0 2px 8px rgba(59,48,42,0.06); --sh-md:0 6px 20px rgba(59,48,42,0.10); --sh-lg:0 16px 38px rgba(59,48,42,0.14);
+  --f-head:'Fraunces', Georgia, serif; --f-body:'Mulish', system-ui, sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: var(--f-body); background: var(--crema); color: var(--tinta); overflow-x: hidden; }
+img { max-width: 100%; }
+
+/* ── Miga de pan ── */
+.breadcrumb-bar { background: var(--crema-osc); padding: 0.9rem 5%; border-bottom: 1px solid var(--linea); }
+.breadcrumb { display: flex; line-height: normal; align-items: center; gap: 0.5rem; font-size: 0.82rem; color: var(--gris-calido); flex-wrap: wrap; }
+.breadcrumb a { color: var(--gris-calido); text-decoration: none; }
+.breadcrumb a:hover { color: var(--azul-oficio); }
+.breadcrumb .sep { color: var(--linea); }
+.breadcrumb .current { color: var(--tinta); font-weight: 600; }
+
+.conf-wrap { padding: 2.4rem 8% 4.5rem; background: var(--crema); }
+.conf-layout { display: grid; grid-template-columns: 1fr 340px; grid-template-areas: "left resumen" "actions resumen"; column-gap: 2rem; align-items: start; }
+.conf-left { grid-area: left; min-width: 0; }
+.conf-cta { grid-area: actions; }
+
+/* ── Hero ── */
+.conf-hero { display: flex; align-items: flex-start; gap: 1.3rem; margin-bottom: 2.2rem; }
+.conf-ico { width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: #F3EAE7; color: var(--ladrillo); animation: popIn 0.5s cubic-bezier(.34,1.56,.64,1) both; }
+.conf-ico svg { width: 30px; height: 30px; fill: currentColor; }
+@keyframes popIn { from{transform:scale(0);opacity:0} to{transform:scale(1);opacity:1} }
+.conf-eyebrow { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.45rem; color: var(--ladrillo); }
+.conf-hero h1 { font-family: var(--f-head); font-size: clamp(1.6rem, 3vw, 2.2rem); font-weight: 600; color: var(--tinta); line-height: 1.15; margin-bottom: 0.5rem; }
+.conf-hero h1 em { font-style: italic; color: var(--ladrillo); }
+.conf-hero p { font-size: 0.9rem; color: var(--gris-calido); line-height: 1.7; max-width: 520px; }
+
+/* ── Tarjetas ── */
+.conf-card { background: #fff; border: 1px solid var(--linea); border-radius: var(--r-lg); padding: 1.6rem 1.6rem 1.1rem; margin-bottom: 1.2rem; }
+.conf-card-title { font-family: var(--f-head); font-size: 1.05rem; font-weight: 600; color: var(--tinta); margin-bottom: 1.1rem; display: flex; align-items: center; gap: 0.5rem; padding-bottom: 0.8rem; border-bottom: 1px solid var(--linea); }
+.conf-card-title svg { width: 18px; height: 18px; fill: var(--azul-oficio); flex-shrink: 0; }
+
+.info-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; padding: 0.55rem 0; border-bottom: 1px solid var(--crema-osc); }
+.info-row:last-child { border-bottom: none; }
+.info-label { font-size: 0.8rem; color: var(--gris-calido); flex-shrink: 0; }
+.info-value { font-size: 0.85rem; color: var(--tinta); font-weight: 500; text-align: right; line-height: 1.45; }
+.info-value.cancel { color: var(--ladrillo-osc); font-weight: 700; }
+.info-value.proc { color: var(--azul-oficio); font-weight: 700; }
+.info-value.money { font-family: var(--f-head); font-weight: 700; color: var(--tinta); }
+
+/* ── Pasos ── */
+.next-steps { display: flex; flex-direction: column; }
+.next-step { display: flex; gap: 1rem; align-items: flex-start; padding: 1rem 0; border-bottom: 1px solid var(--crema-osc); }
+.next-step:last-child { border-bottom: none; }
+.next-step-num { width: 28px; height: 28px; border-radius: 50%; background: var(--azul-claro); color: var(--azul-oficio); font-size: 0.72rem; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 0.1rem; }
+.next-step-text strong { font-size: 0.87rem; color: var(--tinta); display: block; margin-bottom: 0.2rem; }
+.next-step-text span { font-size: 0.8rem; color: var(--gris-calido); line-height: 1.55; }
+
+/* ── Nota (motivo) ── */
+.nota-box { display: flex; gap: 0.8rem; border-radius: var(--r-md); padding: 1.1rem; font-size: 0.85rem; line-height: 1.6; margin-bottom: 1.2rem; background: #F6E7E4; border: 1px solid #E7C6BE; color: var(--ladrillo-osc); }
+.nota-box svg { width: 20px; height: 20px; flex-shrink: 0; margin-top: 0.1rem; fill: currentColor; }
+.nota-box strong { font-weight: 700; }
+
+/* ── Botones ── */
+.conf-actions { display: flex; gap: 0.8rem; margin-top: 1rem; flex-wrap: wrap; }
+.btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; background: var(--azul-oficio); color: #fff; border: none; cursor: pointer; border-radius: var(--r-md); padding: 0.85rem 1.6rem; font-family: var(--f-body); font-size: 0.9rem; font-weight: 700; text-decoration: none; transition: all 0.2s; box-shadow: var(--sh-sm); }
+.btn-primary:hover { background: var(--azul-profundo); transform: translateY(-1px); box-shadow: var(--sh-md); }
+.btn-ghost { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; background: none; color: var(--tinta); border: 1.5px solid var(--linea); cursor: pointer; border-radius: var(--r-md); padding: 0.85rem 1.6rem; font-family: var(--f-body); font-size: 0.9rem; font-weight: 600; text-decoration: none; transition: all 0.2s; }
+.btn-ghost:hover { border-color: var(--azul-oficio); background: var(--crema-osc); }
+.btn-ghost.wa { color: var(--verde); }
+.btn-ghost.wa:hover { border-color: var(--verde-wa); background: #EAF1E6; }
+.btn-primary svg, .btn-ghost svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+/* ── Resumen ── */
+.resumen { grid-area: resumen; background: #fff; border: 1px solid var(--linea); border-radius: var(--r-lg); padding: 1.5rem; position: sticky; top: 90px; }
+.resumen h2 { font-family: var(--f-head); font-size: 1.15rem; font-weight: 600; color: var(--tinta); margin-bottom: 1.1rem; }
+.res-item { display: grid; grid-template-columns: 48px 1fr auto; gap: 0.75rem; align-items: center; padding-bottom: 0.9rem; margin-bottom: 0.9rem; border-bottom: 1px solid var(--linea); }
+.res-thumb { width: 48px; height: 48px; position: relative; flex-shrink: 0; }
+.res-thumb img { width: 48px; height: 48px; border-radius: var(--r-sm); object-fit: cover; border: 1px solid var(--linea); display: block; background: var(--crema-osc); }
+.res-thumb .badge { position: absolute; top: -6px; right: -6px; min-width: 18px; height: 18px; padding: 0 4px; border-radius: 100px; background: var(--azul-oficio); color: #fff; font-size: 0.6rem; font-weight: 700; display: flex; align-items: center; justify-content: center; border: 2px solid #fff; }
+.res-item-nom { font-size: 0.82rem; font-weight: 600; color: var(--tinta); line-height: 1.35; }
+.res-item-det { font-size: 0.74rem; color: var(--gris-calido); margin-top: 0.15rem; }
+.res-item-val { font-size: 0.85rem; font-weight: 700; color: var(--tinta); white-space: nowrap; }
+.res-fila { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; font-size: 0.88rem; color: var(--gris-calido); margin-bottom: 0.7rem; }
+.res-fila span:last-child { color: var(--tinta); font-weight: 600; }
+.res-total { display: flex; justify-content: space-between; align-items: baseline; border-top: 1px solid var(--linea); margin-top: 1rem; padding-top: 1rem; }
+.res-total-label { font-size: 0.95rem; font-weight: 700; color: var(--tinta); }
+.res-total-valor { font-family: var(--f-head); font-size: 1.5rem; font-weight: 700; color: var(--ladrillo); }
+.pago-chip { display: flex; align-items: center; gap: 0.6rem; border-radius: var(--r-md); padding: 0.85rem 1rem; margin-top: 1.2rem; font-size: 0.8rem; font-weight: 700; background: var(--azul-claro); color: var(--azul-oficio); }
+.pago-chip .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; background: var(--azul-oficio); animation: pulse 2s ease-in-out infinite; }
+@keyframes pulse { 0%,100%{box-shadow:0 0 0 0 rgba(44,92,124,0)} 50%{box-shadow:0 0 0 4px rgba(44,92,124,0.18)} }
+
+/* ── Responsive ── */
+@media (max-width: 991px) {
+  .conf-wrap { padding: 2rem 6% 3.5rem; }
+  .breadcrumb-bar { padding: 0.9rem 6%; }
+  /* Apila en orden: detalle, resumen y al final los botones. */
+  .conf-layout { display: block; }
+  .resumen { position: static; margin-top: 1.2rem; }
+}
+@media (max-width: 600px) {
+  .conf-hero { gap: 1rem; }
+  .conf-ico { width: 54px; height: 54px; }
+  .conf-ico svg { width: 26px; height: 26px; }
+  .conf-actions .btn-primary, .conf-actions .btn-ghost { width: 100%; }
+}
+</style>
+</head>
+<body>
+
+<russitex-topbar></russitex-topbar>
+<russitex-header></russitex-header>
+
+<div class="breadcrumb-bar">
+  <div class="breadcrumb">
+    <a href="russitex-home.html">Inicio</a><span class="sep">/</span>
+    <span class="current">Pedido cancelado</span>
+  </div>
+</div>
+
+<section class="conf-wrap">
+  <div class="conf-layout">
+
+    <div class="conf-left">
+      <!-- Hero -->
+      <div class="conf-hero">
+        <div class="conf-ico">
+          <svg viewBox="0 0 512.021 512.021" fill="currentColor"><path d="M301.258,256.01L502.645,54.645c12.501-12.501,12.501-32.769,0-45.269c-12.501-12.501-32.769-12.501-45.269,0L256.01,210.762L54.645,9.376c-12.501-12.501-32.769-12.501-45.269,0s-12.501,32.769,0,45.269L210.762,256.01L9.376,457.376c-12.501,12.501-12.501,32.769,0,45.269s32.769,12.501,45.269,0L256.01,301.258l201.365,201.387c12.501,12.501,32.769,12.501,45.269,0c12.501-12.501,12.501-32.769,0-45.269L301.258,256.01z"/></svg>
+        </div>
+        <div>
+          <div class="conf-eyebrow">Pedido #RS-2026-00847</div>
+          <h1>Cancelamos tu <em>pedido</em></h1>
+          <p>Lamentamos el inconveniente. No pudimos completar tu pedido y ya iniciamos la devolución de tu dinero. A continuación te contamos el motivo y los detalles del reembolso.</p>
+        </div>
+      </div>
+
+      <!-- Motivo -->
+      <div class="nota-box">
+        <svg viewBox="0 0 24 24"><path d="M12,0A12,12,0,1,0,24,12,12.013,12.013,0,0,0,12,0Zm0,22A10,10,0,1,1,22,12,10.011,10.011,0,0,1,12,22Z"/><path d="M12,5a1,1,0,0,0-1,1v8a1,1,0,0,0,2,0V6A1,1,0,0,0,12,5Z"/><rect x="11" y="17" width="2" height="2" rx="1"/></svg>
+        <div><strong>Motivo:</strong> el producto <strong>Forro Brioni</strong> quedó agotado justo después de tu compra y no alcanzamos a reservar el inventario. No cobramos por un pedido que no podemos cumplir, así que te reembolsamos el total.</div>
+      </div>
+
+      <!-- Reembolso -->
+      <div class="conf-card">
+        <div class="conf-card-title"><svg viewBox="0 0 24 24"><path d="M2 5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5Zm2 0v3h16V5H4Zm16 5H4v9h16v-9ZM6 16h5v2H6v-2Z"/></svg> Tu reembolso</div>
+        <div class="info-row"><span class="info-label">Monto reembolsado</span><span class="info-value money">$79.092</span></div>
+        <div class="info-row"><span class="info-label">Se devuelve a</span><span class="info-value">Tu mismo medio de pago<br>Tarjeta de crédito · Wompi</span></div>
+        <div class="info-row"><span class="info-label">Tiempo estimado</span><span class="info-value">5 a 15 días hábiles<br>(según tu banco)</span></div>
+        <div class="info-row"><span class="info-label">Estado del reembolso</span><span class="info-value proc">En proceso</span></div>
+      </div>
+
+      <!-- Detalle -->
+      <div class="conf-card">
+        <div class="conf-card-title"><svg viewBox="0 0 24 24"><path d="M19.949,5.536,16.465,2.05A6.958,6.958,0,0,0,11.515,0H7A5.006,5.006,0,0,0,2,5V19a5.006,5.006,0,0,0,5,5H17a5.006,5.006,0,0,0,5-5V10.485A6.951,6.951,0,0,0,19.949,5.536ZM18.535,6.95A4.983,4.983,0,0,1,19.316,8H15a1,1,0,0,1-1-1V2.684a5.01,5.01,0,0,1,1.051.78ZM20,19a3,3,0,0,1-3,3H7a3,3,0,0,1-3-3V5A3,3,0,0,1,7,2h4.515c.164,0,.323.032.485.047V7a3,3,0,0,0,3,3h4.953c.015.162.047.32.047.485Z"/></svg> Detalle del pedido</div>
+        <div class="info-row"><span class="info-label">Número de pedido</span><span class="info-value">#RS-2026-00847</span></div>
+        <div class="info-row"><span class="info-label">Fecha</span><span class="info-value">17 de mayo de 2026, 2:34 p.m.</span></div>
+        <div class="info-row"><span class="info-label">Método de pago</span><span class="info-value">Tarjeta de crédito · Wompi</span></div>
+        <div class="info-row"><span class="info-label">Estado del pedido</span><span class="info-value cancel">Cancelado</span></div>
+      </div>
+
+      <!-- Qué sigue -->
+      <div class="conf-card">
+        <div class="conf-card-title"><svg viewBox="0 0 24 24"><path d="M20.358,7.5l3.237-4.297c.459-.609,.533-1.413,.192-2.096s-1.026-1.107-1.79-1.107H4C1.794,0,0,1.794,0,4V23c0,.553,.448,1,1,1s1-.447,1-1V15H21.998c.764,0,1.449-.425,1.79-1.107s.267-1.486-.192-2.096l-3.237-4.297ZM2,13V4c0-1.103,.897-2,2-2H21.998l-3.69,4.898c-.268,.356-.268,.847,0,1.203l3.69,4.898H2Z"/></svg> ¿Qué sigue ahora?</div>
+        <div class="next-steps">
+          <div class="next-step"><div class="next-step-num">1</div><div class="next-step-text"><strong>Te devolvemos tu dinero</strong><span>El reembolso ya está en curso. Llega a tu medio de pago en 5 a 15 días hábiles, según tu banco.</span></div></div>
+          <div class="next-step"><div class="next-step-num">2</div><div class="next-step-text"><strong>Avísame cuando vuelva</strong><span>En la página del producto usa el botón «Avísame cuando esté disponible», deja tu correo y te escribimos apenas vuelva el inventario.</span></div></div>
+          <div class="next-step"><div class="next-step-num">3</div><div class="next-step-text"><strong>¿Tienes dudas?</strong><span>Escríbenos por WhatsApp y te ayudamos con el reembolso o a encontrar un material parecido.</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Resumen -->
+    <aside class="resumen">
+      <h2>Pedido cancelado</h2>
+
+      <div class="res-item">
+        <div class="res-thumb"><img src="https://yggxhnpcjxemwjnwxibc.supabase.co/storage/v1/object/public/productos_russitex/13.jpg" alt="Forro Brioni"><span class="badge">3</span></div>
+        <div><div class="res-item-nom">Forro Brioni</div><div class="res-item-det">3 metros · agotado</div></div>
+        <span class="res-item-val">$24.000</span>
+      </div>
+      <div class="res-item">
+        <div class="res-thumb"><img src="https://yggxhnpcjxemwjnwxibc.supabase.co/storage/v1/object/public/productos_russitex/1.jpg" alt="Entretela doble punto"><span class="badge">2</span></div>
+        <div><div class="res-item-nom">Entretela doble punto · Negro</div><div class="res-item-det">2 metros</div></div>
+        <span class="res-item-val">$16.000</span>
+      </div>
+      <div class="res-item">
+        <div class="res-thumb"><img src="https://yggxhnpcjxemwjnwxibc.supabase.co/storage/v1/object/public/productos_russitex/22.jpg" alt="Caja tiza blanca"><span class="badge">1</span></div>
+        <div><div class="res-item-nom">Caja tiza blanca × 50 uds.</div><div class="res-item-det">1 caja</div></div>
+        <span class="res-item-val">$31.092</span>
+      </div>
+
+      <div class="res-fila"><span>Subtotal</span><span>$71.092</span></div>
+      <div class="res-fila"><span>Envío a Bogotá</span><span>$8.000</span></div>
+
+      <div class="res-total">
+        <span class="res-total-label">Total reembolsado</span>
+        <span class="res-total-valor">$79.092</span>
+      </div>
+
+      <div class="pago-chip"><span class="dot"></span><span>Reembolso en proceso · Wompi</span></div>
+    </aside>
+
+    <!-- Botones -->
+    <div class="conf-cta">
+      <div class="conf-actions">
+        <a href="russitex-home.html" class="btn-primary">Volver al inicio</a>
+        <a href="russitex-carrito.html" class="btn-ghost">Volver al carrito</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<russitex-footer></russitex-footer>
+<russitex-floating></russitex-floating>
+
+</body>
+</html>

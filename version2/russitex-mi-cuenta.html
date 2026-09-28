@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mi cuenta — Russitex</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Mulish:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="russitex-ui.css">
+<script src="russitexui.js"></script>
+<style>
+/* ═══════════════ MI CUENTA ═══════════════
+   Panel del cliente: resumen, pedidos (con detalle en modal), direcciones,
+   datos de cuenta. Comparte el sistema de diseño de version2. */
+
+:root {
+  --azul-oficio:#2C5C7C; --azul-profundo:#1C3D54; --ladrillo:#A95445; --ladrillo-osc:#8F4537;
+  --arena:#D8C2A1; --crema:#FDFBF7; --crema-osc:#F1EADC; --tinta:#3B302A; --gris-calido:#6E665C;
+  --linea:#E0D8CB; --azul-claro:#E8EFF4; --verde:#5B7A52; --rojo:#9E3B2E; --ambar:#D89A3C; --verde-wa:#25D366;
+  --r-sm:10px; --r-md:14px; --r-lg:18px; --r-xl:22px; --r-pill:100px;
+  --sh-sm:0 2px 8px rgba(59,48,42,0.06); --sh-md:0 6px 20px rgba(59,48,42,0.10); --sh-lg:0 16px 38px rgba(59,48,42,0.14);
+  --f-head:'Fraunces', Georgia, serif; --f-body:'Mulish', system-ui, sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: var(--f-body); background: var(--crema); color: var(--tinta); overflow-x: hidden; }
+img { max-width: 100%; }
+@keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+
+/* ── Miga de pan ── */
+.breadcrumb-bar { background: var(--crema-osc); padding: 0.9rem 5%; border-bottom: 1px solid var(--linea); }
+.breadcrumb { display: flex; line-height: normal; align-items: center; gap: 0.5rem; font-size: 0.82rem; color: var(--gris-calido); flex-wrap: wrap; }
+.breadcrumb a { color: var(--gris-calido); text-decoration: none; }
+.breadcrumb a:hover { color: var(--azul-oficio); }
+.breadcrumb .sep { color: var(--linea); }
+.breadcrumb .current { color: var(--tinta); font-weight: 600; }
+
+/* ── Layout ── */
+.cuenta-layout { display: grid; grid-template-columns: 260px 1fr; gap: 2rem; padding: 2.4rem 8% 4.5rem; align-items: start; }
+
+/* ── Sidebar ── */
+.cuenta-sidebar { background: #fff; border-radius: var(--r-lg); border: 1px solid var(--linea); overflow: hidden; position: sticky; top: 90px; }
+.sidebar-user { padding: 1.4rem 1.5rem; background: var(--azul-oficio); display: flex; align-items: center; gap: 0.9rem; }
+.sidebar-avatar { width: 44px; height: 44px; border-radius: 50%; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; font-family: var(--f-head); font-size: 1.1rem; font-weight: 700; color: #fff; flex-shrink: 0; }
+.sidebar-name { font-size: 0.88rem; font-weight: 700; color: #fff; line-height: 1.2; }
+.sidebar-email { font-size: 0.7rem; color: rgba(255,255,255,0.65); }
+.sidebar-nav { padding: 0.5rem 0; }
+.sidebar-item { display: flex; align-items: center; gap: 0.8rem; padding: 0.85rem 1.4rem; cursor: pointer; font-size: 0.87rem; font-weight: 500; color: var(--gris-calido); transition: all 0.2s; border-left: 3px solid transparent; border-top: none; border-right: none; border-bottom: none; background: none; width: 100%; text-align: left; font-family: var(--f-body); }
+.sidebar-item:hover { color: var(--azul-oficio); background: var(--azul-claro); }
+.sidebar-item.active { color: var(--azul-oficio); background: var(--azul-claro); border-left: 3px solid var(--azul-oficio); font-weight: 700; }
+.sidebar-item.logout { color: var(--ladrillo); border-top: 1px solid var(--linea); margin-top: 0.3rem; }
+.sidebar-item.logout:hover { background: #F6E7E4; }
+.si-icon { width: 16px; height: 16px; flex-shrink: 0; }
+
+/* ── Contenido ── */
+.cuenta-content { min-width: 0; }
+.seccion { display: none; animation: fadeUp 0.3s ease both; }
+.seccion.active { display: block; }
+.sec-title { font-family: var(--f-head); font-size: 1.5rem; font-weight: 600; color: var(--tinta); margin-bottom: 0.3rem; }
+.sec-sub { font-size: 0.87rem; color: var(--gris-calido); margin-bottom: 2rem; }
+
+/* ── Resumen (stats) ── */
+.stats-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 1rem; margin-bottom: 2rem; }
+.stat-card { background: #fff; border-radius: var(--r-md); border: 1px solid var(--linea); padding: 1.3rem 1.4rem; display: flex; align-items: center; gap: 1rem; transition: all 0.2s; }
+.stat-card:hover { border-color: var(--azul-oficio); transform: translateY(-2px); box-shadow: var(--sh-sm); }
+.stat-ico { width: 42px; height: 42px; border-radius: var(--r-sm); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.stat-ico svg { width: 20px; height: 20px; }
+.stat-ico.p { background: var(--azul-claro); color: var(--azul-oficio); }
+.stat-ico.g { background: #F6E7E4; color: var(--ladrillo); }
+.stat-ico.d { background: #EAF1E6; color: var(--verde); }
+.stat-num { font-family: var(--f-head); font-size: 1.5rem; font-weight: 700; color: var(--azul-oficio); line-height: 1; }
+.stat-lbl { font-size: 0.73rem; color: var(--gris-calido); margin-top: 0.2rem; }
+
+.recientes-card { background: #fff; border-radius: var(--r-lg); border: 1px solid var(--linea); overflow: hidden; }
+.rc-header { display: flex; align-items: center; justify-content: space-between; padding: 1.1rem 1.5rem; border-bottom: 1px solid var(--linea); }
+.rc-title { font-family: var(--f-head); font-size: 1rem; font-weight: 600; color: var(--tinta); }
+.rc-link { font-size: 0.78rem; color: var(--azul-oficio); font-weight: 700; cursor: pointer; background: none; border: none; font-family: var(--f-body); }
+.rc-link:hover { text-decoration: underline; }
+
+/* ── Tabla de pedidos ── */
+.tabla-head { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 1rem; padding: 0.7rem 1.5rem; background: var(--crema-osc); }
+.tabla-head span { font-size: 0.67rem; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--gris-calido); }
+.tabla-head.cols5 { grid-template-columns: 1fr 1fr 1.4fr 1fr 0.8fr; }
+.pedido-fila { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 1rem; padding: 0.95rem 1.5rem; border-bottom: 1px solid var(--crema-osc); align-items: center; transition: background 0.15s; cursor: pointer; }
+.pedido-fila:last-child { border-bottom: none; }
+.pedido-fila:hover { background: var(--crema); }
+.pedido-fila.cols5 { grid-template-columns: 1fr 1fr 1.4fr 1fr 0.8fr; }
+.p-num { font-size: 0.84rem; font-weight: 700; color: var(--azul-oficio); }
+.p-fecha { font-size: 0.81rem; color: var(--gris-calido); }
+.p-items { font-size: 0.79rem; color: var(--tinta); line-height: 1.4; }
+.p-total { font-size: 0.86rem; font-weight: 700; color: var(--tinta); }
+
+/* Badges de estado (colores del manual) */
+.estado { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.72rem; font-weight: 700; padding: 0.22rem 0.7rem; border-radius: var(--r-pill); white-space: nowrap; width: fit-content; }
+.estado .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+.estado.verde { background: #EAF1E6; color: var(--verde); }
+.estado.azul  { background: var(--azul-claro); color: var(--azul-oficio); }
+.estado.ambar { background: #FBF1DE; color: #8A5E12; }
+.estado.rojo  { background: #F6E7E4; color: var(--rojo); }
+
+/* Estado sin pedidos */
+.empty-state { background: #fff; border: 1px solid var(--linea); border-radius: var(--r-lg); padding: 3.5rem 2rem; text-align: center; }
+.empty-ico { width: 64px; height: 64px; border-radius: 50%; background: var(--crema-osc); display: flex; align-items: center; justify-content: center; margin: 0 auto 1.2rem; }
+.empty-ico svg { width: 30px; height: 30px; fill: var(--azul-oficio); opacity: 0.7; }
+.empty-state h3 { font-family: var(--f-head); font-size: 1.3rem; font-weight: 600; color: var(--tinta); margin-bottom: 0.5rem; }
+.empty-state p { font-size: 0.9rem; color: var(--gris-calido); line-height: 1.7; max-width: 380px; margin: 0 auto 1.6rem; }
+.empty-mini { padding: 2.5rem 1.5rem; text-align: center; font-size: 0.86rem; color: var(--gris-calido); }
+
+/* ── Direcciones ── */
+.dirs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.dir-card { background: #fff; border-radius: var(--r-md); border: 1.5px solid var(--linea); padding: 1.5rem; position: relative; transition: border-color 0.2s; }
+.dir-card.principal { border-color: var(--azul-oficio); }
+.dir-badge { position: absolute; top: 1rem; right: 1rem; font-size: 0.64rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; background: var(--azul-oficio); color: #fff; padding: 0.18rem 0.6rem; border-radius: var(--r-pill); }
+.dir-name { font-size: 0.9rem; font-weight: 700; color: var(--tinta); margin-bottom: 0.5rem; }
+.dir-addr { font-size: 0.82rem; color: var(--gris-calido); line-height: 1.65; margin-bottom: 1rem; }
+.dir-btns { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.btn-dir { font-size: 0.75rem; font-weight: 600; padding: 0.28rem 0.85rem; border-radius: var(--r-pill); cursor: pointer; border: 1.5px solid var(--linea); background: none; font-family: var(--f-body); color: var(--gris-calido); transition: all 0.2s; }
+.btn-dir:hover { border-color: var(--azul-oficio); color: var(--azul-oficio); background: var(--azul-claro); }
+.btn-dir.del:hover { border-color: var(--ladrillo); color: var(--ladrillo); background: #F6E7E4; }
+.dir-add { background: none; border: 1.5px dashed var(--linea); border-radius: var(--r-md); padding: 1.5rem; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.5rem; cursor: pointer; transition: all 0.2s; min-height: 138px; font-family: var(--f-body); }
+.dir-add:hover { border-color: var(--azul-oficio); background: var(--azul-claro); }
+.dir-add-plus { font-size: 1.8rem; opacity: 0.4; color: var(--azul-oficio); }
+.dir-add-label { font-size: 0.83rem; font-weight: 600; color: var(--gris-calido); }
+
+/* ── Detalles / formularios ── */
+.detalles-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+.det-card { background: #fff; border-radius: var(--r-lg); border: 1px solid var(--linea); padding: 1.8rem; }
+.det-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.2rem; padding-bottom: 0.8rem; border-bottom: 1px solid var(--linea); }
+.det-card-header h3 { font-family: var(--f-head); font-size: 1rem; font-weight: 600; color: var(--tinta); }
+.btn-edit-info { font-size: 0.78rem; font-weight: 700; color: var(--azul-oficio); background: var(--azul-claro); border: none; border-radius: var(--r-pill); padding: 0.3rem 0.9rem; cursor: pointer; font-family: var(--f-body); transition: all 0.2s; }
+.btn-edit-info:hover { background: var(--azul-oficio); color: #fff; }
+.info-fila { display: flex; justify-content: space-between; align-items: center; padding: 0.65rem 0; border-bottom: 1px solid var(--crema-osc); }
+.info-fila:last-child { border-bottom: none; }
+.info-lbl { font-size: 0.77rem; color: var(--gris-calido); font-weight: 500; }
+.info-val { font-size: 0.85rem; color: var(--tinta); font-weight: 500; text-align: right; }
+
+.fg { display: flex; flex-direction: column; gap: 0.35rem; margin-bottom: 1rem; }
+.fl { font-size: 0.78rem; font-weight: 600; color: var(--tinta); }
+.fi { padding: 0.78rem 1rem; border: 1.5px solid var(--linea); border-radius: var(--r-sm); font-family: var(--f-body); font-size: 0.87rem; color: var(--tinta); outline: none; transition: border-color 0.2s, box-shadow 0.2s; background: var(--crema); width: 100%; }
+.fi:focus { border-color: var(--azul-oficio); background: #fff; box-shadow: 0 0 0 3px rgba(44,92,124,0.10); }
+.fi::placeholder { color: var(--gris-calido); }
+.iw { position: relative; }
+.iw .fi { padding-right: 2.8rem; }
+.pt { position: absolute; right: 0.9rem; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--gris-calido); padding: 0; display: flex; align-items: center; }
+.pt:hover { color: var(--azul-oficio); }
+
+/* ── Modales ── */
+.modal-overlay { position: fixed; inset: 0; background: rgba(59,48,42,0.5); backdrop-filter: blur(4px); z-index: 500; display: none; align-items: center; justify-content: center; padding: 1rem; animation: fadeIn 0.2s ease both; }
+.modal-overlay.open { display: flex; }
+@keyframes fadeIn { from{opacity:0} to{opacity:1} }
+.modal-box { background: #fff; border-radius: var(--r-xl); width: 100%; max-width: 460px; box-shadow: var(--sh-lg); animation: slideUp 0.3s cubic-bezier(0.4,0,0.2,1) both; max-height: 90vh; display: flex; flex-direction: column; }
+@keyframes slideUp { from{transform:translateY(20px);opacity:0} to{transform:translateY(0);opacity:1} }
+.modal-header { display: flex; align-items: center; justify-content: space-between; padding: 1.4rem 1.6rem; border-bottom: 1px solid var(--linea); flex-shrink: 0; }
+.modal-title { font-family: var(--f-head); font-size: 1.1rem; font-weight: 600; color: var(--tinta); }
+.modal-close { width: 32px; height: 32px; border-radius: 50%; background: var(--crema-osc); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--gris-calido); font-size: 0.9rem; transition: all 0.2s; }
+.modal-close:hover { background: var(--linea); color: var(--tinta); }
+.modal-body { padding: 1.4rem 1.6rem; display: flex; flex-direction: column; gap: 0.9rem; overflow-y: auto; }
+.modal-footer { padding: 1rem 1.6rem 1.4rem; display: flex; gap: 0.8rem; justify-content: flex-end; border-top: 1px solid var(--linea); flex-shrink: 0; }
+.modal-btn-cancel { background: none; color: var(--gris-calido); border: 1.5px solid var(--linea); cursor: pointer; border-radius: var(--r-sm); padding: 0.7rem 1.4rem; font-family: var(--f-body); font-size: 0.86rem; font-weight: 600; transition: all 0.2s; }
+.modal-btn-cancel:hover { border-color: var(--azul-oficio); color: var(--azul-oficio); }
+.modal-btn-save { background: var(--azul-oficio); color: #fff; border: none; cursor: pointer; border-radius: var(--r-sm); padding: 0.7rem 1.6rem; font-family: var(--f-body); font-size: 0.86rem; font-weight: 700; transition: all 0.2s; }
+.modal-btn-save:hover { background: var(--azul-profundo); }
+
+/* ── Cerrar sesión ── */
+.logout-wrap { display: flex; align-items: flex-start; }
+.logout-card { background: #fff; border-radius: var(--r-lg); border: 1px solid var(--linea); padding: 3rem 2.5rem; text-align: center; max-width: 400px; }
+.lo-icon { width: 56px; height: 56px; border-radius: 50%; background: var(--crema-osc); display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; }
+.lo-icon svg { width: 26px; height: 26px; fill: var(--gris-calido); }
+.logout-card h3 { font-family: var(--f-head); font-size: 1.3rem; font-weight: 600; color: var(--tinta); margin-bottom: 0.5rem; }
+.logout-card p { font-size: 0.87rem; color: var(--gris-calido); line-height: 1.65; margin-bottom: 2rem; }
+.lo-btns { display: flex; gap: 0.8rem; justify-content: center; flex-wrap: wrap; }
+.btn-lo { background: var(--ladrillo); color: #fff; border: none; cursor: pointer; border-radius: var(--r-pill); padding: 0.85rem 2rem; font-family: var(--f-body); font-size: 0.9rem; font-weight: 700; transition: all 0.2s; }
+.btn-lo:hover { background: var(--ladrillo-osc); transform: translateY(-1px); }
+.btn-cancel { background: none; color: var(--gris-calido); border: 1.5px solid var(--linea); cursor: pointer; border-radius: var(--r-pill); padding: 0.85rem 2rem; font-family: var(--f-body); font-size: 0.9rem; font-weight: 600; transition: all 0.2s; }
+.btn-cancel:hover { border-color: var(--azul-oficio); color: var(--azul-oficio); }
+
+.btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; background: var(--azul-oficio); color: #fff; border: none; cursor: pointer; border-radius: var(--r-md); padding: 0.85rem 1.8rem; font-family: var(--f-body); font-size: 0.9rem; font-weight: 700; text-decoration: none; transition: all 0.2s; box-shadow: var(--sh-sm); }
+.btn-primary:hover { background: var(--azul-profundo); transform: translateY(-1px); box-shadow: var(--sh-md); }
+
+/* ── Demo switch ── */
+.demo-switch { position: fixed; bottom: 20px; left: 20px; z-index: 100; background: var(--tinta); color: #fff; border-radius: var(--r-pill); padding: 0.4rem 0.5rem; display: flex; align-items: center; gap: 0.25rem; box-shadow: var(--sh-md); }
+.demo-switch b { padding: 0 0.5rem; opacity: 0.7; font-size: 0.78rem; font-weight: 600; }
+.demo-switch button { background: none; border: none; color: rgba(255,255,255,0.7); font-family: var(--f-body); font-size: 0.78rem; font-weight: 600; padding: 0.35rem 0.75rem; border-radius: var(--r-pill); cursor: pointer; transition: all 0.15s; }
+.demo-switch button.on { background: #fff; color: var(--tinta); }
+
+/* ── Detalle del pedido (sección interna) ── */
+.volver-link { background: none; border: none; color: var(--azul-oficio); font-family: var(--f-body); font-size: 0.84rem; font-weight: 700; cursor: pointer; padding: 0; margin-bottom: 1.1rem; }
+.volver-link:hover { text-decoration: underline; }
+.ped-head { display: flex; align-items: center; gap: 0.9rem; flex-wrap: wrap; margin-bottom: 0.3rem; }
+.ped-head h1 { font-family: var(--f-head); font-size: 1.5rem; font-weight: 600; color: var(--tinta); }
+.ped-fecha { font-size: 0.84rem; color: var(--gris-calido); margin-bottom: 1.4rem; }
+.envio-banner { display: flex; align-items: center; gap: 0.6rem; border-radius: var(--r-md); padding: 0.9rem 1.1rem; font-size: 0.88rem; font-weight: 700; margin-bottom: 1.4rem; }
+.envio-banner .dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+.envio-banner.verde { background: #EAF1E6; color: var(--verde); }
+.envio-banner.azul  { background: var(--azul-claro); color: var(--azul-oficio); }
+.envio-banner.ambar { background: #FBF1DE; color: #8A5E12; }
+.envio-banner.rojo  { background: #F6E7E4; color: var(--rojo); }
+.ped-card { background: #fff; border: 1px solid var(--linea); border-radius: var(--r-lg); padding: 1.6rem 1.6rem 1.1rem; margin-bottom: 1.2rem; }
+.ped-card h3 { font-family: var(--f-head); font-size: 1.05rem; font-weight: 600; color: var(--tinta); margin-bottom: 1.1rem; padding-bottom: 0.8rem; border-bottom: 1px solid var(--linea); }
+.pd-row { display: flex; justify-content: space-between; gap: 1rem; padding: 0.55rem 0; border-bottom: 1px solid var(--crema-osc); font-size: 0.84rem; }
+.pd-row:last-child { border-bottom: none; }
+.pd-row .l { color: var(--gris-calido); flex-shrink: 0; }
+.pd-row .v { color: var(--tinta); font-weight: 600; text-align: right; line-height: 1.45; }
+.prod-head { display: grid; grid-template-columns: 1fr 90px 60px 90px; gap: 0.8rem; padding: 0.4rem 0 0.7rem; border-bottom: 1px solid var(--linea); font-size: 0.66rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--gris-calido); }
+.prod-head span:nth-child(n+2) { text-align: right; }
+.prod-fila { display: grid; grid-template-columns: 1fr 90px 60px 90px; gap: 0.8rem; align-items: center; padding: 0.8rem 0; border-bottom: 1px solid var(--crema-osc); font-size: 0.84rem; }
+.prod-fila:last-child { border-bottom: none; }
+.prod-info { display: flex; align-items: center; gap: 0.75rem; min-width: 0; }
+.prod-info img { width: 48px; height: 48px; border-radius: var(--r-sm); object-fit: cover; border: 1px solid var(--linea); flex-shrink: 0; background: var(--crema-osc); }
+.prod-nom { font-weight: 600; color: var(--tinta); line-height: 1.3; }
+.prod-nom .det { display: block; font-weight: 400; color: var(--gris-calido); font-size: 0.75rem; }
+.prod-nom .meta { display: none; font-weight: 400; color: var(--gris-calido); font-size: 0.75rem; margin-top: 0.1rem; }
+.prod-fila .c { text-align: right; color: var(--tinta); }
+.prod-fila .c.strong { font-weight: 700; }
+.pd-total { border-top: 1px solid var(--linea); margin-top: 0.4rem; padding-top: 0.7rem; display: flex; justify-content: space-between; align-items: baseline; }
+.pd-total .l { font-size: 0.95rem; font-weight: 700; color: var(--tinta); }
+.pd-total .v { font-family: var(--f-head); font-size: 1.4rem; font-weight: 700; color: var(--ladrillo); }
+.pd-chip { display: flex; align-items: center; gap: 0.6rem; border-radius: var(--r-md); padding: 0.8rem 1rem; margin-top: 1rem; font-size: 0.8rem; font-weight: 700; }
+.pd-chip .dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+.pd-chip.verde { background: #EAF1E6; color: var(--verde); }
+.pd-chip.azul  { background: var(--azul-claro); color: var(--azul-oficio); }
+.pd-chip.ambar { background: #FBF1DE; color: #8A5E12; }
+.pd-chip.rojo  { background: #F6E7E4; color: var(--rojo); }
+
+/* ── Responsive ── */
+@media (max-width: 991px) {
+  .cuenta-layout { grid-template-columns: 1fr; padding: 2rem 6% 3.5rem; }
+  .breadcrumb-bar { padding: 0.9rem 6%; }
+  .cuenta-sidebar { position: static; }
+  .sidebar-nav { display: flex; flex-wrap: wrap; padding: 0.4rem; }
+  .sidebar-item { width: auto; flex: 1 1 auto; justify-content: center; border-left: none; border-radius: var(--r-sm); }
+  .sidebar-item.active { border-left: none; }
+  .sidebar-item.logout { border-top: none; }
+  .detalles-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 700px) {
+  .stats-row { grid-template-columns: 1fr; }
+  .dirs-grid { grid-template-columns: 1fr; }
+  .tabla-head { display: none; }
+  .pedido-fila, .pedido-fila.cols5 { grid-template-columns: 1fr auto; gap: 0.4rem 1rem; padding: 1rem 1.2rem; }
+  .pedido-fila .p-items { grid-column: 1 / -1; order: 5; }
+  .pedido-fila .estado { order: 4; justify-self: end; }
+  .pedido-fila .p-fecha { order: 2; justify-self: end; }
+  .pedido-fila .p-total { order: 3; }
+  .prod-head { grid-template-columns: 1fr auto; }
+  .prod-head .h-precio, .prod-head .h-cant { display: none; }
+  .prod-fila { grid-template-columns: 1fr auto; }
+  .prod-fila .c-precio, .prod-fila .c-cant { display: none; }
+  .prod-nom .meta { display: block; }
+  .demo-switch { left: 50%; transform: translateX(-50%); }
+}
+</style>
+</head>
+<body>
+
+<russitex-topbar></russitex-topbar>
+<russitex-header></russitex-header>
+
+<div class="breadcrumb-bar">
+  <div class="breadcrumb">
+    <a href="russitex-home.html">Inicio</a><span class="sep">/</span>
+    <span class="current">Mi cuenta</span>
+  </div>
+</div>
+
+<!-- LAYOUT -->
+<div class="cuenta-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="cuenta-sidebar">
+    <div class="sidebar-user">
+      <div class="sidebar-avatar">M</div>
+      <div>
+        <div class="sidebar-name">María García</div>
+        <div class="sidebar-email">maria.garcia@correo.com</div>
+      </div>
+    </div>
+    <div class="sidebar-nav">
+      <button class="sidebar-item active" onclick="ir('resumen')">
+        <svg class="si-icon" fill="none" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1" stroke="currentColor" stroke-width="2"/><rect x="14" y="3" width="7" height="7" rx="1" stroke="currentColor" stroke-width="2"/><rect x="3" y="14" width="7" height="7" rx="1" stroke="currentColor" stroke-width="2"/><rect x="14" y="14" width="7" height="7" rx="1" stroke="currentColor" stroke-width="2"/></svg>
+        Resumen
+      </button>
+      <button class="sidebar-item" onclick="ir('pedidos')">
+        <svg class="si-icon" fill="none" viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><line x1="3" y1="6" x2="21" y2="6" stroke="currentColor" stroke-width="2"/></svg>
+        Mis pedidos
+      </button>
+      <button class="sidebar-item" onclick="ir('direcciones')">
+        <svg class="si-icon" fill="none" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="2"/></svg>
+        Mis direcciones
+      </button>
+      <button class="sidebar-item" onclick="ir('detalles')">
+        <svg class="si-icon" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="2"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        Detalles de la cuenta
+      </button>
+      <button class="sidebar-item logout" onclick="ir('logout')">
+        <svg class="si-icon" fill="none" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Cerrar sesión
+      </button>
+    </div>
+  </aside>
+
+  <!-- CONTENIDO -->
+  <div class="cuenta-content">
+
+    <!-- RESUMEN -->
+    <div class="seccion active" id="s-resumen">
+      <h1 class="sec-title">Bienvenida, María 👋</h1>
+      <p class="sec-sub">Desde aquí puedes gestionar tus pedidos, direcciones y datos de cuenta.</p>
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-ico p"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 7 12 2 3 7v10l9 5 9-5V7Zm-9-2.8 6.9 3.8L12 11.8 5.1 8 12 4.2ZM5 9.7l6 3.3v6.9l-6-3.3V9.7Zm8 10.2v-6.9l6-3.3v6.9l-6 3.3Z"/></svg></div><div><div class="stat-num" id="st-pedidos">7</div><div class="stat-lbl">Pedidos realizados</div></div></div>
+        <div class="stat-card"><div class="stat-ico g"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1a11 11 0 1 0 0 22 11 11 0 0 0 0-22Zm0 20a9 9 0 1 1 0-18 9 9 0 0 1 0 18Zm1-9.1V7a1 1 0 1 0-2 0v5a1 1 0 0 0 .55.9l3 1.5a1 1 0 1 0 .9-1.8L13 11.9Z"/></svg></div><div><div class="stat-num" id="st-total">$492k</div><div class="stat-lbl">Total comprado</div></div></div>
+        <div class="stat-card"><div class="stat-ico d"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a8 8 0 0 0-8 8c0 5.4 7 11.5 7.3 11.8a1 1 0 0 0 1.4 0C13 21.5 20 15.4 20 10a8 8 0 0 0-8-8Zm0 17.6C10.1 17.8 6 13.6 6 10a6 6 0 1 1 12 0c0 3.6-4.1 7.8-6 9.6ZM12 6a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm0 6a2 2 0 1 1 0-4 2 2 0 0 1 0 4Z"/></svg></div><div><div class="stat-num" id="st-dirs">2</div><div class="stat-lbl">Direcciones guardadas</div></div></div>
+      </div>
+      <div class="recientes-card">
+        <div class="rc-header">
+          <div class="rc-title">Pedidos recientes</div>
+          <button class="rc-link" onclick="ir('pedidos')">Ver todos →</button>
+        </div>
+        <div id="recientes-con">
+          <div class="tabla-head"><span>Pedido</span><span>Fecha</span><span>Estado</span><span>Total</span></div>
+          <div class="pedido-fila" onclick="verPedido('RS-2026-00903')"><span class="p-num">#RS-2026-00903</span><span class="p-fecha">21 jun. 2026</span><span class="estado verde"><span class="dot"></span>Pago aprobado</span><span class="p-total">$68.000</span></div>
+          <div class="pedido-fila" onclick="verPedido('RS-2026-00847')"><span class="p-num">#RS-2026-00847</span><span class="p-fecha">17 may. 2026</span><span class="estado azul"><span class="dot"></span>Enviado</span><span class="p-total">$79.092</span></div>
+          <div class="pedido-fila" onclick="verPedido('RS-2026-00634')"><span class="p-num">#RS-2026-00634</span><span class="p-fecha">3 abr. 2026</span><span class="estado verde"><span class="dot"></span>Entregado</span><span class="p-total">$56.000</span></div>
+        </div>
+        <div id="recientes-sin" hidden><div class="empty-mini">Todavía no tienes pedidos.</div></div>
+      </div>
+    </div>
+
+    <!-- MIS PEDIDOS -->
+    <div class="seccion" id="s-pedidos">
+      <h1 class="sec-title">Mis pedidos</h1>
+      <p class="sec-sub">Historial completo de tus compras en Russitex. Haz clic en un pedido para ver el detalle.</p>
+
+      <div class="recientes-card" id="pedidos-con">
+        <div class="tabla-head cols5"><span>Pedido</span><span>Fecha</span><span>Productos</span><span>Estado</span><span>Total</span></div>
+        <div class="pedido-fila cols5" onclick="verPedido('RS-2026-00903')"><span class="p-num">#RS-2026-00903</span><span class="p-fecha">21 jun. 2026</span><span class="p-items">Forro Brioni × 3m<br>Guata fusionable × 2m</span><span class="estado verde"><span class="dot"></span>Pago aprobado</span><span class="p-total">$68.000</span></div>
+        <div class="pedido-fila cols5" onclick="verPedido('RS-2026-00847')"><span class="p-num">#RS-2026-00847</span><span class="p-fecha">17 may. 2026</span><span class="p-items">Forro Brioni × 3m<br>Entretela doble punto × 2m<br>Caja tiza blanca × 50 uds.</span><span class="estado azul"><span class="dot"></span>Enviado</span><span class="p-total">$79.092</span></div>
+        <div class="pedido-fila cols5" onclick="verPedido('RS-2026-00634')"><span class="p-num">#RS-2026-00634</span><span class="p-fecha">3 abr. 2026</span><span class="p-items">Guata fusionable × 2m<br>Pretina × 2m</span><span class="estado verde"><span class="dot"></span>Entregado</span><span class="p-total">$56.000</span></div>
+        <div class="pedido-fila cols5" onclick="verPedido('RS-2026-00512')"><span class="p-num">#RS-2026-00512</span><span class="p-fecha">28 feb. 2026</span><span class="p-items">Entretela galleta × 2m<br>Tiza color × 50 uds.<br>Forro estampado × 1m</span><span class="estado ambar"><span class="dot"></span>En preparación</span><span class="p-total">$124.000</span></div>
+        <div class="pedido-fila cols5" onclick="verPedido('RS-2026-00188')"><span class="p-num">#RS-2026-00188</span><span class="p-fecha">7 ene. 2026</span><span class="p-items">Forro Arabesco × 2m<br>Cremallera cobre × 5 uds.<br>Interlón × 1m</span><span class="estado ambar"><span class="dot"></span>Pago pendiente</span><span class="p-total">$88.000</span></div>
+        <div class="pedido-fila cols5" onclick="verPedido('RS-2025-00291')"><span class="p-num">#RS-2025-00291</span><span class="p-fecha">18 nov. 2025</span><span class="p-items">Hombrera algodón × 3 pares<br>Pretina × 2m<br>Banrol × 2 uds.</span><span class="estado rojo"><span class="dot"></span>Cancelado</span><span class="p-total">$65.000</span></div>
+        <div class="pedido-fila cols5" onclick="verPedido('RS-2025-00042')"><span class="p-num">#RS-2025-00042</span><span class="p-fecha">12 ago. 2025</span><span class="p-items">Entretela doble punto × 2m<br>Caja tiza blanca × 50 uds.</span><span class="estado rojo"><span class="dot"></span>Rechazado</span><span class="p-total">$55.092</span></div>
+      </div>
+
+      <div id="pedidos-sin" hidden>
+        <div class="empty-state">
+          <div class="empty-ico"><svg viewBox="0 0 24 24"><path d="M21 7 12 2 3 7v10l9 5 9-5V7Zm-9-2.8 6.9 3.8L12 11.8 5.1 8 12 4.2ZM5 9.7l6 3.3v6.9l-6-3.3V9.7Zm8 10.2v-6.9l6-3.3v6.9l-6 3.3Z"/></svg></div>
+          <h3>Aún no has hecho ningún pedido</h3>
+          <p>Cuando compres, tus pedidos aparecerán aquí con su estado, seguimiento y detalle.</p>
+          <a href="russitex-catalogo.html" class="btn-primary">Explorar catálogo</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- DETALLE DE UN PEDIDO -->
+    <div class="seccion" id="s-pedido">
+      <button class="volver-link" onclick="ir('pedidos')">← Volver a mis pedidos</button>
+      <div id="ped-detalle"></div>
+    </div>
+
+    <!-- MIS DIRECCIONES -->
+    <div class="seccion" id="s-direcciones">
+      <h1 class="sec-title">Mis direcciones</h1>
+      <p class="sec-sub">Gestiona tus direcciones de envío guardadas.</p>
+      <div class="dirs-grid" id="dirs-grid">
+
+        <div class="dir-card principal" id="dir-1">
+          <span class="dir-badge" id="badge-1">Principal</span>
+          <div class="dir-name" id="dir-name-1">María García</div>
+          <div class="dir-addr" id="dir-addr-1">Carrera 15 # 82-45, Apto 301<br>Bogotá, Cundinamarca<br>Colombia</div>
+          <div class="dir-btns">
+            <button class="btn-dir" onclick="editarDir(1)">Editar</button>
+            <button class="btn-dir del" onclick="confirmarEliminar(1)">Eliminar</button>
+          </div>
+        </div>
+
+        <div class="dir-card" id="dir-2">
+          <div class="dir-name" id="dir-name-2">Oficina</div>
+          <div class="dir-addr" id="dir-addr-2">Calle 100 # 19-61, Piso 3<br>Bogotá, Cundinamarca<br>Colombia</div>
+          <div class="dir-btns">
+            <button class="btn-dir" onclick="editarDir(2)">Editar</button>
+            <button class="btn-dir" onclick="hacerPrincipal(2)">Usar como principal</button>
+            <button class="btn-dir del" onclick="confirmarEliminar(2)">Eliminar</button>
+          </div>
+        </div>
+
+        <button class="dir-add" onclick="abrirModal('modal-dir-nueva')">
+          <div class="dir-add-plus">＋</div>
+          <div class="dir-add-label">Agregar nueva dirección</div>
+        </button>
+
+      </div>
+    </div>
+
+    <!-- DETALLES DE LA CUENTA -->
+    <div class="seccion" id="s-detalles">
+      <h1 class="sec-title">Detalles de la cuenta</h1>
+      <p class="sec-sub">Revisa y actualiza tu información personal y contraseña.</p>
+      <div class="detalles-grid">
+        <div class="det-card">
+          <div class="det-card-header">
+            <h3>Información personal</h3>
+            <button class="btn-edit-info" onclick="abrirModal('modal-info')">Editar</button>
+          </div>
+          <div class="info-fila"><span class="info-lbl">Nombre</span><span class="info-val">María García Rodríguez</span></div>
+          <div class="info-fila"><span class="info-lbl">Correo</span><span class="info-val">maria.garcia@correo.com</span></div>
+          <div class="info-fila"><span class="info-lbl">Teléfono</span><span class="info-val">+57 310 456 7890</span></div>
+          <div class="info-fila"><span class="info-lbl">Documento</span><span class="info-val">1.020.345.678</span></div>
+        </div>
+        <div class="det-card">
+          <div class="det-card-header">
+            <h3>Contraseña</h3>
+            <button class="btn-edit-info" onclick="abrirModal('modal-pwd')">Cambiar</button>
+          </div>
+          <div class="info-fila"><span class="info-lbl">Contraseña</span><span class="info-val">••••••••••</span></div>
+          <p style="font-size:0.8rem;color:var(--gris-calido);margin-top:1rem;line-height:1.6;">Para cambiar tu contraseña haz clic en <strong>Cambiar</strong>. Te pediremos tu contraseña actual para confirmar tu identidad.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- CERRAR SESIÓN -->
+    <div class="seccion" id="s-logout">
+      <h1 class="sec-title">Cerrar sesión</h1>
+      <p class="sec-sub">¿Seguro que quieres salir de tu cuenta?</p>
+      <div class="logout-wrap">
+        <div class="logout-card">
+          <div class="lo-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 17l5-5-5-5-1.4 1.4 2.6 2.6H9v2h8.2l-2.6 2.6L16 17ZM4 5h8V3H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h8v-2H4V5Z"/></svg></div>
+          <h3>¿Quieres cerrar sesión?</h3>
+          <p>Si cierras sesión tendrás que volver a ingresar la próxima vez que quieras comprar o revisar tus pedidos.</p>
+          <div class="lo-btns">
+            <button class="btn-lo">Sí, cerrar sesión</button>
+            <button class="btn-cancel" onclick="ir('resumen')">Cancelar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- MODAL: Editar dirección -->
+<div class="modal-overlay" id="modal-dir-editar" onclick="cerrarModalFuera(event,'modal-dir-editar')">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3 class="modal-title">Editar dirección</h3>
+      <button class="modal-close" onclick="cerrarModal('modal-dir-editar')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="fg"><label class="fl">Nombre del destinatario</label><input type="text" class="fi" id="edit-nombre"></div>
+      <div class="fg"><label class="fl">Dirección</label><input type="text" class="fi" id="edit-calle"></div>
+      <div class="fg" style="display:grid;grid-template-columns:1fr 1fr;gap:0.8rem;">
+        <div><label class="fl">Ciudad</label><input type="text" class="fi" id="edit-ciudad"></div>
+        <div><label class="fl">Departamento</label><input type="text" class="fi" id="edit-depto"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="modal-btn-cancel" onclick="cerrarModal('modal-dir-editar')">Cancelar</button>
+      <button class="modal-btn-save" onclick="guardarEdicion()">Guardar cambios</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Confirmar eliminar -->
+<div class="modal-overlay" id="modal-dir-eliminar" onclick="cerrarModalFuera(event,'modal-dir-eliminar')">
+  <div class="modal-box" style="max-width:400px;">
+    <div class="modal-header">
+      <h3 class="modal-title">Eliminar dirección</h3>
+      <button class="modal-close" onclick="cerrarModal('modal-dir-eliminar')">✕</button>
+    </div>
+    <div class="modal-body" style="padding-top:1.2rem;padding-bottom:1.2rem;">
+      <p style="font-size:0.9rem;color:var(--tinta);line-height:1.65;">¿Estás seguro de que quieres eliminar esta dirección? Esta acción no se puede deshacer.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="modal-btn-cancel" onclick="cerrarModal('modal-dir-eliminar')">Cancelar</button>
+      <button class="modal-btn-save" style="background:var(--ladrillo);" onclick="ejecutarEliminar()">Sí, eliminar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Agregar nueva dirección -->
+<div class="modal-overlay" id="modal-dir-nueva" onclick="cerrarModalFuera(event,'modal-dir-nueva')">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3 class="modal-title">Agregar nueva dirección</h3>
+      <button class="modal-close" onclick="cerrarModal('modal-dir-nueva')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="fg"><label class="fl">Nombre del destinatario</label><input type="text" class="fi" placeholder="Nombre completo"></div>
+      <div class="fg"><label class="fl">Dirección</label><input type="text" class="fi" placeholder="Calle, número, apartamento"></div>
+      <div class="fg" style="display:grid;grid-template-columns:1fr 1fr;gap:0.8rem;">
+        <div><label class="fl">Ciudad</label><input type="text" class="fi" placeholder="Ciudad"></div>
+        <div><label class="fl">Departamento</label><input type="text" class="fi" placeholder="Departamento"></div>
+      </div>
+      <div class="fg"><label class="fl">Indicaciones adicionales <span style="color:var(--gris-calido);font-weight:400;">(opcional)</span></label><input type="text" class="fi" placeholder="Ej: torre B, timbre 3"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="modal-btn-cancel" onclick="cerrarModal('modal-dir-nueva')">Cancelar</button>
+      <button class="modal-btn-save" onclick="agregarDireccion()">Agregar dirección</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Editar información personal -->
+<div class="modal-overlay" id="modal-info" onclick="cerrarModalFuera(event,'modal-info')">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3 class="modal-title">Editar información personal</h3>
+      <button class="modal-close" onclick="cerrarModal('modal-info')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="fg"><label class="fl">Nombre completo</label><input type="text" class="fi" value="María García Rodríguez"></div>
+      <div class="fg"><label class="fl">Correo electrónico</label><input type="email" class="fi" value="maria.garcia@correo.com"></div>
+      <div class="fg"><label class="fl">Teléfono</label><input type="tel" class="fi" value="+57 310 456 7890"></div>
+      <div class="fg"><label class="fl">Documento de identidad</label><input type="text" class="fi" value="1.020.345.678"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="modal-btn-cancel" onclick="cerrarModal('modal-info')">Cancelar</button>
+      <button class="modal-btn-save" onclick="guardarModal('modal-info')">Guardar cambios</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Cambiar contraseña -->
+<div class="modal-overlay" id="modal-pwd" onclick="cerrarModalFuera(event,'modal-pwd')">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3 class="modal-title">Cambiar contraseña</h3>
+      <button class="modal-close" onclick="cerrarModal('modal-pwd')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="fg"><label class="fl">Contraseña actual</label><div class="iw"><input type="password" class="fi" id="p1" placeholder="••••••••"><button class="pt" onclick="tp('p1',this)"><svg width="16" height="16" fill="none" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/></svg></button></div></div>
+      <div class="fg"><label class="fl">Nueva contraseña</label><div class="iw"><input type="password" class="fi" id="p2" placeholder="Mínimo 8 caracteres"><button class="pt" onclick="tp('p2',this)"><svg width="16" height="16" fill="none" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/></svg></button></div></div>
+      <div class="fg"><label class="fl">Confirmar nueva contraseña</label><div class="iw"><input type="password" class="fi" id="p3" placeholder="Repite la nueva contraseña"><button class="pt" onclick="tp('p3',this)"><svg width="16" height="16" fill="none" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/></svg></button></div></div>
+    </div>
+    <div class="modal-footer">
+      <button class="modal-btn-cancel" onclick="cerrarModal('modal-pwd')">Cancelar</button>
+      <button class="modal-btn-save" onclick="guardarModal('modal-pwd')">Actualizar contraseña</button>
+    </div>
+  </div>
+</div>
+
+<russitex-footer></russitex-footer>
+<russitex-floating></russitex-floating>
+
+<!-- Solo para revisar la maqueta: no va en la página final -->
+<div class="demo-switch">
+  <b>Ver:</b>
+  <button id="d-con" class="on" onclick="setPedidos('con')">Con pedidos</button>
+  <button id="d-sin" onclick="setPedidos('sin')">Sin pedidos</button>
+</div>
+
+<script>
+const secciones = ['resumen','pedidos','direcciones','detalles','logout'];
+
+function ir(id) {
+  secciones.forEach(s => document.getElementById('s-' + s).classList.remove('active'));
+  document.getElementById('s-pedido').classList.remove('active');
+  document.querySelectorAll('.sidebar-item').forEach((el, i) => {
+    el.classList.toggle('active', secciones[i] === id);
+  });
+  document.getElementById('s-' + id).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ── Pedidos (datos de ejemplo, uno por estado) ── */
+const IMG = 'https://yggxhnpcjxemwjnwxibc.supabase.co/storage/v1/object/public/productos_russitex/';
+const DIR_MG = 'Carrera 15 # 82-45, Apto 301<br>Bogotá, Cundinamarca';
+const PEDIDOS = {
+  'RS-2026-00903': { fecha:'21 jun. 2026, 10:12 a.m.', badge:{txt:'Pago aprobado',cls:'verde'}, envioEstado:'En preparación', pago:'Pagado', metodo:'Tarjeta de crédito · Wompi', envio:'Domicilio en Bogotá', dir:DIR_MG,
+    items:[{img:IMG+'13.jpg',nom:'Forro Brioni',det:'Beige',precio:'$8.000',cant:'3 m',total:'$24.000'},{img:IMG+'1.jpg',nom:'Guata fusionable',det:'',precio:'$18.000',cant:'2 m',total:'$36.000'}], envioCosto:'$8.000', total:'$68.000' },
+  'RS-2026-00847': { fecha:'17 may. 2026, 2:34 p.m.', badge:{txt:'Enviado',cls:'azul'}, envioEstado:'En camino', pago:'Pagado', metodo:'Tarjeta de crédito · Wompi', envio:'Domicilio en Bogotá', dir:DIR_MG,
+    items:[{img:IMG+'13.jpg',nom:'Forro Brioni',det:'Beige',precio:'$8.000',cant:'3 m',total:'$24.000'},{img:IMG+'1.jpg',nom:'Entretela doble punto',det:'Negro',precio:'$8.000',cant:'2 m',total:'$16.000'},{img:IMG+'22.jpg',nom:'Caja tiza blanca',det:'50 uds.',precio:'$31.092',cant:'1',total:'$31.092'}], envioCosto:'$8.000', total:'$79.092' },
+  'RS-2026-00634': { fecha:'3 abr. 2026, 11:05 a.m.', badge:{txt:'Entregado',cls:'verde'}, envioEstado:'Entregado el 6 abr. 2026', pago:'Pagado', metodo:'PSE · Wompi', envio:'Domicilio en Bogotá', dir:DIR_MG,
+    items:[{img:IMG+'1.jpg',nom:'Guata fusionable',det:'',precio:'$18.000',cant:'2 m',total:'$36.000'},{img:IMG+'13.jpg',nom:'Pretina',det:'',precio:'$10.000',cant:'2 m',total:'$20.000'}], envioCosto:'Gratis', total:'$56.000' },
+  'RS-2026-00512': { fecha:'28 feb. 2026, 9:20 a.m.', badge:{txt:'En preparación',cls:'ambar'}, envioEstado:'Preparando tu pedido', pago:'Pagado', metodo:'Nequi · Wompi', envio:'Domicilio en Bogotá', dir:DIR_MG,
+    items:[{img:IMG+'1.jpg',nom:'Entretela galleta',det:'',precio:'$14.000',cant:'2 m',total:'$28.000'},{img:IMG+'22.jpg',nom:'Tiza color',det:'50 uds.',precio:'$16.000',cant:'1',total:'$16.000'},{img:IMG+'13.jpg',nom:'Forro estampado',det:'',precio:'$72.000',cant:'1 m',total:'$72.000'}], envioCosto:'$8.000', total:'$124.000' },
+  'RS-2026-00188': { fecha:'7 ene. 2026, 4:48 p.m.', badge:{txt:'Pago pendiente',cls:'ambar'}, envioEstado:'A la espera de confirmar el pago', pago:'Pendiente', metodo:'PSE · Wompi', envio:'Domicilio en Bogotá', dir:DIR_MG,
+    items:[{img:IMG+'13.jpg',nom:'Forro Arabesco',det:'',precio:'$28.000',cant:'2 m',total:'$56.000'},{img:IMG+'22.jpg',nom:'Cremallera cobre',det:'5 uds.',precio:'$2.400',cant:'5',total:'$12.000'},{img:IMG+'1.jpg',nom:'Interlón',det:'',precio:'$12.000',cant:'1 m',total:'$12.000'}], envioCosto:'$8.000', total:'$88.000' },
+  'RS-2025-00291': { fecha:'18 nov. 2025, 1:15 p.m.', badge:{txt:'Cancelado',cls:'rojo'}, envioEstado:'Pedido cancelado · reembolsado', pago:'Reembolsado', metodo:'Tarjeta de crédito · Wompi', envio:'Domicilio en Bogotá', dir:DIR_MG,
+    items:[{img:IMG+'1.jpg',nom:'Hombrera algodón',det:'',precio:'$10.000',cant:'3 pares',total:'$30.000'},{img:IMG+'13.jpg',nom:'Pretina',det:'',precio:'$10.000',cant:'2 m',total:'$20.000'},{img:IMG+'22.jpg',nom:'Banrol',det:'2 uds.',precio:'$3.500',cant:'2',total:'$7.000'}], envioCosto:'$8.000', total:'$65.000' },
+  'RS-2025-00042': { fecha:'12 ago. 2025, 6:02 p.m.', badge:{txt:'Rechazado',cls:'rojo'}, envioEstado:'El pago fue rechazado · sin cobro', pago:'Rechazado', metodo:'Tarjeta de crédito · Wompi', envio:'Domicilio en Bogotá', dir:DIR_MG,
+    items:[{img:IMG+'1.jpg',nom:'Entretela doble punto',det:'Negro',precio:'$8.000',cant:'2 m',total:'$16.000'},{img:IMG+'22.jpg',nom:'Caja tiza blanca',det:'50 uds.',precio:'$31.092',cant:'1',total:'$31.092'}], envioCosto:'$8.000', total:'$55.092' }
+};
+function parseCOP(s) { return parseInt(String(s).replace(/[^0-9]/g, ''), 10) || 0; }
+function fmtCOP(n) { return '$' + n.toLocaleString('es-CO'); }
+
+/* ── Detalle del pedido: se muestra DENTRO de Mi cuenta (barra lateral visible) ── */
+function verPedido(num) {
+  const p = PEDIDOS[num];
+  if (!p) return;
+  const prods = p.items.map(function(it){
+    const det = it.det ? '<span class="det">' + it.det + '</span>' : '';
+    return '<div class="prod-fila"><div class="prod-info"><img src="' + it.img + '" alt=""><div class="prod-nom">' + it.nom + det +
+      '<span class="meta">' + it.precio + ' × ' + it.cant + '</span></div></div>' +
+      '<span class="c c-precio">' + it.precio + '</span><span class="c c-cant">' + it.cant + '</span><span class="c c-total strong">' + it.total + '</span></div>';
+  }).join('');
+  const subtotal = p.items.reduce(function(a, it){ return a + parseCOP(it.total); }, 0);
+  document.getElementById('ped-detalle').innerHTML =
+    '<div class="ped-head"><h1>Pedido #' + num + '</h1><span class="estado ' + p.badge.cls + '"><span class="dot"></span>' + p.badge.txt + '</span></div>' +
+    '<div class="ped-fecha">' + p.fecha + '</div>' +
+    '<div class="envio-banner ' + p.badge.cls + '"><span class="dot"></span> Estado del envío: ' + p.envioEstado + '</div>' +
+    '<div class="ped-card"><h3>Datos del pedido</h3>' +
+      '<div class="pd-row"><span class="l">Fecha</span><span class="v">' + p.fecha + '</span></div>' +
+      '<div class="pd-row"><span class="l">Estado</span><span class="v"><span class="estado ' + p.badge.cls + '"><span class="dot"></span>' + p.badge.txt + '</span></span></div>' +
+      '<div class="pd-row"><span class="l">Pago</span><span class="v">' + p.pago + '</span></div>' +
+      '<div class="pd-row"><span class="l">Método de pago</span><span class="v">' + p.metodo + '</span></div>' +
+      '<div class="pd-row"><span class="l">Envío</span><span class="v">' + p.envio + '</span></div>' +
+      '<div class="pd-row"><span class="l">Dirección de envío</span><span class="v">' + p.dir + '</span></div>' +
+    '</div>' +
+    '<div class="ped-card"><h3>Productos</h3>' +
+      '<div class="prod-head"><span>Producto</span><span class="h-precio">Precio</span><span class="h-cant">Cant.</span><span>Total</span></div>' + prods + '</div>' +
+    '<div class="ped-card pd-res"><h3>Resumen</h3>' +
+      '<div class="pd-row"><span class="l">Subtotal</span><span class="v">' + fmtCOP(subtotal) + '</span></div>' +
+      '<div class="pd-row"><span class="l">Envío</span><span class="v">' + p.envioCosto + '</span></div>' +
+      '<div class="pd-total"><span class="l">Total</span><span class="v">' + p.total + '</span></div>' +
+      '<div class="pd-chip ' + p.badge.cls + '"><span class="dot"></span>' + p.badge.txt + ' · Wompi</div>' +
+    '</div>';
+  secciones.forEach(function(s){ document.getElementById('s-' + s).classList.remove('active'); });
+  document.getElementById('s-pedido').classList.add('active');
+  document.querySelectorAll('.sidebar-item').forEach(function(el, i){ el.classList.toggle('active', secciones[i] === 'pedidos'); });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ── Demo: con / sin pedidos ── */
+function setPedidos(modo) {
+  const con = modo === 'con';
+  document.getElementById('pedidos-con').hidden = !con;
+  document.getElementById('pedidos-sin').hidden = con;
+  document.getElementById('recientes-con').hidden = !con;
+  document.getElementById('recientes-sin').hidden = con;
+  document.getElementById('st-pedidos').textContent = con ? '7' : '0';
+  document.getElementById('st-total').textContent = con ? '$492k' : '$0';
+  document.getElementById('d-con').classList.toggle('on', con);
+  document.getElementById('d-sin').classList.toggle('on', !con);
+}
+
+/* ── DIRECCIONES ── */
+let dirEditandoId = null;
+let dirEliminandoId = null;
+let nextDirId = 3;
+
+const dirs = {
+  1: { nombre: 'María García', calle: 'Carrera 15 # 82-45, Apto 301', ciudad: 'Bogotá', depto: 'Cundinamarca', principal: true },
+  2: { nombre: 'Oficina', calle: 'Calle 100 # 19-61, Piso 3', ciudad: 'Bogotá', depto: 'Cundinamarca', principal: false }
+};
+
+function editarDir(id) {
+  dirEditandoId = id;
+  const d = dirs[id];
+  document.getElementById('edit-nombre').value = d.nombre;
+  document.getElementById('edit-calle').value = d.calle;
+  document.getElementById('edit-ciudad').value = d.ciudad;
+  document.getElementById('edit-depto').value = d.depto;
+  abrirModal('modal-dir-editar');
+}
+
+function guardarEdicion() {
+  const d = dirs[dirEditandoId];
+  d.nombre = document.getElementById('edit-nombre').value.trim() || d.nombre;
+  d.calle  = document.getElementById('edit-calle').value.trim()  || d.calle;
+  d.ciudad = document.getElementById('edit-ciudad').value.trim() || d.ciudad;
+  d.depto  = document.getElementById('edit-depto').value.trim()  || d.depto;
+  document.getElementById('dir-name-' + dirEditandoId).textContent = d.nombre;
+  document.getElementById('dir-addr-' + dirEditandoId).innerHTML = d.calle + '<br>' + d.ciudad + ', ' + d.depto + '<br>Colombia';
+  cerrarModal('modal-dir-editar');
+  toast('Dirección actualizada correctamente');
+}
+
+function confirmarEliminar(id) {
+  dirEliminandoId = id;
+  abrirModal('modal-dir-eliminar');
+}
+
+function ejecutarEliminar() {
+  const el = document.getElementById('dir-' + dirEliminandoId);
+  if (el) {
+    el.style.transition = 'opacity 0.3s, transform 0.3s';
+    el.style.opacity = '0';
+    el.style.transform = 'scale(0.95)';
+    setTimeout(() => { el.remove(); delete dirs[dirEliminandoId]; }, 300);
+  }
+  cerrarModal('modal-dir-eliminar');
+  toast('Dirección eliminada');
+}
+
+function hacerPrincipal(id) {
+  Object.keys(dirs).forEach(k => {
+    dirs[k].principal = false;
+    const card = document.getElementById('dir-' + k);
+    if (card) {
+      card.classList.remove('principal');
+      const badge = document.getElementById('badge-' + k);
+      if (badge) badge.remove();
+      const btns = card.querySelector('.dir-btns');
+      if (btns && !btns.querySelector('[data-principal]')) {
+        const btn = document.createElement('button');
+        btn.className = 'btn-dir';
+        btn.setAttribute('data-principal', '1');
+        btn.textContent = 'Usar como principal';
+        btn.onclick = () => hacerPrincipal(parseInt(k));
+        btns.insertBefore(btn, btns.querySelector('.del'));
+      }
+    }
+  });
+  dirs[id].principal = true;
+  const card = document.getElementById('dir-' + id);
+  card.classList.add('principal');
+  const badge = document.createElement('span');
+  badge.className = 'dir-badge';
+  badge.id = 'badge-' + id;
+  badge.textContent = 'Principal';
+  card.insertBefore(badge, card.firstChild);
+  const btnPrincipal = card.querySelector('[data-principal]');
+  if (btnPrincipal) btnPrincipal.remove();
+  toast('Dirección principal actualizada');
+}
+
+function agregarDireccion() {
+  const inputs = document.querySelectorAll('#modal-dir-nueva .fi');
+  const nombre = inputs[0].value.trim();
+  const calle  = inputs[1].value.trim();
+  const ciudad = inputs[2].value.trim();
+  const depto  = inputs[3].value.trim();
+  if (!nombre || !calle || !ciudad) { toast('Completa los campos obligatorios'); return; }
+  const id = nextDirId++;
+  dirs[id] = { nombre, calle, ciudad, depto: depto || 'Colombia', principal: false };
+  const grid = document.getElementById('dirs-grid');
+  const addBtn = grid.querySelector('.dir-add');
+  const card = document.createElement('div');
+  card.className = 'dir-card';
+  card.id = 'dir-' + id;
+  card.innerHTML =
+    '<div class="dir-name" id="dir-name-' + id + '">' + nombre + '</div>' +
+    '<div class="dir-addr" id="dir-addr-' + id + '">' + calle + '<br>' + ciudad + ', ' + (depto || 'Colombia') + '<br>Colombia</div>' +
+    '<div class="dir-btns">' +
+      '<button class="btn-dir" onclick="editarDir(' + id + ')">Editar</button>' +
+      '<button class="btn-dir" data-principal="1" onclick="hacerPrincipal(' + id + ')">Usar como principal</button>' +
+      '<button class="btn-dir del" onclick="confirmarEliminar(' + id + ')">Eliminar</button>' +
+    '</div>';
+  card.style.opacity = '0'; card.style.transform = 'scale(0.95)'; card.style.transition = 'opacity 0.3s, transform 0.3s';
+  grid.insertBefore(card, addBtn);
+  requestAnimationFrame(() => { card.style.opacity = '1'; card.style.transform = 'scale(1)'; });
+  inputs.forEach(i => i.value = '');
+  cerrarModal('modal-dir-nueva');
+  toast('Dirección agregada correctamente');
+}
+
+function toast(msg) {
+  const el = document.createElement('div');
+  el.textContent = msg;
+  el.style.cssText = 'position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);background:var(--azul-profundo);color:#fff;padding:0.75rem 1.5rem;border-radius:100px;font-size:0.85rem;font-weight:600;z-index:9999;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,0.2);';
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 3000);
+}
+
+function abrirModal(id) {
+  document.getElementById(id).classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function cerrarModal(id) {
+  document.getElementById(id).classList.remove('open');
+  document.body.style.overflow = '';
+}
+function cerrarModalFuera(e, id) {
+  if (e.target.id === id) cerrarModal(id);
+}
+function guardarModal(id) {
+  cerrarModal(id);
+  toast('Cambios guardados correctamente');
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { document.querySelectorAll('.modal-overlay.open').forEach(m => cerrarModal(m.id)); } });
+
+function tp(id, btn) {
+  const input = document.getElementById(id);
+  const isText = input.type === 'text';
+  input.type = isText ? 'password' : 'text';
+  btn.innerHTML = isText
+    ? '<svg width="16" height="16" fill="none" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/></svg>'
+    : '<svg width="16" height="16" fill="none" viewBox="0 0 24 24"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24M1 1l22 22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
+}
+
+/* Deep-link: abrir un pedido directo con ?pedido=RS-... (útil desde el correo) */
+(function(){
+  const pd = new URLSearchParams(location.search).get('pedido');
+  if (pd && PEDIDOS[pd]) verPedido(pd);
+})();
+</script>
+</body>
+</html>
