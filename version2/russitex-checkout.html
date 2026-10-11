@@ -52,6 +52,7 @@
 .fila.una { grid-template-columns: 1fr; }
 .campo { display: flex; flex-direction: column; gap: 0.4rem; }
 .campo label { font-size: 0.8rem; font-weight: 600; color: var(--tinta); }
+.campo label .opcional { font-weight: 400; color: var(--gris-calido); }
 .campo .opt { font-weight: 400; color: var(--gris-calido); }
 .campo input, .campo select, .campo textarea {
   padding: 0.8rem 1rem; border: 1.5px solid var(--linea); border-radius: var(--r-sm);
@@ -118,10 +119,6 @@
 .res-seguro svg { width: 13px; height: 13px; fill: var(--verde); flex-shrink: 0; }
 
 /* ── EMPRESA / VALIDACIÓN ── */
-.empresa-check { display: flex; align-items: flex-start; gap: 0.55rem; margin: 0.2rem 0 0.2rem; font-size: 0.83rem; color: var(--tinta); line-height: 1.5; cursor: pointer; }
-.empresa-check input { margin-top: 0.15rem; accent-color: var(--azul-oficio); flex-shrink: 0; }
-.empresa-extra { border-top: 1px dashed var(--linea); padding-top: 1.2rem; margin-top: 1rem; }
-.empresa-extra .fila:last-child { margin-bottom: 0; }
 .nit-grid { display: grid; grid-template-columns: 1fr 72px; gap: 0.6rem; }
 
 .campo.error label { color: var(--rojo); }
@@ -181,49 +178,55 @@
       <!-- ── QUIÉN COMPRA ── -->
       <div class="bloque">
         <h2>Tus datos</h2>
-        <p class="bloque-sub">Los necesitamos para emitir la factura y para que la transportadora te ubique.</p>
+        <p class="bloque-sub">Elige a nombre de quién va la factura y completa tus datos.</p>
 
-        <div class="fila">
-          <div class="campo">
-            <label for="nombre">Nombre</label>
-            <input id="nombre" type="text" placeholder="Ej: Juan">
+        <!-- Tipo de persona para la factura (persona natural o empresa) -->
+        <label class="envio-op sel" style="margin-bottom:0.6rem">
+          <input type="radio" name="tipoPersona" value="natural" checked onchange="elegirPersona()">
+          <div class="envio-op-txt">
+            <div class="envio-op-nom">Persona natural</div>
+            <div class="envio-op-desc">La factura va a tu nombre, con tu cédula.</div>
           </div>
-          <div class="campo">
-            <label for="apellido">Apellidos</label>
-            <input id="apellido" type="text" placeholder="Ej: Pérez">
+        </label>
+        <label class="envio-op" style="margin-bottom:1.3rem">
+          <input type="radio" name="tipoPersona" value="juridica" onchange="elegirPersona()">
+          <div class="envio-op-txt">
+            <div class="envio-op-nom">Empresa</div>
+            <div class="envio-op-desc">La factura va a nombre de una empresa, con NIT.</div>
           </div>
-        </div>
-
-        <div class="fila">
-          <div class="campo">
-            <label for="doc">Documento</label>
-            <div class="doc">
-              <select id="tipodoc" aria-label="Tipo de documento">
-                <option>C.C.</option>
-                <option>C.E.</option>
-              </select>
-              <input id="doc" type="text" placeholder="Ej: 1234567890">
-            </div>
-          </div>
-          <div class="campo">
-            <label for="cel">Celular</label>
-            <input id="cel" type="tel" placeholder="Ej: 3001234567">
-          </div>
-        </div>
-
-        <div class="fila una">
-          <div class="campo">
-            <label for="correo">Correo electrónico</label>
-            <input id="correo" type="email" placeholder="Ej: nombre@correo.com">
-          </div>
-        </div>
-
-        <label class="empresa-check">
-          <input type="checkbox" id="esEmpresa" onchange="toggleEmpresa(this)">
-          <span>Datos de empresa</span>
         </label>
 
-        <div class="empresa-extra" id="empresaExtra" hidden>
+        <!-- Datos de persona natural -->
+        <div id="grupoNatural">
+          <div class="fila">
+            <div class="campo">
+              <label for="nombre">Nombres</label>
+              <input id="nombre" type="text" placeholder="Ej: Juan">
+            </div>
+            <div class="campo">
+              <label for="apellido">Apellidos</label>
+              <input id="apellido" type="text" placeholder="Ej: Pérez">
+            </div>
+          </div>
+          <div class="fila una">
+            <div class="campo">
+              <label for="doc">Documento</label>
+              <div class="doc">
+                <select id="tipodoc" aria-label="Tipo de documento">
+                  <option>C.C.</option>
+                  <option>C.E.</option>
+                  <option>Pasaporte</option>
+                  <option>PPT</option>
+                  <option>T.I.</option>
+                </select>
+                <input id="doc" type="text" placeholder="Ej: 1234567890">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Datos de empresa (persona jurídica) -->
+        <div id="grupoEmpresa" hidden>
           <div class="fila una">
             <div class="campo">
               <label for="razon">Razón social</label>
@@ -239,19 +242,55 @@
               </div>
             </div>
             <div class="campo">
-              <label for="regimen">Responsabilidad de IVA</label>
+              <label for="regimen">Responsabilidad de IVA <span class="opcional">(opcional)</span></label>
               <select id="regimen">
-                <option value="">Selecciona…</option>
+                <option value="">No estoy seguro</option>
                 <option>Responsable de IVA</option>
                 <option>No responsable de IVA</option>
               </select>
             </div>
           </div>
         </div>
+
+        <!-- Contacto (va en ambos casos) -->
+        <div class="fila">
+          <div class="campo">
+            <label for="cel">Celular</label>
+            <input id="cel" type="tel" placeholder="Ej: 3001234567">
+          </div>
+          <div class="campo">
+            <label for="correo">Correo electrónico</label>
+            <input id="correo" type="email" placeholder="Ej: nombre@correo.com">
+          </div>
+        </div>
+      </div>
+
+      <!-- ── CÓMO LLEGA ── -->
+      <div class="bloque">
+        <h2>Forma de entrega</h2>
+        <p class="bloque-sub">Las opciones cambian según la ciudad que elegiste.</p>
+
+        <label class="envio-op sel">
+          <input type="radio" name="envio" value="domicilio" checked onchange="elegirEnvio()">
+          <div class="envio-op-txt">
+            <div class="envio-op-nom">Entrega a domicilio</div>
+            <div class="envio-op-desc">Envíos a toda Colombia. En Bogotá, el mismo día si pides antes de las 12 p.m.</div>
+          </div>
+          <div class="envio-op-precio">$10.000</div>
+        </label>
+
+        <label class="envio-op">
+          <input type="radio" name="envio" value="recoger" onchange="elegirEnvio()">
+          <div class="envio-op-txt">
+            <div class="envio-op-nom">Recoger en la tienda</div>
+            <div class="envio-op-desc">Calle 66 No 21-50, Bogotá. Te avisamos por WhatsApp cuando esté listo.</div>
+          </div>
+          <div class="envio-op-precio gratis">Gratis</div>
+        </label>
       </div>
 
       <!-- ── A DÓNDE VA ── -->
-      <div class="bloque">
+      <div class="bloque" id="bloqueDireccion">
         <h2>Dirección de entrega</h2>
         <p class="bloque-sub">Con el departamento y la ciudad calculamos el costo del envío.</p>
 
@@ -287,30 +326,6 @@
             <textarea id="notas" placeholder="Ej: dejar en portería, llamar antes de llegar…"></textarea>
           </div>
         </div>
-      </div>
-
-      <!-- ── CÓMO LLEGA ── -->
-      <div class="bloque">
-        <h2>Forma de entrega</h2>
-        <p class="bloque-sub">Las opciones cambian según la ciudad que elegiste.</p>
-
-        <label class="envio-op sel">
-          <input type="radio" name="envio" checked>
-          <div class="envio-op-txt">
-            <div class="envio-op-nom">Domicilio en Bogotá</div>
-            <div class="envio-op-desc">Entrega el mismo día si pides antes de las 12:00 p.m. Si no, al día siguiente.</div>
-          </div>
-          <div class="envio-op-precio">$10.000</div>
-        </label>
-
-        <label class="envio-op">
-          <input type="radio" name="envio">
-          <div class="envio-op-txt">
-            <div class="envio-op-nom">Recoger en la tienda</div>
-            <div class="envio-op-desc">Calle 66 No 21-50, Bogotá. Te avisamos por WhatsApp cuando esté listo.</div>
-          </div>
-          <div class="envio-op-precio gratis">Gratis</div>
-        </label>
       </div>
 
       <!-- ── CÓMO SE PAGA ── -->
@@ -441,8 +456,25 @@ function llenarCiudades(){
   cSel.disabled = !d;
 }
 
-function toggleEmpresa(chk){
-  document.getElementById('empresaExtra').hidden = !chk.checked;
+/* Tipo de persona de la factura: muestra los datos de persona natural o
+   de empresa según lo que elija el cliente. */
+function elegirPersona(){
+  document.querySelectorAll('input[name="tipoPersona"]').forEach(function(r){
+    r.closest('.envio-op').classList.toggle('sel', r.checked);
+  });
+  const juridica = document.querySelector('input[name="tipoPersona"][value="juridica"]').checked;
+  document.getElementById('grupoEmpresa').hidden = !juridica;
+  document.getElementById('grupoNatural').hidden = juridica;
+}
+
+/* Forma de entrega: marca la opción elegida y, si es "recoger en tienda",
+   oculta el bloque de dirección (no hace falta). */
+function elegirEnvio(){
+  document.querySelectorAll('.envio-op').forEach(function(op){
+    op.classList.toggle('sel', op.querySelector('input').checked);
+  });
+  const recoge = document.querySelector('input[name="envio"][value="recoger"]').checked;
+  document.getElementById('bloqueDireccion').hidden = recoge;
 }
 
 /* ── Validación de campos obligatorios y tipo de dato ── */
@@ -450,11 +482,14 @@ function validar(){
   const err = document.getElementById('formError');
   document.querySelectorAll('.campo.error, .acepto.error').forEach(function(c){ c.classList.remove('error'); });
 
-  const esEmpresa = document.getElementById('esEmpresa').checked;
-  // Con empresa, la identidad fiscal es el NIT: el documento personal (C.C.) deja de ser obligatorio.
-  const obligatorios = ['nombre', 'apellido', 'cel', 'correo', 'depto', 'ciudad', 'dir'];
-  if (!esEmpresa) obligatorios.push('doc');
-  if (esEmpresa) obligatorios.push('razon', 'nit', 'regimen');
+  const esEmpresa = document.querySelector('input[name="tipoPersona"][value="juridica"]').checked;
+  const recoge = document.querySelector('input[name="envio"][value="recoger"]').checked;
+  // Celular y correo van siempre; lo demás depende del tipo de persona.
+  const obligatorios = ['cel', 'correo'];
+  // La dirección solo se exige si el pedido se envía a domicilio (no al recoger en tienda).
+  if (!recoge) obligatorios.push('depto', 'ciudad', 'dir');
+  if (esEmpresa) obligatorios.push('razon', 'nit');
+  else obligatorios.push('nombre', 'apellido', 'doc');
 
   let malos = [];
   let hayTipoMalo = false;
@@ -468,10 +503,9 @@ function validar(){
     if (!document.getElementById(id).value.trim()) marcar(id);
   });
 
-  // Tipo de dato: texto sin números / números sin letras
-  const soloTexto = ['nombre', 'apellido'];
-  const soloNumero = ['doc', 'cel'];
-  if (esEmpresa) soloNumero.push('nit');
+  // Tipo de dato: texto sin números / números sin letras (según el grupo visible)
+  const soloTexto = esEmpresa ? [] : ['nombre', 'apellido'];
+  const soloNumero = esEmpresa ? ['cel', 'nit'] : ['cel', 'doc'];
 
   soloTexto.forEach(function(id){
     const v = document.getElementById(id).value.trim();
