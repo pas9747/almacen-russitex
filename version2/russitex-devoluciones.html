@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cambios y devoluciones — Russitex</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Mulish:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<!-- Estilos compartidos (header, footer, topbar, botones, chat) -->
+<link rel="stylesheet" href="russitex-ui.css">
+<!-- Componentes compartidos (se cargan antes del cuerpo para evitar parpadeo) -->
+<script src="russitexui.js"></script>
+<style>
+/* ═══════════════ PÁGINA CAMBIOS Y DEVOLUCIONES (estilo Russitex) ═══════════════ */
+body { line-height: 1.6; }
+
+.breadcrumb-bar { background: var(--crema-osc); padding: 0.9rem 5%; border-bottom: 1px solid var(--linea); }
+.breadcrumb { display: flex; line-height: normal; align-items: center; gap: 0.5rem; font-size: 0.82rem; color: var(--gris-calido); flex-wrap: wrap; }
+.breadcrumb a { color: var(--gris-calido); text-decoration: none; transition: color 0.2s; }
+.breadcrumb a:hover { color: var(--azul-oficio); }
+.breadcrumb .sep { color: var(--linea); }
+.breadcrumb .current { color: var(--tinta); font-weight: 600; }
+
+/* BANNER */
+.page-banner { background: var(--azul-oficio); padding: 3.4rem 8%; position: relative; overflow: hidden; }
+.page-banner::before { content: ''; position: absolute; width: 460px; height: 460px; border-radius: 50%; background: rgba(255,255,255,0.04); top: -200px; right: -90px; pointer-events: none; }
+.page-banner::after { content: ''; position: absolute; width: 240px; height: 240px; border-radius: 50%; background: rgba(169,84,69,0.16); bottom: -110px; left: 8%; pointer-events: none; }
+.banner-inner { position: relative; z-index: 1; max-width: 700px; }
+.banner-eyebrow { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--arena); margin-bottom: 0.9rem; display: flex; align-items: center; gap: 0.6rem; }
+.banner-eyebrow::before { content: ''; width: 26px; height: 2px; background: var(--arena); }
+.banner-title { font-family: var(--f-head); font-size: clamp(2rem, 3.2vw, 2.8rem); font-weight: 600; color: #fff; line-height: 1.12; margin-bottom: 0.8rem; }
+.banner-title em { font-style: italic; color: #EAD9C4; }
+.banner-sub { font-size: 0.98rem; color: rgba(255,255,255,0.72); line-height: 1.7; max-width: 560px; }
+@media (min-width: 1200px) {
+  .banner-inner { max-width: none; }
+  .banner-title { max-width: 700px; }
+  .banner-sub { max-width: none; }
+}
+
+/* DOCUMENTO */
+.doc-layout { padding: 3.6rem 8% 4.5rem; background: var(--crema); }
+.doc-content { max-width: 820px; margin: 0 auto; background: #fff; border: 1px solid var(--linea); border-radius: var(--r-lg); box-shadow: var(--sh-sm); padding: 3rem 3.2rem; }
+.doc-intro { font-size: 0.95rem; color: var(--tinta); line-height: 1.85; margin-bottom: 2.4rem; padding-bottom: 2rem; border-bottom: 1px solid var(--linea); }
+.doc-section { margin-bottom: 2.1rem; }
+.doc-section:last-child { margin-bottom: 0; }
+.doc-section-title { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ladrillo); margin-bottom: 0.9rem; display: flex; align-items: center; gap: 0.7rem; }
+.doc-section-title::after { content: ''; flex: 1; height: 1px; background: var(--linea); }
+.doc-p { font-size: 0.92rem; color: var(--gris-calido); line-height: 1.85; margin-bottom: 0.75rem; }
+.doc-p:last-child { margin-bottom: 0; }
+.doc-p strong { color: var(--tinta); }
+.doc-p a { color: var(--azul-oficio); text-decoration: none; font-weight: 600; }
+.doc-p a:hover { text-decoration: underline; }
+
+/* ── Responsive ── */
+@media (max-width: 991px) {
+  .breadcrumb-bar { padding: 0.9rem 6%; }
+  .page-banner { padding: 2.8rem 6%; }
+  .doc-layout { padding: 3rem 6% 3.6rem; }
+  .doc-content { padding: 2.4rem 2.2rem; }
+}
+@media (max-width: 767px) {
+  .doc-layout { padding: 2.4rem 5% 3rem; }
+  .doc-content { padding: 1.8rem 1.4rem; border-radius: var(--r-md); }
+  .doc-intro { font-size: 0.92rem; margin-bottom: 2rem; padding-bottom: 1.6rem; }
+  .doc-section { margin-bottom: 1.8rem; }
+  .doc-p { font-size: 0.9rem; }
+}
+</style>
+</head>
+<body>
+
+<russitex-topbar></russitex-topbar>
+<russitex-header></russitex-header>
+
+<!-- BREADCRUMB -->
+<div class="breadcrumb-bar">
+  <div class="breadcrumb">
+    <a href="#">Inicio</a><span class="sep">/</span>
+    <span class="current">Cambios y devoluciones</span>
+  </div>
+</div>
+
+<!-- BANNER -->
+<section class="page-banner">
+  <div class="banner-inner">
+    <div class="banner-eyebrow">Compra con confianza</div>
+    <h1 class="banner-title">Cambios y <em>devoluciones</em></h1>
+    <p class="banner-sub">Conoce en qué casos aplican los cambios y devoluciones, cómo solicitarlos y los plazos de reembolso.</p>
+  </div>
+</section>
+
+<!-- DOCUMENTO -->
+<section class="doc-layout">
+  <div class="doc-content">
+
+    <p class="doc-intro">Almacén Russitex P.L., en cumplimiento de lo establecido en la Ley 1480 de 2011 (Estatuto del Consumidor) y la Ley 2439 de 2024, adopta la presente política para regular los cambios y devoluciones aplicables a las compras realizadas a través de su tienda en línea.</p>
+
+    <div class="doc-section">
+      <div class="doc-section-title">Devoluciones por garantía</div>
+      <p class="doc-p">Almacén Russitex P.L. acepta devoluciones o cambios cuando se presente alguna de las siguientes situaciones: el producto recibido tiene un defecto de fabricación; el producto entregado es diferente al que fue pedido; o la cantidad recibida no corresponde a la solicitada en el pedido.</p>
+      <p class="doc-p">El reclamo por producto equivocado o por cantidad incorrecta deberá realizarse dentro de los cinco (5) días hábiles siguientes a la recepción del pedido, por tratarse de situaciones verificables al momento de la entrega. Los defectos de fabricación están amparados por la garantía legal y podrán reportarse dentro de su término de vigencia.</p>
+    </div>
+
+    <div class="doc-section">
+      <div class="doc-section-title">Derecho de retracto (compras en línea)</div>
+      <p class="doc-p">En las compras realizadas a través de nuestra tienda en línea, el cliente podrá ejercer el derecho de retracto previsto en el artículo 47 de la Ley 1480 de 2011, desistiendo de la compra dentro de los cinco (5) días hábiles siguientes a la entrega del producto, sin necesidad de justificar el motivo.</p>
+      <p class="doc-p">El retracto aplica únicamente a productos que no hayan sido cortados ni despachados a la medida o según las especificaciones del cliente, y siempre que se devuelvan sin usar, completos y en las mismas condiciones en que fueron recibidos. Los costos de transporte y devolución del producto en caso de retracto correrán por cuenta del cliente. Una vez recibido y verificado el producto, se procederá al reembolso en los términos descritos más adelante.</p>
+    </div>
+
+    <div class="doc-section">
+      <div class="doc-section-title">Casos en que no aplica la devolución</div>
+      <p class="doc-p">Los materiales que sean cortados o despachados a la medida o según las especificaciones solicitadas por el cliente no son susceptibles de devolución por retracto, arrepentimiento o cambio de parecer, de conformidad con el artículo 47 de la Ley 1480 de 2011, que excluye del derecho de retracto los bienes elaborados de acuerdo con las especificaciones del consumidor.</p>
+      <p class="doc-p">Tampoco se aceptarán devoluciones de productos que hayan sido usados, lavados, cortados, alterados o manipulados por el cliente, ni de aquellos que no conserven sus condiciones originales. La garantía legal no cubre los daños o deterioros ocasionados por el uso indebido, el manejo inadecuado o el desgaste normal del producto.</p>
+    </div>
+
+    <div class="doc-section">
+      <div class="doc-section-title">Procedimiento para solicitar una devolución o retracto</div>
+      <p class="doc-p">Para iniciar una solicitud de devolución, cambio o retracto, el cliente deberá comunicarse con Almacén Russitex P.L. por WhatsApp al <a href="https://wa.me/573132494118">+57 313 249 4118</a> dentro del plazo que corresponda a su caso, indicando su nombre completo, número de pedido, descripción del problema y, cuando aplique, fotografías que evidencien el motivo de la solicitud. Una vez recibida la solicitud, Almacén Russitex P.L. evaluará el caso y dará respuesta en un plazo máximo de cinco (5) días hábiles.</p>
+    </div>
+
+    <div class="doc-section">
+      <div class="doc-section-title">Reembolsos</div>
+      <p class="doc-p">Cuando proceda la devolución o el retracto, el reembolso del valor pagado se realizará a través del mismo medio de pago utilizado al momento de la compra, o por el medio que acuerden las partes, dentro de los quince (15) días calendario siguientes a que el cliente ejerza su derecho, siempre que haya entregado información correcta y completa y devuelto el producto en las condiciones aquí descritas, conforme a lo dispuesto en la Ley 2439 de 2024.</p>
+      <p class="doc-p">Los costos de envío asociados al retorno del producto correrán por cuenta de Almacén Russitex P.L. cuando el motivo de la devolución sea un error imputable a la empresa, como un defecto de fabricación, el envío de un producto equivocado o una cantidad incorrecta. En los casos de retracto, dichos costos correrán por cuenta del cliente.</p>
+    </div>
+
+    <div class="doc-section">
+      <div class="doc-section-title">Compras en tienda física</div>
+      <p class="doc-p">Las compras realizadas directamente en nuestra tienda ubicada en la Calle 66 # 21-50, Bogotá D.C., no están sujetas al derecho de retracto, por no tratarse de ventas a distancia. No obstante, se rigen por las mismas condiciones descritas en esta política en cuanto a devoluciones por defecto de fabricación, producto equivocado o cantidad incorrecta, amparadas por la garantía legal. Para cualquier reclamación, el cliente deberá acercarse al establecimiento en el horario de atención o comunicarse por los canales indicados.</p>
+    </div>
+
+    <div class="doc-section">
+      <div class="doc-section-title">Vigencia</div>
+      <p class="doc-p">La presente política rige a partir de mayo de 2026. Almacén Russitex P.L. se reserva el derecho de modificarla en cualquier momento; los cambios serán publicados en este sitio web.</p>
+    </div>
+
+  </div>
+</section>
+
+<russitex-footer></russitex-footer>
+<russitex-floating></russitex-floating>
+
+</body>
+</html>
