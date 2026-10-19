@@ -214,6 +214,110 @@
   <a class="chat-to-form" href="russitex-asesoria.html#panePersonalizada" onclick="closeChat()">¿Tu proyecto es más específico? Solicita asesoría personalizada →</a>
 </div>`;
 
+  /* ---- Mini carrito compartido (panel lateral) ---- */
+  var CART_HTML = `
+<div class="mc-overlay" id="mcOverlay"></div>
+<div class="mini-cart" id="miniCart" role="dialog" aria-label="Carrito de compra" aria-hidden="true">
+  <div class="mc-header">
+    <div>
+      <div class="mc-title">Carrito de compra</div>
+      <div class="mc-count" id="mcCount">0 productos</div>
+    </div>
+    <button class="mc-close" id="mcClose" aria-label="Cerrar carrito"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+  </div>
+  <div class="mc-empty" id="mcEmpty">
+    <div class="mc-empty-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M22.713,4.077A2.993,2.993,0,0,0,20.41,3H4.242L4.2,2.649A3,3,0,0,0,1.222,0H1A1,1,0,0,0,1,2h.222a1,1,0,0,1,.993.883l1.376,11.7A5,5,0,0,0,8.557,19H19a1,1,0,0,0,0-2H8.557a3,3,0,0,1-2.82-2h11.92a5,5,0,0,0,4.921-4.113l.785-4.354A2.994,2.994,0,0,0,22.713,4.077ZM21.4,6.178l-.786,4.354A3,3,0,0,1,17.657,13H5.419L4.478,5H20.41A1,1,0,0,1,21.4,6.178Z"/><circle cx="7" cy="22" r="2"/><circle cx="17" cy="22" r="2"/></svg></div>
+    <h3>Tu carrito está vacío</h3>
+    <p>Aún no has agregado ningún material. Explora el catálogo y encuentra lo que necesitas para tu proyecto.</p>
+    <a href="russitex-catalogo.html" class="mc-btn-primary">Explorar catálogo</a>
+  </div>
+  <div class="mc-items" id="mcItems" style="display:none;"></div>
+  <div class="mc-footer" id="mcFooter" style="display:none;">
+    <div class="mc-summary">
+      <div class="mc-summary-row"><span class="mc-summary-label">Subtotal</span><span class="mc-summary-value" id="mcSubtotal">$0</span></div>
+      <div class="mc-summary-row"><span class="mc-summary-label">Envío</span><span class="mc-summary-value">Se calcula al pagar</span></div>
+      <div class="mc-divider"></div>
+      <div class="mc-total-row"><span class="mc-total-label">Total</span><span class="mc-total-value" id="mcTotal">$0</span></div>
+    </div>
+    <div class="mc-actions">
+      <a href="russitex-checkout.html" class="mc-btn-pagar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>Ir a pagar</a>
+      <a href="russitex-carrito.html" class="mc-btn-ver">Ver carrito</a>
+    </div>
+    <div class="mc-secure"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Compra segura con Wompi</div>
+  </div>
+</div>`;
+
+  var cart = [];
+  try { cart = JSON.parse(localStorage.getItem('russitex_cart') || '[]') || []; } catch (e) { cart = []; }
+  function saveCart() { try { localStorage.setItem('russitex_cart', JSON.stringify(cart)); } catch (e) {} }
+  function cartFmt(n) { return '$' + Number(n).toLocaleString('es-CO'); }
+  function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+
+  function renderCart() {
+    var total = cart.reduce(function (s, i) { return s + i.price * i.qty; }, 0);
+    var totalQty = cart.reduce(function (s, i) { return s + i.qty; }, 0);
+    document.querySelectorAll('.cart-badge').forEach(function (b) { b.textContent = totalQty; b.hidden = totalQty === 0; });
+    var count = document.getElementById('mcCount'); if (count) count.textContent = totalQty === 1 ? '1 producto' : totalQty + ' productos';
+    var empty = document.getElementById('mcEmpty'), items = document.getElementById('mcItems'), footer = document.getElementById('mcFooter');
+    if (!items) return;
+    if (cart.length === 0) {
+      empty.style.display = 'flex'; items.style.display = 'none'; footer.style.display = 'none';
+    } else {
+      empty.style.display = 'none'; items.style.display = 'block'; footer.style.display = 'block';
+      document.getElementById('mcSubtotal').textContent = cartFmt(total);
+      document.getElementById('mcTotal').textContent = cartFmt(total);
+      items.innerHTML = cart.map(function (item, idx) {
+        return '<div class="mc-item">' +
+          (item.img ? '<img class="mc-item-img" src="' + esc(item.img) + '" alt="" onerror="this.style.visibility=\'hidden\'">' : '<div class="mc-item-img"></div>') +
+          '<div class="mc-item-info">' +
+            (item.cat ? '<div class="mc-item-cat">' + esc(item.cat) + '</div>' : '') +
+            '<div class="mc-item-name">' + esc(item.name) + '</div>' +
+            '<div class="mc-item-variant">' + esc(item.variant || (cartFmt(item.price) + ' c/u')) + '</div>' +
+            '<div class="mc-item-bottom">' +
+              '<div class="mc-qty">' +
+                '<button class="mc-qty-btn" onclick="changeCartQty(' + idx + ',-1)" aria-label="Quitar uno">−</button>' +
+                '<span class="mc-qty-num">' + item.qty + '</span>' +
+                '<button class="mc-qty-btn" onclick="changeCartQty(' + idx + ',1)" aria-label="Agregar uno">+</button>' +
+              '</div>' +
+              '<span class="mc-item-price">' + cartFmt(item.price * item.qty) + '</span>' +
+              '<button class="mc-item-remove" onclick="removeCartItem(' + idx + ')" aria-label="Eliminar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+    }
+  }
+
+  window.openCart = function () { var m = document.getElementById('miniCart'), o = document.getElementById('mcOverlay'); if (!m) return; m.classList.add('open'); m.setAttribute('aria-hidden', 'false'); if (o) o.classList.add('visible'); document.body.style.overflow = 'hidden'; };
+  window.closeCart = function () { var m = document.getElementById('miniCart'), o = document.getElementById('mcOverlay'); if (!m) return; m.classList.remove('open'); m.setAttribute('aria-hidden', 'true'); if (o) o.classList.remove('visible'); document.body.style.overflow = ''; };
+  window.toggleCart = function () { var m = document.getElementById('miniCart'); if (m && m.classList.contains('open')) window.closeCart(); else window.openCart(); };
+  window.addToCart = function (p) {
+    var key = p.key || p.name;
+    var ex = cart.find(function (i) { return i.key === key; });
+    if (ex) { ex.qty++; }
+    else { cart.push({ key: key, name: p.name, cat: p.cat || '', variant: p.variant || '', price: p.price, img: p.img || '', qty: 1 }); }
+    saveCart(); renderCart(); window.openCart();
+    var b = document.querySelector('.cart-badge'); if (b) { b.classList.remove('bump'); void b.offsetWidth; b.classList.add('bump'); }
+  };
+  window.changeCartQty = function (idx, d) { var it = cart[idx]; if (!it) return; it.qty += d; if (it.qty <= 0) cart.splice(idx, 1); saveCart(); renderCart(); };
+  window.removeCartItem = function (idx) { if (idx < 0 || idx >= cart.length) return; cart.splice(idx, 1); saveCart(); renderCart(); };
+  window.clearCart = function () { cart = []; saveCart(); renderCart(); };
+  window.setCart = function (arr) { cart = (arr || []).map(function (p) { return { key: p.key || p.name, name: p.name, cat: p.cat || '', variant: p.variant || '', price: p.price, img: p.img || '', qty: p.qty || 1 }; }); saveCart(); renderCart(); };
+  window.renderCart = renderCart;
+
+  function wireCart() {
+    if (!document.getElementById('miniCart')) {
+      var wrap = document.createElement('div');
+      wrap.innerHTML = CART_HTML;
+      while (wrap.firstChild) document.body.appendChild(wrap.firstChild);
+    }
+    var ov = document.getElementById('mcOverlay'); if (ov && !ov._w) { ov._w = 1; ov.addEventListener('click', window.closeCart); }
+    var cl = document.getElementById('mcClose'); if (cl && !cl._w) { cl._w = 1; cl.addEventListener('click', window.closeCart); }
+    document.querySelectorAll('.cart-btn').forEach(function (b) { if (!b._cartWired) { b._cartWired = 1; b.addEventListener('click', window.toggleCart); } });
+    if (!wireCart._esc) { wireCart._esc = 1; document.addEventListener('keydown', function (e) { if (e.key === 'Escape') window.closeCart(); }); }
+    renderCart();
+  }
+
   /* ---- Cableado del header (hamburguesa + acordeón Catálogo + búsqueda) ---- */
   function wireHeader() {
     var nt = document.getElementById('navToggle'), nav = document.getElementById('mainNav');
@@ -368,6 +472,7 @@ Si preguntan algo fuera de estos temas, responde amablemente que solo puedes ayu
     applyUserState(host);
     wireHeader();
     wireUserMenu();
+    wireCart();
   });
   define('russitex-footer', FOOTER_HTML, null);
   define('russitex-floating', FAB_HTML + '\n' + CHAT_HTML, wireChat);

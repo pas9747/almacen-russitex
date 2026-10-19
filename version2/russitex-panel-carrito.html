@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panel del carrito (demo) — Russitex</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Mulish:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="russitex-ui.css">
+<script src="russitexui.js"></script>
+<style>
+/* ── Barra de maqueta (solo demo, no va en producción) ── */
+.demo-bar { background: #FBF3E3; border-bottom: 1px solid #EBD9B4; padding: 0.7rem 8%; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+.demo-bar .demo-lbl { font-size: 0.8rem; color: var(--ladrillo-osc); font-weight: 600; display: flex; align-items: center; gap: 0.5rem; }
+.demo-toggle { display: flex; background: #fff; border-radius: var(--r-pill); border: 1px solid #EBD9B4; overflow: hidden; }
+.demo-toggle button { padding: 0.35rem 1.1rem; font-size: 0.78rem; font-weight: 600; border: none; cursor: pointer; font-family: var(--f-body); background: none; color: var(--ladrillo-osc); transition: all 0.2s; white-space: nowrap; }
+.demo-toggle button.on { background: var(--azul-oficio); color: #fff; }
+.demo-hint { font-size: 0.78rem; color: var(--gris-calido); }
+
+/* ── Catálogo de ejemplo (fondo) ── */
+.catalog-demo { padding: 3rem 8% 4.5rem; background: var(--crema); }
+.cat-eyebrow { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ladrillo); margin-bottom: 0.7rem; }
+.cat-title { font-family: var(--f-head); font-size: clamp(1.5rem, 2.6vw, 2.1rem); font-weight: 600; color: var(--tinta); margin-bottom: 2rem; }
+.cat-title em { font-style: italic; color: var(--ladrillo); }
+.prod-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.4rem; }
+.prod-card { background: #fff; border-radius: var(--r-lg); border: 1px solid var(--linea); overflow: hidden; transition: transform 0.2s, box-shadow 0.2s; }
+.prod-card:hover { transform: translateY(-3px); box-shadow: var(--sh-md); }
+.prod-img { height: 150px; background: var(--crema-osc); display: block; width: 100%; object-fit: cover; }
+.prod-body { padding: 1rem 1.1rem 1.2rem; }
+.prod-cat { font-size: 0.64rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--gris-calido); margin-bottom: 0.25rem; }
+.prod-name { font-family: var(--f-head); font-size: 0.98rem; font-weight: 600; color: var(--tinta); margin-bottom: 0.15rem; }
+.prod-unit { font-size: 0.74rem; color: var(--gris-calido); margin-bottom: 0.5rem; }
+.prod-price { font-size: 1.05rem; font-weight: 700; color: var(--tinta); margin-bottom: 0.85rem; }
+.btn-agregar { width: 100%; background: var(--azul-oficio); color: #fff; border: none; cursor: pointer; border-radius: var(--r-pill); padding: 0.6rem; font-family: var(--f-body); font-size: 0.82rem; font-weight: 700; transition: background 0.2s; }
+.btn-agregar:hover { background: var(--azul-profundo); }
+
+@media (max-width: 991px) {
+  .demo-bar { padding: 0.7rem 6%; }
+  .catalog-demo { padding: 2.4rem 6% 3.5rem; }
+  .prod-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 520px) {
+  .prod-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+  .cat-title { margin-bottom: 1.4rem; }
+}
+</style>
+</head>
+<body>
+
+<russitex-topbar></russitex-topbar>
+<russitex-header active="catalogo"></russitex-header>
+
+<!-- BARRA DE MAQUETA (solo para probar los dos estados; no va en producción) -->
+<div class="demo-bar">
+  <span class="demo-lbl">🧪 Vista de maqueta — simular el panel:</span>
+  <div class="demo-toggle">
+    <button id="demoEmpty" class="on" onclick="cartDemoEmpty()">Vacío</button>
+    <button id="demoFull" onclick="cartDemoFill()">Con productos</button>
+  </div>
+  <span class="demo-hint">También puedes tocar el ícono del carrito ↑ o “Agregar” en un producto.</span>
+</div>
+
+<!-- CATÁLOGO DE EJEMPLO (fondo) -->
+<section class="catalog-demo">
+  <div class="cat-eyebrow">Catálogo de materiales</div>
+  <h2 class="cat-title">Encuentra lo que necesitas para <em>confeccionar</em></h2>
+  <div class="prod-grid" id="prodGrid"></div>
+</section>
+
+<russitex-footer></russitex-footer>
+<russitex-floating></russitex-floating>
+
+<script>
+var IMG = 'https://yggxhnpcjxemwjnwxibc.supabase.co/storage/v1/object/public/productos_russitex/';
+
+// Productos de ejemplo para la demo
+var DEMO_PRODS = [
+  { key: 'forro-brioni',   name: 'Forro Brioni',          cat: 'Forros',     unit: 'Por metro',          price: 8000,  img: IMG + '13.jpg' },
+  { key: 'entretela-dp',   name: 'Entretela doble punto', cat: 'Entretelas', unit: 'Por metro · Negro',  price: 8000,  img: IMG + '1.jpg'  },
+  { key: 'guata-fus',      name: 'Guata fusionable',      cat: 'Guatas',     unit: 'Por metro',          price: 17000, img: IMG + '1.jpg'  },
+  { key: 'tiza-blanca',    name: 'Caja tiza blanca × 50', cat: 'Tizas',      unit: 'Por caja',           price: 31092, img: IMG + '22.jpg' }
+];
+
+function fmtCOP(n) { return '$' + Number(n).toLocaleString('es-CO'); }
+
+// Pinta el catálogo de ejemplo
+document.getElementById('prodGrid').innerHTML = DEMO_PRODS.map(function (p, i) {
+  return '<div class="prod-card">' +
+    '<img class="prod-img" src="' + p.img + '" alt="" onerror="this.style.visibility=\'hidden\'">' +
+    '<div class="prod-body">' +
+      '<div class="prod-cat">' + p.cat + '</div>' +
+      '<div class="prod-name">' + p.name + '</div>' +
+      '<div class="prod-unit">' + p.unit + '</div>' +
+      '<div class="prod-price">' + fmtCOP(p.price) + '</div>' +
+      '<button class="btn-agregar" data-i="' + i + '">Agregar al carrito</button>' +
+    '</div>' +
+  '</div>';
+}).join('');
+
+// "Agregar al carrito" → usa la función compartida addToCart() de russitex-ui
+document.getElementById('prodGrid').addEventListener('click', function (e) {
+  var btn = e.target.closest('.btn-agregar'); if (!btn) return;
+  var p = DEMO_PRODS[+btn.getAttribute('data-i')];
+  addToCart({ key: p.key, name: p.name, cat: p.cat, variant: fmtCOP(p.price) + ' / unidad', price: p.price, img: p.img });
+  setDemoTab(1);
+});
+
+// Botones de la barra de maqueta
+function setDemoTab(i) {
+  document.getElementById('demoEmpty').classList.toggle('on', i === 0);
+  document.getElementById('demoFull').classList.toggle('on', i === 1);
+}
+function cartDemoEmpty() { clearCart(); openCart(); setDemoTab(0); }
+function cartDemoFill() {
+  setCart([
+    { key: 'forro-brioni', name: 'Forro Brioni',          cat: 'Forros',     variant: '$8.000 / unidad',  price: 8000,  img: IMG + '13.jpg', qty: 3 },
+    { key: 'entretela-dp', name: 'Entretela doble punto', cat: 'Entretelas', variant: '$8.000 / unidad',  price: 8000,  img: IMG + '1.jpg',  qty: 2 },
+    { key: 'guata-fus',    name: 'Guata fusionable',      cat: 'Guatas',     variant: '$17.000 / unidad', price: 17000, img: IMG + '1.jpg',  qty: 1 }
+  ]);
+  openCart(); setDemoTab(1);
+}
+
+// Arranca en estado vacío con el panel abierto para la demo
+window.addEventListener('load', function () { clearCart(); openCart(); setDemoTab(0); });
+</script>
+</body>
+</html>
