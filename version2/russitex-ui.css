@@ -277,6 +277,21 @@ footer { background: var(--tinta); color: rgba(255,255,255,0.68); padding: 4rem 
 .f-ci svg { width: 18px; height: 18px; }
 .f-ci-item a { color: rgba(255,255,255,0.6); text-decoration: none; transition: color 0.2s; }
 .f-ci-item a:hover { color: #fff; }
+.f-pagos { margin-top: 1.6rem; }
+.f-pagos-head { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.7rem; }
+.f-pagos-label {
+  font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; color: rgba(255,255,255,0.45);
+}
+.f-pagos-wompi-txt { font-size: 0.72rem; color: rgba(255,255,255,0.4); }
+.f-pagos-wompi-txt strong { color: rgba(255,255,255,0.62); font-weight: 700; }
+.pago-logo.pago-pse { padding: 3px 2px; }
+.f-pagos-logos { display: flex; align-items: center; flex-wrap: wrap; gap: 0.35rem; }
+.pago-logo {
+  background: #fff; border-radius: 4px; width: 38px; height: 26px;
+  display: inline-flex; align-items: center; justify-content: center; padding: 4px 5px;
+}
+.pago-logo img { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; display: block; }
 .footer-bottom {
   padding-top: 1.6rem; display: flex; justify-content: space-between;
   align-items: center; flex-wrap: wrap; gap: 0.5rem;

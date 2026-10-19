@@ -140,6 +140,21 @@
       <span class="f-logo">Russi<span>tex</span></span>
       <p class="footer-desc">Materiales para confección en Bogotá, Colombia.</p>
       <p class="footer-slogan">39 años siendo tu mano amiga en confección.</p>
+      <div class="f-pagos">
+        <div class="f-pagos-head">
+          <span class="f-pagos-label">Medios de pago</span>
+          <span class="f-pagos-wompi-txt">procesados por <strong>Wompi</strong></span>
+        </div>
+        <div class="f-pagos-logos">
+          <span class="pago-logo"><img src="logos-pago/visa.webp" alt="Visa"></span>
+          <span class="pago-logo"><img src="logos-pago/mastercard.svg" alt="Mastercard"></span>
+          <span class="pago-logo"><img src="logos-pago/amex.svg" alt="American Express"></span>
+          <span class="pago-logo"><img src="logos-pago/nequi.svg" alt="Nequi"></span>
+          <span class="pago-logo"><img src="logos-pago/daviplata.svg" alt="DaviPlata"></span>
+          <span class="pago-logo pago-pse"><img src="logos-pago/pse.svg" alt="PSE"></span>
+          <span class="pago-logo"><img src="logos-pago/bancolombia.svg" alt="Bancolombia"></span>
+        </div>
+      </div>
     </div>
     <div class="f-col">
       <h4>Información</h4>
