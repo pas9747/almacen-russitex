@@ -434,6 +434,21 @@ Si preguntan algo fuera de estos temas, responde amablemente que solo puedes ayu
     if (link) link.classList.add('active');
   }
 
+  /* ---- Pestaña Administrador: atributo admin="1" agrega el enlace tras Contacto ---- */
+  function applyAdmin(host) {
+    if (!host.getAttribute('admin')) return;
+    var nav = host.querySelector('nav#mainNav');
+    if (!nav || nav.querySelector('[data-nav="admin"]')) return;
+    var contacto = nav.querySelector('[data-nav="contacto"]');
+    var a = document.createElement('a');
+    a.href = 'russitex-admin.html';
+    a.setAttribute('data-nav', 'admin');
+    a.className = 'nav-admin';
+    a.textContent = 'Administrador';
+    if (contacto && contacto.nextSibling) nav.insertBefore(a, contacto.nextSibling);
+    else if (nav) nav.appendChild(a);
+  }
+
   /* ---- Estado de sesión: si hay atributo user="Nombre", muestra el menú logueado ---- */
   function applyUserState(host) {
     var name = host.getAttribute('user');
@@ -468,6 +483,7 @@ Si preguntan algo fuera de estos temas, responde amablemente que solo puedes ayu
   }
   define('russitex-topbar', TOPBAR_HTML, null);
   define('russitex-header', HEADER_HTML, function (host) {
+    applyAdmin(host);
     applyActive(host);
     applyUserState(host);
     wireHeader();

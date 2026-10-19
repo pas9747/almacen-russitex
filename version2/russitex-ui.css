@@ -118,6 +118,8 @@ nav a::after {
 }
 nav a:hover { color: var(--azul-oficio); }
 nav a:hover::after { right: 0; }
+nav a.nav-admin { color: var(--ladrillo); font-weight: 700; }
+nav a.nav-admin:hover { color: var(--ladrillo-osc); }
 
 /* ── Catálogo / Mega-menú ── */
 .nav-catalog-wrap { position: relative; }
