@@ -209,7 +209,7 @@
   </div>
   <div class="chat-input-row">
     <input type="text" class="chat-input" id="chatInput" placeholder="Escribe tu pregunta...">
-    <button class="chat-send" onclick="sendMessage()" aria-label="Enviar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.3 3.23 21 11.08c.79.33.79 1.5 0 1.84L2.3 20.77c-.74.31-1.53-.42-1.3-1.2l1.63-6.02L13 12 2.63 10.45 1 4.43c-.23-.78.56-1.51 1.3-1.2z"/></svg></button>
+    <button class="chat-send" onclick="sendMessage()" aria-label="Enviar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21.916,8.727L3.965.282C2.951-.211,1.756-.041.917.713.076,1.47-.216,2.646.172,3.708c.017.043,4.411,8.296,4.411,8.296,0,0-4.313,8.251-4.328,8.293-.387,1.063-.092,2.237.749,2.993.521.467,1.179.708,1.841.708.409,0,.819-.092,1.201-.279l17.872-8.438c1.285-.603,2.083-1.859,2.082-3.278,0-1.42-.801-2.675-2.084-3.275ZM2.032,2.967c-.122-.415.138-.69.223-.768.089-.079.414-.324.838-.116.005.002,17.974,8.455,17.974,8.455.239.112.438.27.591.462H6.315L2.032,2.967Zm19.034,10.504L3.178,21.917c-.425.209-.749-.035-.838-.116-.086-.076-.346-.353-.223-.769l4.202-8.032h15.345c-.153.195-.355.357-.597.471Z"/></svg></button>
   </div>
   <a class="chat-to-form" href="russitex-asesoria.html#panePersonalizada" onclick="closeChat()">¿Tu proyecto es más específico? Solicita asesoría personalizada →</a>
 </div>`;
