@@ -48,13 +48,14 @@
 .bloque h2 { font-family: var(--f-head); font-size: 1.1rem; font-weight: 600; color: var(--tinta); margin-bottom: 0.35rem; }
 .bloque-sub { font-size: 0.82rem; color: var(--gris-calido); margin-bottom: 1.2rem; line-height: 1.6; }
 
-.fila { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
-.fila.una { grid-template-columns: 1fr; }
+.fila { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1rem; margin-bottom: 1rem; }
+.fila.una { grid-template-columns: minmax(0, 1fr); }
 .campo { display: flex; flex-direction: column; gap: 0.4rem; }
 .campo label { font-size: 0.8rem; font-weight: 600; color: var(--tinta); }
 .campo label .opcional { font-weight: 400; color: var(--gris-calido); }
 .campo .opt { font-weight: 400; color: var(--gris-calido); }
 .campo input, .campo select, .campo textarea {
+  width: 100%; min-width: 0;
   padding: 0.8rem 1rem; border: 1.5px solid var(--linea); border-radius: var(--r-sm);
   font-family: var(--f-body); font-size: 0.88rem; color: var(--tinta); background-color: var(--crema);
   transition: border-color 0.2s, box-shadow 0.2s;
@@ -70,7 +71,7 @@
 .campo .ayuda { font-size: 0.74rem; color: var(--gris-calido); }
 
 /* Documento: el tipo es un desplegable pegado al número. */
-.doc { display: grid; grid-template-columns: 110px 1fr; gap: 0.6rem; }
+.doc { display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 0.6rem; }
 
 /* ── ENVÍO ── */
 .envio-op { display: flex; align-items: flex-start; gap: 0.8rem; border: 1px solid var(--linea); border-radius: var(--r-md); padding: 1rem; margin-bottom: 0.7rem; cursor: pointer; transition: all 0.2s; }
@@ -121,7 +122,7 @@
 .res-seguro svg { width: 13px; height: 13px; fill: var(--verde); flex-shrink: 0; }
 
 /* ── EMPRESA / VALIDACIÓN ── */
-.nit-grid { display: grid; grid-template-columns: 1fr 72px; gap: 0.6rem; }
+.nit-grid { display: grid; grid-template-columns: minmax(0, 1fr) 72px; gap: 0.6rem; }
 
 .campo.error label { color: var(--rojo); }
 .campo.error input, .campo.error select, .campo.error textarea { border-color: var(--rojo); background-color: #FCF3F1; }
@@ -136,10 +137,13 @@
 @media (max-width: 991px) {
   .co-wrap { padding: 2rem 6% 3.5rem; }
   .breadcrumb-bar { padding: 0.9rem 6%; }
-  .co-layout { grid-template-columns: 1fr; }
+  /* Una sola columna: quitamos el gap del grid para que la separación entre
+     el formulario y el resumen la marque solo el margen del último bloque
+     (1.2rem), igual que entre bloques. */
+  .co-layout { grid-template-columns: 1fr; gap: 0; }
   /* En tablet y celular el orden es: formulario (incluye la caja de pago)
      y al final el resumen. */
-  .co-layout .resumen { position: static; order: 0; margin-top: 1.2rem; }
+  .co-layout .resumen { position: static; order: 0; margin-top: 0; }
 }
 @media (max-width: 600px) {
   .fila { grid-template-columns: 1fr; }
