@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 110 110" fill="none">
+  <g stroke="#121212" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <!-- O -->
+    <circle cx="55" cy="27" r="16"/>
+    <!-- divisor -->
+    <line x1="29" y1="54" x2="81" y2="54" stroke-width="5"/>
+    <!-- P -->
+    <path d="M47 66 V101"/>
+    <path d="M47 66 H59 a12 11 0 0 1 0 22 H47"/>
+  </g>
+  <g fill="#121212">
+    <!-- punto de la O -->
+    <circle cx="74" cy="43" r="3.4"/>
+    <!-- punto de la P -->
+    <circle cx="74" cy="99" r="3.4"/>
+  </g>
+</svg>
